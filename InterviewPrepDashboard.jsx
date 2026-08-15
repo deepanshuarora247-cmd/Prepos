@@ -381,13 +381,13 @@ export default function InterviewPrepDashboard() {
         {/* Top nav */}
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3.5">
-            <svg viewBox="0 0 32 32" className="h-9 w-9 drop-shadow-[0_0_12px_rgba(255,255,255,0.4)]">
-              <polygon points="10,12 20,26 0,26" fill="white" fillOpacity="0.4" />
-              <polygon points="22,12 32,26 12,26" fill="white" fillOpacity="0.4" />
-              <polygon points="16,4 28,26 4,26" fill="white" fillOpacity="0.95" />
+            <svg viewBox="0 0 32 32" className="h-9 w-9 drop-shadow-[0_0_12px_rgba(254,240,138,0.6)] text-yellow-200">
+              <polygon points="10,12 20,26 0,26" fill="currentColor" fillOpacity="0.4" />
+              <polygon points="22,12 32,26 12,26" fill="currentColor" fillOpacity="0.4" />
+              <polygon points="16,4 28,26 4,26" fill="currentColor" fillOpacity="0.95" />
             </svg>
-            <span className="text-3xl font-extrabold tracking-tighter text-slate-100 drop-shadow-sm ml-1">PrepOS</span>
-            <span className="text-[10px] font-bold tracking-wider text-cyan-300 border border-cyan-400/30 bg-cyan-400/10 rounded-full px-2.5 py-0.5 leading-none translate-y-[-10px] shadow-[0_0_12px_-2px_rgba(34,211,238,0.4)]">
+            <span className="text-3xl font-extrabold tracking-tighter text-yellow-200 drop-shadow-sm ml-1">PrepOS</span>
+            <span className="text-[10px] font-bold tracking-wider text-yellow-50 border border-yellow-200/30 bg-yellow-200/10 rounded-full px-2.5 py-0.5 leading-none translate-y-[-10px] shadow-[0_0_12px_-2px_rgba(254,240,138,0.6)]">
               PRO
             </span>
           </div>
