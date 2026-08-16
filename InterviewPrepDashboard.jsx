@@ -468,6 +468,7 @@ export default function InterviewPrepDashboard() {
             { id: "tutorials", label: "Tutorials", action: () => setActiveView("tutorials") },
             { id: "dsa", label: "Practice", action: () => handleOpenDsa(null, "All") },
             { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
+            { id: "resume", label: "Resume Review", action: () => setActiveView("resume") },
             { id: "leaderboard", label: "Leaderboard", action: () => setActiveView("leaderboard") },
             { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
           ].map((cat) => (
