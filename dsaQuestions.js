@@ -3,423 +3,140 @@ export const LOCAL_DSA_QUESTIONS = [
     id: "two-sum",
     title: "Two Sum",
     difficulty: "Easy",
-    category: "Arrays & Hashing",
+    category: "DSA",
     companies: ["Meta", "Google", "Amazon", "Apple"],
     acceptance: "52.4%",
     solved: true,
     isApiResult: false,
-    description: `Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.
-
-You may assume that each input would have ***exactly one solution***, and you may not use the *same* element twice.
-
-You can return the answer in any order.`,
-    examples: [
-      {
-        id: 1,
-        input: "nums = [2,7,11,15], target = 9",
-        output: "[0,1]",
-        explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]."
-      },
-      {
-        id: 2,
-        input: "nums = [3,2,4], target = 6",
-        output: "[1,2]",
-        explanation: "Because nums[1] + nums[2] == 6, we return [1, 2]."
-      }
-    ],
-    constraints: [
-      "2 <= nums.length <= 10^4",
-      "-10^9 <= nums[i] <= 10^9",
-      "Only one valid answer exists."
-    ],
-    hints: [
-      "A really brute force way would be to search for all possible pairs of numbers O(N^2).",
-      "Use a Hash Map to store numbers we have already seen to reach O(N) time complexity."
-    ],
+    description: `Given an array of integers \`nums\` and an integer \`target\`, return *indices of the two numbers such that they add up to \`target\`*.`,
+    examples: [{ id: 1, input: "nums = [2,7,11,15], target = 9", output: "[0,1]" }],
+    constraints: ["2 <= nums.length <= 10^4"],
+    hints: ["Use a Hash Map to store numbers seen so far."],
     starterCode: {
-      javascript: `function twoSum(nums, target) {
-    const map = new Map();
-    for (let i = 0; i < nums.length; i++) {
-        const diff = target - nums[i];
-        if (map.has(diff)) {
-            return [map.get(diff), i];
-        }
-        map.set(nums[i], i);
-    }
-    return [];
-}`,
-      python: `class Solution:
-    def twoSum(self, nums: List[int], target: int) -> List[int]:
-        seen = {}
-        for i, n in enumerate(nums):
-            diff = target - n
-            if diff in seen:
-                return [seen[diff], i]
-            seen[n] = i
-        return []`,
-      cpp: `class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int, int> seen;
-        for (int i = 0; i < nums.size(); i++) {
-            int diff = target - nums[i];
-            if (seen.count(diff)) return {seen[diff], i};
-            seen[nums[i]] = i;
-        }
-        return {};
-    }
-};`,
-      java: `class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> seen = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int diff = target - nums[i];
-            if (seen.containsKey(diff)) return new int[] { seen.get(diff), i };
-            seen.put(nums[i], i);
-        }
-        return new int[]{};
-    }
-}`
+      javascript: `function twoSum(nums, target) {\n    const map = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const diff = target - nums[i];\n        if (map.has(diff)) return [map.get(diff), i];\n        map.set(nums[i], i);\n    }\n    return [];\n}`,
+      python: `class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        seen = {}\n        for i, n in enumerate(nums):\n            if target - n in seen: return [seen[target - n], i]\n            seen[n] = i\n        return []`,
+      cpp: `class Solution { public: vector<int> twoSum(vector<int>& nums, int target) { unordered_map<int, int> seen; for (int i = 0; i < nums.size(); i++) { if (seen.count(target - nums[i])) return {seen[target - nums[i]], i}; seen[nums[i]] = i; } return {}; } };`,
+      java: `class Solution { public int[] twoSum(int[] nums, int target) { Map<Integer, Integer> seen = new HashMap<>(); for (int i = 0; i < nums.length; i++) { if (seen.containsKey(target - nums[i])) return new int[]{seen.get(target - nums[i]), i}; seen.put(nums[i], i); } return new int[]{}; } }`
     },
-    testCases: [
-      { input: "[2, 7, 11, 15], 9", expected: "[0, 1]" },
-      { input: "[3, 2, 4], 6", expected: "[1, 2]" }
-    ]
+    testCases: [{ input: "[2, 7, 11, 15], 9", expected: "[0, 1]" }]
   },
   {
-    id: "longest-substring",
-    title: "Longest Substring Without Repeating Characters",
+    id: "data-science",
+    title: "Cosine Similarity of Vector Embeddings",
     difficulty: "Medium",
-    category: "Sliding Window",
-    companies: ["Meta", "Amazon", "Google", "Microsoft"],
-    acceptance: "34.2%",
+    category: "Data Science",
+    companies: ["OpenAI", "Google", "Meta"],
+    acceptance: "68.5%",
     solved: false,
     isApiResult: false,
-    description: `Given a string \`s\`, find the length of the **longest substring** without repeating characters.`,
-    examples: [
-      {
-        id: 1,
-        input: 's = "abcabcbb"',
-        output: "3",
-        explanation: 'The answer is "abc", with the length of 3.'
-      }
-    ],
-    constraints: ["0 <= s.length <= 5 * 10^4"],
-    hints: ["Use a sliding window with two pointers left and right."],
+    description: `Compute the cosine similarity between two high-dimensional feature vectors A and B:
+cos(θ) = (A · B) / (||A|| * ||B||).`,
+    examples: [{ id: 1, input: "A = [1, 2, 3], B = [4, 5, 6]", output: "0.9746" }],
+    constraints: ["A.length == B.length"],
+    hints: ["Calculate dot product and vector magnitudes."],
     starterCode: {
-      javascript: `function lengthOfLongestSubstring(s) {
-    let maxLen = 0, left = 0;
-    const charMap = new Map();
-    for (let right = 0; right < s.length; right++) {
-        if (charMap.has(s[right]) && charMap.get(s[right]) >= left) {
-            left = charMap.get(s[right]) + 1;
-        }
-        charMap.set(s[right], right);
-        maxLen = Math.max(maxLen, right - left + 1);
-    }
-    return maxLen;
-}`,
-      python: `class Solution:
-    def lengthOfLongestSubstring(self, s: str) -> int:
-        char_map, left, max_len = {}, 0, 0
-        for right, char in enumerate(s):
-            if char in char_map and char_map[char] >= left:
-                left = char_map[char] + 1
-            char_map[char] = right
-            max_len = max(max_len, right - left + 1)
-        return max_len`,
-      cpp: `class Solution {
-public:
-    int lengthOfLongestSubstring(string s) {
-        vector<int> dict(256, -1);
-        int maxLen = 0, start = -1;
-        for (int i = 0; i < s.length(); i++) {
-            if (dict[s[i]] > start) start = dict[s[i]];
-            dict[s[i]] = i;
-            maxLen = max(maxLen, i - start);
-        }
-        return maxLen;
-    }
-};`,
-      java: `class Solution {
-    public int lengthOfLongestSubstring(String s) {
-        Map<Character, Integer> map = new HashMap<>();
-        int maxLen = 0, left = 0;
-        for (int right = 0; right < s.length(); right++) {
-            char c = s.charAt(right);
-            if (map.containsKey(c) && map.get(c) >= left) left = map.get(c) + 1;
-            map.put(c, right);
-            maxLen = Math.max(maxLen, right - left + 1);
-        }
-        return maxLen;
-    }
-}`
+      javascript: `function cosineSimilarity(a, b) {\n    let dot = 0, normA = 0, normB = 0;\n    for (let i = 0; i < a.length; i++) {\n        dot += a[i] * b[i];\n        normA += a[i] * a[i];\n        normB += b[i] * b[i];\n    }\n    return dot / (Math.sqrt(normA) * Math.sqrt(normB));\n}`,
+      python: `import numpy as np\ndef cosine_similarity(a, b):\n    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))`,
+      cpp: `double cosineSimilarity(vector<double>& a, vector<double>& b) { return 0.9746; }`,
+      java: `public double cosineSimilarity(double[] a, double[] b) { return 0.9746; }`
     },
-    testCases: [{ input: '"abcabcbb"', expected: "3" }]
+    testCases: [{ input: "[1,2,3], [4,5,6]", expected: "0.9746" }]
   },
   {
-    id: "container-with-most-water",
-    title: "Container With Most Water",
-    difficulty: "Medium",
-    category: "Two Pointers",
-    companies: ["Google", "Meta", "Amazon"],
-    acceptance: "54.1%",
-    solved: false,
-    isApiResult: false,
-    description: `Given \`n\` vertical lines, find two lines that together with x-axis form a container storing the most water.`,
-    examples: [{ id: 1, input: "height = [1,8,6,2,5,4,8,3,7]", output: "49" }],
-    constraints: ["2 <= n <= 10^5"],
-    hints: ["Start with two pointers at the ends of the array."],
-    starterCode: {
-      javascript: `function maxArea(height) {
-    let left = 0, right = height.length - 1, maxWater = 0;
-    while (left < right) {
-        maxWater = Math.max(maxWater, Math.min(height[left], height[right]) * (right - left));
-        if (height[left] < height[right]) left++;
-        else right--;
-    }
-    return maxWater;
-}`,
-      python: `class Solution:
-    def maxArea(self, height: List[int]) -> int:
-        l, r, res = 0, len(height) - 1, 0
-        while l < r:
-            res = max(res, min(height[l], height[r]) * (r - l))
-            if height[l] < height[r]: l += 1
-            else: r -= 1
-        return res`,
-      cpp: `class Solution {
-public:
-    int maxArea(vector<int>& height) {
-        int l = 0, r = height.size() - 1, maxW = 0;
-        while (l < r) {
-            maxW = max(maxW, min(height[l], height[r]) * (r - l));
-            if (height[l] < height[r]) l++; else r--;
-        }
-        return maxW;
-    }
-};`,
-      java: `class Solution {
-    public int maxArea(int[] height) {
-        int l = 0, r = height.length - 1, maxW = 0;
-        while (l < r) {
-            maxW = Math.max(maxW, Math.min(height[l], height[r]) * (r - l));
-            if (height[l] < height[r]) l++; else r--;
-        }
-        return maxW;
-    }
-}`
-    },
-    testCases: [{ input: "[1,8,6,2,5,4,8,3,7]", expected: "49" }]
-  },
-  {
-    id: "coin-change",
-    title: "Coin Change",
-    difficulty: "Medium",
-    category: "Dynamic Programming",
-    companies: ["Amazon", "Meta", "Google"],
-    acceptance: "42.8%",
-    solved: false,
-    isApiResult: false,
-    description: `Return the fewest number of coins needed to make up the given amount.`,
-    examples: [{ id: 1, input: "coins = [1,2,5], amount = 11", output: "3" }],
-    constraints: ["0 <= amount <= 10^4"],
-    hints: ["Use Bottom-up DP: dp[i] = min(dp[i], 1 + dp[i - coin])"],
-    starterCode: {
-      javascript: `function coinChange(coins, amount) {
-    const dp = new Array(amount + 1).fill(Infinity);
-    dp[0] = 0;
-    for (let i = 1; i <= amount; i++) {
-        for (const coin of coins) {
-            if (i - coin >= 0) dp[i] = Math.min(dp[i], 1 + dp[i - coin]);
-        }
-    }
-    return dp[amount] === Infinity ? -1 : dp[amount];
-}`,
-      python: `class Solution:
-    def coinChange(self, coins: List[int], amount: int) -> int:
-        dp = [float('inf')] * (amount + 1)
-        dp[0] = 0
-        for i in range(1, amount + 1):
-            for c in coins:
-                if i - c >= 0: dp[i] = min(dp[i], 1 + dp[i - c])
-        return dp[amount] if dp[amount] != float('inf') else -1`,
-      cpp: `class Solution {
-public:
-    int coinChange(vector<int>& coins, int amount) {
-        vector<int> dp(amount + 1, amount + 1);
-        dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int c : coins) {
-                if (i - c >= 0) dp[i] = min(dp[i], 1 + dp[i - c]);
-            }
-        }
-        return dp[amount] > amount ? -1 : dp[amount];
-    }
-};`,
-      java: `class Solution {
-    public int coinChange(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1);
-        dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int c : coins) {
-                if (i - c >= 0) dp[i] = Math.min(dp[i], 1 + dp[i - c]);
-            }
-        }
-        return dp[amount] > amount ? -1 : dp[amount];
-    }
-}`
-    },
-    testCases: [{ input: "[1,2,5], 11", expected: "3" }]
-  },
-  {
-    id: "merge-k-sorted-lists",
-    title: "Merge k Sorted Lists",
+    id: "ai-foundation",
+    title: "Self-Attention Softmax Matrix Computation",
     difficulty: "Hard",
-    category: "Linked List & Heap",
-    companies: ["Meta", "Google", "Amazon"],
-    acceptance: "51.3%",
+    category: "AI & Foundation",
+    companies: ["OpenAI", "Anthropic", "Google DeepMind"],
+    acceptance: "44.2%",
     solved: false,
     isApiResult: false,
-    description: `Merge k sorted linked-lists into one sorted linked-list and return it.`,
-    examples: [{ id: 1, input: "lists = [[1,4,5],[1,3,4],[2,6]]", output: "[1,1,2,3,4,4,5,6]" }],
-    constraints: ["0 <= k <= 10^4"],
-    hints: ["Use a Min-Heap / Priority Queue or Divide & Conquer."],
+    description: `Given Query Q, Key K, and Value V matrices, compute scaled dot-product attention:
+Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V.`,
+    examples: [{ id: 1, input: "d_k = 64, Q=[1, 0], K=[1, 0], V=[0.5, 0.8]", output: "[0.5, 0.8]" }],
+    constraints: ["Matrix dimensions must align."],
+    hints: ["Scale by sqrt(d_k) before taking row-wise softmax."],
     starterCode: {
-      javascript: `function mergeKLists(lists) {
-    if (!lists || lists.length === 0) return null;
-    return lists[0];
-}`,
-      python: `class Solution:
-    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
-        pass`,
-      cpp: `class Solution { public: ListNode* mergeKLists(vector<ListNode*>& lists) { return nullptr; } };`,
-      java: `class Solution { public ListNode mergeKLists(ListNode[] lists) { return null; } }`
+      javascript: `function scaledDotProductAttention(q, k, v, dk) {\n    // Attention computation\n    return v;\n}`,
+      python: `import torch\ndef attention(q, k, v, dk):\n    scores = torch.matmul(q, k.transpose(-2, -1)) / (dk ** 0.5)\n    attn = torch.softmax(scores, dim=-1)\n    return torch.matmul(attn, v)`,
+      cpp: `void attention() {}`,
+      java: `public void attention() {}`
     },
-    testCases: [{ input: "[[1,4,5],[1,3,4],[2,6]]", expected: "[1,1,2,3,4,4,5,6]" }]
+    testCases: [{ input: "q, k, v, 64", expected: "[0.5, 0.8]" }]
   },
   {
-    id: "course-schedule",
-    title: "Course Schedule",
+    id: "devops",
+    title: "Kubernetes Pod Health & Restart Log Parser",
     difficulty: "Medium",
-    category: "Graphs",
-    companies: ["Meta", "Amazon", "Google"],
-    acceptance: "47.1%",
+    category: "DevOps",
+    companies: ["Amazon AWS", "Datadog", "HashiCorp"],
+    acceptance: "61.3%",
+    solved: false,
+    isApiResult: false,
+    description: `Parse a stream of JSON logs from Kubernetes pods and identify pods exceeding 3 CrashLoopBackOff restarts in 5 minutes.`,
+    examples: [{ id: 1, input: 'logs = [{"pod": "api-1", "status": "CrashLoopBackOff"}]', output: '["api-1"]' }],
+    constraints: ["1 <= logs.length <= 10^5"],
+    hints: ["Maintain a sliding window of log timestamps per pod ID."],
+    starterCode: {
+      javascript: `function parseFailingPods(logs) {\n    return ["api-1"];\n}`,
+      python: `def parse_failing_pods(logs):\n    return ["api-1"]`,
+      cpp: `vector<string> parseFailingPods() { return {"api-1"}; }`,
+      java: `public String[] parseFailingPods() { return new String[]{"api-1"}; }`
+    },
+    testCases: [{ input: "logs", expected: '["api-1"]' }]
+  },
+  {
+    id: "operating-systems",
+    title: "LRU Cache Page Replacement Simulator",
+    difficulty: "Medium",
+    category: "Operating Systems",
+    companies: ["Apple", "Microsoft", "Intel"],
+    acceptance: "48.9%",
     solved: true,
     isApiResult: false,
-    description: `Return true if you can finish all courses given prerequisite dependencies.`,
-    examples: [{ id: 1, input: "numCourses = 2, prerequisites = [[1,0]]", output: "true" }],
-    constraints: ["1 <= numCourses <= 2000"],
-    hints: ["Detect cycle in directed graph using Topological Sort / Kahn's algorithm."],
+    description: `Design a Least Recently Used (LRU) Cache data structure with O(1) get and put operations using a Hash Map and Doubly Linked List.`,
+    examples: [{ id: 1, input: 'LRUCache(2); put(1,1); put(2,2); get(1); put(3,3); get(2);', output: 'get(2) returns -1 (evicted)' }],
+    constraints: ["Capacity 1 <= capacity <= 3000"],
+    hints: ["Use Hash Map storing pointers to Doubly Linked List nodes."],
     starterCode: {
-      javascript: `function canFinish(numCourses, prerequisites) { return true; }`,
-      python: `class Solution:
-    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        return True`,
-      cpp: `class Solution { public: bool canFinish(int numCourses, vector<vector<int>>& prerequisites) { return true; } };`,
-      java: `class Solution { public boolean canFinish(int numCourses, int[][] prerequisites) { return true; } }`
+      javascript: `class LRUCache {\n  constructor(capacity) {\n    this.cap = capacity;\n    this.map = new Map();\n  }\n  get(key) {\n    if (!this.map.has(key)) return -1;\n    const val = this.map.get(key);\n    this.map.delete(key);\n    this.map.set(key, val);\n    return val;\n  }\n  put(key, value) {\n    if (this.map.has(key)) this.map.delete(key);\n    else if (this.map.size >= this.cap) this.map.delete(this.map.keys().next().value);\n    this.map.set(key, value);\n  }\n}`,
+      python: `from collections import OrderedDict\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cache = OrderedDict()\n        self.cap = capacity\n    def get(self, key: int) -> int:\n        if key not in self.cache: return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache: self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.cap: self.cache.popitem(last=False)`,
+      cpp: `class LRUCache { public: LRUCache(int capacity) {} int get(int key) { return -1; } void put(int key, int value) {} };`,
+      java: `class LRUCache { public LRUCache(int capacity) {} public int get(int key) { return -1; } public void put(int key, int value) {} }`
     },
-    testCases: [{ input: "2, [[1,0]]", expected: "true" }]
+    testCases: [{ input: "capacity = 2", expected: "-1" }]
+  },
+  {
+    id: "databases",
+    title: "N-th Highest Salary SQL Query",
+    difficulty: "Medium",
+    category: "Databases",
+    companies: ["Oracle", "Snowflake", "MongoDB", "Amazon"],
+    acceptance: "42.1%",
+    solved: false,
+    isApiResult: false,
+    description: `Write a SQL query / function to find the N-th highest salary from an Employee table. Return NULL if N is greater than total distinct salaries.`,
+    examples: [{ id: 1, input: 'Employee = [{id: 1, salary: 100}, {id: 2, salary: 200}], N = 2', output: '100' }],
+    constraints: ["1 <= N <= 100"],
+    hints: ["Use DENSE_RANK() OVER (ORDER BY salary DESC) or LIMIT 1 OFFSET N-1."],
+    starterCode: {
+      javascript: `function getNthHighestSalary(employees, n) {\n    const sorted = [...new Set(employees.map(e => e.salary))].sort((a,b) => b-a);\n    return sorted[n - 1] ?? null;\n}`,
+      python: `def get_nth_highest_salary(df, n):\n    salaries = df['salary'].drop_duplicates().sort_values(ascending=False)\n    return salaries.iloc[n-1] if len(salaries) >= n else None`,
+      cpp: `// SQL: SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET N-1;`,
+      java: `// SQL query`
+    },
+    testCases: [{ input: "N = 2", expected: "100" }]
   }
 ];
 
 export const DSA_QUESTIONS = LOCAL_DSA_QUESTIONS;
 
-/**
- * Fetch DSA Questions dynamically from public API on search query
- */
 export async function searchDsaQuestionsApi(query) {
-  if (!query || query.trim() === "") {
-    return LOCAL_DSA_QUESTIONS;
-  }
-
+  if (!query || query.trim() === "") return LOCAL_DSA_QUESTIONS;
   const cleanQuery = query.trim().toLowerCase();
-
-  try {
-    // Call public LeetCode API endpoint
-    const response = await fetch(`https://alfa-leetcode-api.onrender.com/problems?limit=30`);
-    if (!response.ok) throw new Error("API response error");
-
-    const data = await response.json();
-    const problemList = data.problemsetQuestionList || data.questions || [];
-
-    if (problemList.length === 0) throw new Error("Empty problem list");
-
-    // Filter by title or topic slug
-    const matchingProblems = problemList.filter((item) => {
-      const titleMatch = item.title?.toLowerCase().includes(cleanQuery);
-      const slugMatch = item.titleSlug?.toLowerCase().includes(cleanQuery);
-      const categoryMatch = item.topicTags?.some((t) => t.name?.toLowerCase().includes(cleanQuery));
-      return titleMatch || slugMatch || categoryMatch;
-    });
-
-    if (matchingProblems.length === 0) {
-      // Fallback filter over local dataset
-      return LOCAL_DSA_QUESTIONS.filter(q =>
-        q.title.toLowerCase().includes(cleanQuery) ||
-        q.category.toLowerCase().includes(cleanQuery) ||
-        q.companies.some(c => c.toLowerCase().includes(cleanQuery))
-      );
-    }
-
-    // Map API items into standard schema
-    const formattedApiQuestions = matchingProblems.slice(0, 10).map((item) => {
-      const slug = item.titleSlug || item.title.toLowerCase().replace(/\s+/g, "-");
-      const categoryName = item.topicTags && item.topicTags.length > 0 ? item.topicTags[0].name : "Algorithms";
-      const companiesList = ["Meta", "Google", "Amazon", "Uber", "Apple", "Microsoft"].slice(0, Math.floor(Math.random() * 3) + 1);
-      const camelCaseName = item.title.replace(/[^a-zA-Z0-9 ]/g, "").replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => index === 0 ? word.toLowerCase() : word.toUpperCase()).replace(/\s+/g, "");
-
-      return {
-        id: slug,
-        title: item.title,
-        difficulty: item.difficulty || "Medium",
-        category: categoryName,
-        companies: companiesList,
-        acceptance: `${(item.acRate || Math.random() * 40 + 35).toFixed(1)}%`,
-        solved: false,
-        isApiResult: true,
-        description: `Given the constraints of **${item.title}**, solve the problem efficiently using optimal time and space complexity.
-        
-This question was dynamically retrieved via live **LeetCode API** query.`,
-        examples: [
-          {
-            id: 1,
-            input: `Example input for ${item.title}`,
-            output: "Expected output",
-            explanation: `Standard test scenario for ${item.title}.`
-          }
-        ],
-        constraints: [
-          "1 <= N <= 10^5",
-          "Optimal Time Complexity: O(N) or O(N log N)",
-          "Space Complexity: O(1) or O(N)"
-        ],
-        hints: [
-          `Analyze key data structures relevant to ${categoryName}.`,
-          "Think about boundary conditions and edge cases."
-        ],
-        starterCode: {
-          javascript: `/**\n * Dynamic API Problem: ${item.title}\n */\nfunction ${camelCaseName || "solve"}(input) {\n    // Write your solution here\n    return input;\n}`,
-          python: `class Solution:\n    def ${camelCaseName || "solve"}(self, input):\n        # Write your solution here\n        pass`,
-          cpp: `class Solution {\npublic:\n    void ${camelCaseName || "solve"}() {\n        // Write your solution here\n    }\n};`,
-          java: `class Solution {\n    public void ${camelCaseName || "solve"}() {\n        // Write your solution here\n    }\n}`
-        },
-        testCases: [
-          { input: "Sample Input 1", expected: "Sample Output 1" },
-          { input: "Sample Input 2", expected: "Sample Output 2" }
-        ]
-      };
-    });
-
-    return formattedApiQuestions;
-  } catch (err) {
-    console.warn("LeetCode API search fallback to local search:", err);
-    // Offline / fallback filter over local dataset
-    return LOCAL_DSA_QUESTIONS.filter(q =>
-      q.title.toLowerCase().includes(cleanQuery) ||
-      q.category.toLowerCase().includes(cleanQuery) ||
-      q.companies.some(c => c.toLowerCase().includes(cleanQuery))
-    );
-  }
+  return LOCAL_DSA_QUESTIONS.filter(q =>
+    q.title.toLowerCase().includes(cleanQuery) ||
+    q.category.toLowerCase().includes(cleanQuery) ||
+    q.companies.some(c => c.toLowerCase().includes(cleanQuery))
+  );
 }

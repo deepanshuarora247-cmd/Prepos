@@ -7,6 +7,7 @@ import {
   FileText,
   Flame,
   ChevronRight,
+  ChevronDown,
   Clock,
   Play,
   CheckCircle2,
@@ -351,9 +352,11 @@ function QuestionTerminal({ onSolveNow }) {
 export default function InterviewPrepDashboard() {
   const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "jobs"
   const [initialQuestionId, setInitialQuestionId] = useState(null);
+  const [initialCategory, setInitialCategory] = useState("All");
 
-  const handleOpenDsa = (qId = null) => {
+  const handleOpenDsa = (qId = null, category = "All") => {
     setInitialQuestionId(qId);
+    setInitialCategory(category);
     setActiveView("dsa");
   };
 
@@ -362,6 +365,7 @@ export default function InterviewPrepDashboard() {
       <DsaSandboxView
         onBackToDashboard={() => setActiveView("dashboard")}
         initialQuestionId={initialQuestionId}
+        initialCategory={initialCategory}
       />
     );
   }
@@ -435,30 +439,107 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Categories Nav (Updated as requested) */}
-        <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-x-auto hide-scrollbar">
+        {/* Categories Nav with Hover Unordered List on Practice */}
+        <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-visible hide-scrollbar relative">
           {[
             { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
             { id: "courses", label: "Courses", action: () => setActiveView("courses") },
             { id: "tutorials", label: "Tutorials", action: () => setActiveView("tutorials") },
-            { id: "dsa", label: "Practice", action: () => handleOpenDsa(null) },
+            { id: "dsa", label: "Practice", action: () => handleOpenDsa(null, "All") },
             { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
             { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
           ].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={cat.action}
-              className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
-                activeView === cat.id
-                  ? "text-slate-100"
-                  : "text-neutral-400 hover:text-slate-200"
-              }`}
-            >
-              {cat.label}
-              {activeView === cat.id && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-              )}
-            </button>
+            cat.id === "dsa" ? (
+              <div key={cat.id} className="relative group pb-4">
+                <button
+                  onClick={cat.action}
+                  className={`flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
+                    activeView === "dsa"
+                      ? "text-slate-100"
+                      : "text-neutral-400 hover:text-slate-200"
+                  }`}
+                >
+                  <span>{cat.label}</span>
+                  <ChevronDown className="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" />
+                </button>
+                {activeView === "dsa" && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                )}
+
+                {/* Hover Unordered List Dropdown */}
+                <ul className="absolute left-0 top-full mt-0 w-60 rounded-2xl border border-white/10 bg-[#0d1222]/95 backdrop-blur-xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.8)] z-50 divide-y divide-white/5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "DSA")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-cyan-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>DSA</span>
+                      <span className="text-[10px] text-cyan-400 font-mono bg-cyan-500/10 px-1.5 py-0.5 rounded border border-cyan-500/20">Drills</span>
+                    </button>
+                  </li>
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "Data Science")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-indigo-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>Data Science</span>
+                      <span className="text-[10px] text-indigo-400 font-mono bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">AI/ML</span>
+                    </button>
+                  </li>
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "AI & Foundation")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-purple-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>AI & Foundation</span>
+                      <span className="text-[10px] text-purple-400 font-mono bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">LLMs</span>
+                    </button>
+                  </li>
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "DevOps")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-emerald-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>DevOps</span>
+                      <span className="text-[10px] text-emerald-400 font-mono bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">K8s</span>
+                    </button>
+                  </li>
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "Operating Systems")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-amber-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>Operating Systems</span>
+                      <span className="text-[10px] text-amber-400 font-mono bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">Kernel</span>
+                    </button>
+                  </li>
+                  <li className="list-none">
+                    <button
+                      onClick={() => handleOpenDsa(null, "Databases")}
+                      className="w-full text-left px-3.5 py-2.5 text-xs font-medium text-slate-200 hover:text-rose-300 hover:bg-white/5 rounded-xl transition-colors flex items-center justify-between"
+                    >
+                      <span>Databases</span>
+                      <span className="text-[10px] text-rose-400 font-mono bg-rose-500/10 px-1.5 py-0.5 rounded border border-rose-500/20">SQL</span>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            ) : (
+              <button
+                key={cat.id}
+                onClick={cat.action}
+                className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
+                  activeView === cat.id
+                    ? "text-slate-100"
+                    : "text-neutral-400 hover:text-slate-200"
+                }`}
+              >
+                {cat.label}
+                {activeView === cat.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                )}
+              </button>
+            )
           ))}
         </nav>
 
@@ -475,7 +556,7 @@ export default function InterviewPrepDashboard() {
               <span className="text-white/90 font-medium">2h 14m</span>.
             </p>
             <button
-              onClick={() => handleOpenDsa(null)}
+              onClick={() => handleOpenDsa(null, "All")}
               className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-4 py-2.5 rounded-xl shadow-[0_0_24px_-6px_rgba(99,102,241,0.8)]"
             >
               Resume prep plan
@@ -504,7 +585,7 @@ export default function InterviewPrepDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-semibold text-white/90 tracking-tight">Prep modules</h2>
                 <button
-                  onClick={() => handleOpenDsa(null)}
+                  onClick={() => handleOpenDsa(null, "All")}
                   className="text-xs text-neutral-500 hover:text-slate-100 transition-colors flex items-center gap-1"
                 >
                   View all <ChevronRight className="h-3 w-3" />
@@ -526,7 +607,7 @@ export default function InterviewPrepDashboard() {
                 <h2 className="text-sm font-semibold text-white/90 tracking-tight">Question of the day</h2>
                 <span className="text-xs text-neutral-500">Refreshes in 6h 42m</span>
               </div>
-              <QuestionTerminal onSolveNow={() => handleOpenDsa("longest-substring")} />
+              <QuestionTerminal onSolveNow={() => handleOpenDsa("longest-substring", "All")} />
             </div>
           </div>
 

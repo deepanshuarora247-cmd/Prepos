@@ -22,13 +22,13 @@ import {
 } from "lucide-react";
 import { LOCAL_DSA_QUESTIONS, searchDsaQuestionsApi } from "./dsaQuestions.js";
 
-export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = null }) {
+export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = null, initialCategory = "All" }) {
   const [questions, setQuestions] = useState(LOCAL_DSA_QUESTIONS);
   const [selectedQuestionId, setSelectedQuestionId] = useState(initialQuestionId);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState("All");
-  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [activeTab, setActiveTab] = useState("description"); // description | hints
   const [consoleTab, setConsoleTab] = useState("testcases"); // testcases | output
@@ -133,7 +133,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
     }, 600);
   };
 
-  const categories = ["All", "Arrays & Hashing", "Sliding Window", "Two Pointers", "Dynamic Programming", "Graphs", "Linked List & Heap"];
+  const categories = ["All", "DSA", "Data Science", "AI & Foundation", "DevOps", "Operating Systems", "Databases"];
 
   return (
     <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative">
