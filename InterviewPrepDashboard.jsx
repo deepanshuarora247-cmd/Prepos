@@ -21,12 +21,9 @@ import {
   Database,
   Cpu,
   Server,
-  TrendingUp,
-  Target,
-  Award,
-  Activity,
-  Building2,
-  Check
+  Trophy,
+  Medal,
+  Calendar
 } from "lucide-react";
 import DsaSandboxView from "./DsaSandboxView.jsx";
 import SystemDesignView from "./SystemDesignView.jsx";
@@ -36,6 +33,8 @@ import CoursesView from "./CoursesView.jsx";
 import TutorialsView from "./TutorialsView.jsx";
 import AptitudeView from "./AptitudeView.jsx";
 import JobsView from "./JobsView.jsx";
+import LeaderboardView from "./LeaderboardView.jsx";
+import PrepPlanSchedulerModal from "./PrepPlanSchedulerModal.jsx";
 
 // ---------------------------------------------------------------------------
 // Module Cards Data
@@ -136,39 +135,33 @@ const AGENDA = [
   },
 ];
 
-const TARGET_COMPANIES = [
-  { name: "Meta", match: "86%", status: "On Track", color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
-  { name: "Google", match: "79%", status: "Needs DP Practice", color: "text-amber-400 bg-amber-500/10 border-amber-500/20" },
-  { name: "Amazon", match: "92%", status: "High Readiness", color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" }
-];
-
 // ---------------------------------------------------------------------------
 // Helper Components
 // ---------------------------------------------------------------------------
 
 function StreakRing({ value, goal }) {
-  const radius = 34;
+  const radius = 36;
   const circumference = 2 * Math.PI * radius;
   const progress = Math.min(value / goal, 1);
   const strokeDashoffset = circumference - progress * circumference;
 
   return (
-    <div className="relative flex items-center justify-center shrink-0">
-      <svg className="h-20 w-20 -rotate-90 transform">
+    <div className="relative flex items-center justify-center">
+      <svg className="h-24 w-24 -rotate-90 transform">
         <circle
-          cx="40"
-          cy="40"
+          cx="48"
+          cy="48"
           r={radius}
           className="stroke-white/10"
-          strokeWidth="5"
+          strokeWidth="6"
           fill="transparent"
         />
         <circle
-          cx="40"
-          cy="40"
+          cx="48"
+          cy="48"
           r={radius}
           className="stroke-cyan-400 transition-all duration-1000 ease-out"
-          strokeWidth="5"
+          strokeWidth="6"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
@@ -176,8 +169,8 @@ function StreakRing({ value, goal }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center justify-center text-center">
-        <span className="text-xl font-bold text-slate-100 tabular-nums leading-none">{value}</span>
-        <span className="text-[9px] uppercase tracking-wider text-neutral-500 mt-0.5">days</span>
+        <span className="text-2xl font-bold text-slate-100 tabular-nums leading-none">{value}</span>
+        <span className="text-[10px] uppercase tracking-wider text-neutral-500 mt-1">day streak</span>
       </div>
     </div>
   );
@@ -188,7 +181,7 @@ function ModuleCard({ mod, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`group relative text-left rounded-2xl border border-white/10 bg-gradient-to-br ${mod.gradient} bg-slate-900/60 backdrop-blur-md p-5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-white/20 ${mod.glow}`}
+      className={`group relative text-left rounded-2xl border border-white/10 bg-gradient-to-br ${mod.gradient} bg-slate-900/50 backdrop-blur-md p-5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-white/20 ${mod.glow}`}
     >
       <div
         className={`pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full blur-3xl opacity-30 bg-${mod.accent}-500`}
@@ -200,8 +193,8 @@ function ModuleCard({ mod, onClick }) {
         >
           <Icon className={`h-5 w-5 ${mod.iconColor} transition-all duration-300 group-hover:drop-shadow-[0_0_6px_currentColor]`} />
         </div>
-        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${mod.badgeColor}`}>
-          {mod.completion}% Completed
+        <span className={`text-[11px] font-medium px-2 py-1 rounded-full border ${mod.badgeColor}`}>
+          {mod.completion}%
         </span>
       </div>
 
@@ -216,18 +209,18 @@ function ModuleCard({ mod, onClick }) {
       </div>
 
       <div className="relative mt-3 flex items-center justify-between">
-        <span className="text-[11px] text-neutral-400 font-medium">{mod.stat}</span>
-        <ArrowUpRight className="h-3.5 w-3.5 text-neutral-400 transition-all duration-300 group-hover:text-slate-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        <span className="text-[11px] text-neutral-500">{mod.stat}</span>
+        <ArrowUpRight className="h-3.5 w-3.5 text-neutral-500 transition-all duration-300 group-hover:text-slate-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       </div>
     </button>
   );
 }
 
-function AgendaItem({ item, isLast, onToggleDone }) {
+function AgendaItem({ item, isLast }) {
   return (
-    <div className="relative flex gap-3 pb-4 last:pb-0">
+    <div className="relative flex gap-3 pb-5 last:pb-0">
       {!isLast && (
-        <span className="absolute left-[15px] top-7 bottom-0 w-px bg-gradient-to-b from-white/10 to-transparent" />
+        <span className="absolute left-[15px] top-8 bottom-0 w-px bg-gradient-to-b from-white/10 to-transparent" />
       )}
       <div
         className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white ${item.avatarColor} ring-4 ring-[#0a0e1a]`}
@@ -241,23 +234,21 @@ function AgendaItem({ item, isLast, onToggleDone }) {
 
       <div className="flex-1 min-w-0 pt-0.5">
         <div className="flex items-center justify-between gap-2">
-          <p className={`text-xs font-semibold truncate ${item.done ? "text-neutral-500 line-through" : "text-white/90"}`}>
+          <p className={`text-sm font-medium truncate ${item.done ? "text-neutral-500 line-through" : "text-white/90"}`}>
             {item.title}
           </p>
-          <button onClick={onToggleDone} className="shrink-0">
-            {item.done ? (
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            ) : (
-              <Circle className="h-4 w-4 text-neutral-700 hover:text-neutral-500 transition-colors" />
-            )}
-          </button>
+          {item.done ? (
+            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+          ) : (
+            <Circle className="h-4 w-4 text-neutral-700 shrink-0" />
+          )}
         </div>
-        <div className="mt-1 flex items-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1 text-[10px] text-neutral-500">
+        <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1 text-[11px] text-neutral-500">
             <Clock className="h-3 w-3" />
             {item.day} · {item.time}
           </span>
-          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded border ${item.typeColor}`}>
+          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${item.typeColor}`}>
             {item.type}
           </span>
         </div>
@@ -368,21 +359,15 @@ function QuestionTerminal({ onSolveNow }) {
 // ---------------------------------------------------------------------------
 
 export default function InterviewPrepDashboard() {
-  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "jobs"
+  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "leaderboard" | "jobs"
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
-  const [agendaItems, setAgendaItems] = useState(AGENDA);
+  const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
 
   const handleOpenDsa = (qId = null, category = "All") => {
     setInitialQuestionId(qId);
     setInitialCategory(category);
     setActiveView("dsa");
-  };
-
-  const handleToggleAgendaDone = (id) => {
-    setAgendaItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, done: !item.done } : item))
-    );
   };
 
   if (activeView === "dsa") {
@@ -419,12 +404,23 @@ export default function InterviewPrepDashboard() {
     return <AptitudeView onBackToDashboard={() => setActiveView("dashboard")} />;
   }
 
+  if (activeView === "leaderboard") {
+    return <LeaderboardView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
   if (activeView === "jobs") {
     return <JobsView onBackToDashboard={() => setActiveView("dashboard")} />;
   }
 
   return (
     <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative overflow-hidden">
+      {/* Scheduler Modal */}
+      <PrepPlanSchedulerModal
+        isOpen={isSchedulerOpen}
+        onClose={() => setIsSchedulerOpen(false)}
+        onStartPractice={() => handleOpenDsa(null, "All")}
+      />
+
       {/* signature accent hairline */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
       {/* ambient background glows */}
@@ -434,7 +430,7 @@ export default function InterviewPrepDashboard() {
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-8">
         {/* Top nav */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => setActiveView("dashboard")}>
             <svg viewBox="0 0 58 34" className="h-9 w-auto">
               <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
@@ -464,7 +460,7 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Categories Nav with Minimal Hover Unordered List on COURSES */}
+        {/* Categories Nav with Minimal Professional Hover Unordered List on COURSES */}
         <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-visible hide-scrollbar relative">
           {[
             { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
@@ -472,6 +468,7 @@ export default function InterviewPrepDashboard() {
             { id: "tutorials", label: "Tutorials", action: () => setActiveView("tutorials") },
             { id: "dsa", label: "Practice", action: () => handleOpenDsa(null, "All") },
             { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
+            { id: "leaderboard", label: "Leaderboard", action: () => setActiveView("leaderboard") },
             { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
           ].map((cat) => (
             cat.id === "courses" ? (
@@ -539,58 +536,6 @@ export default function InterviewPrepDashboard() {
           ))}
         </nav>
 
-        {/* Executive Key Metrics Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-5 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Readiness Score</span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-white">78</span>
-                <span className="text-xs font-semibold text-emerald-400 flex items-center gap-0.5">
-                  <TrendingUp className="h-3 w-3" /> +6 pts
-                </span>
-              </div>
-              <p className="text-[11px] text-neutral-400 mt-1">FAANG Technical Benchmark</p>
-            </div>
-            <Activity className="h-8 w-8 text-cyan-400/80 shrink-0" />
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-5 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Practice Streak</span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-white">12</span>
-                <span className="text-xs text-orange-400 font-medium">Days</span>
-              </div>
-              <p className="text-[11px] text-neutral-400 mt-1">18 days to next badge</p>
-            </div>
-            <Flame className="h-8 w-8 text-orange-400/80 shrink-0" />
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-5 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Problems Solved</span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-white">142</span>
-                <span className="text-xs text-neutral-500">/ 500</span>
-              </div>
-              <p className="text-[11px] text-indigo-400 mt-1">68 Easy • 54 Med • 20 Hard</p>
-            </div>
-            <Code2 className="h-8 w-8 text-indigo-400/80 shrink-0" />
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-5 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Mock Interview Pass Rate</span>
-              <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-bold text-emerald-400">91.4%</span>
-              </div>
-              <p className="text-[11px] text-neutral-400 mt-1">22 Sessions Completed</p>
-            </div>
-            <Award className="h-8 w-8 text-emerald-400/80 shrink-0" />
-          </div>
-        </div>
-
         {/* Hero */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-7 lg:p-8 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/[0.06] via-transparent to-transparent" />
@@ -603,29 +548,22 @@ export default function InterviewPrepDashboard() {
               You're 3 sessions from your best week yet. Your next mock interview starts in{" "}
               <span className="text-white/90 font-medium">2h 14m</span>.
             </p>
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => handleOpenDsa(null, "All")}
-                className="inline-flex items-center gap-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-4 py-2.5 rounded-xl shadow-[0_0_24px_-6px_rgba(99,102,241,0.8)]"
-              >
-                Resume prep plan
-                <ChevronRight className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setActiveView("sysdesign")}
-                className="inline-flex items-center gap-2 text-sm font-medium text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 transition-colors px-4 py-2.5 rounded-xl"
-              >
-                System Design Studio
-              </button>
-            </div>
+            <button
+              onClick={() => setIsSchedulerOpen(true)}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-4 py-2.5 rounded-xl shadow-[0_0_24px_-6px_rgba(99,102,241,0.8)]"
+            >
+              <Calendar className="h-4 w-4" />
+              Resume prep plan & schedule
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
 
           <div className="relative flex items-center gap-6 rounded-2xl border border-white/10 bg-black/30 px-6 py-5">
             <StreakRing value={12} goal={30} />
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               <p className="text-sm font-semibold text-white/90">Daily Interview Streak</p>
-              <p className="text-xs text-neutral-400 max-w-[160px]">18 days to your next milestone badge</p>
-              <div className="flex items-center gap-1.5 text-xs text-cyan-300 font-medium mt-1">
+              <p className="text-xs text-neutral-500 max-w-[160px]">18 days to your next milestone badge</p>
+              <div className="flex items-center gap-1.5 text-xs text-cyan-300 font-medium">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_1px_rgba(34,211,238,0.8)]" />
                 On track — keep it lit
               </div>
@@ -669,43 +607,37 @@ export default function InterviewPrepDashboard() {
 
           {/* Right Column */}
           <div className="flex flex-col gap-6">
-            {/* Upcoming Agenda Widget */}
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-5">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-5">
                 <h2 className="text-sm font-semibold text-white/90 tracking-tight">Upcoming agenda</h2>
                 <span className="text-[11px] text-neutral-500 px-2 py-0.5 rounded-full border border-white/10">
-                  {agendaItems.length} items
+                  {AGENDA.length} items
                 </span>
               </div>
               <div>
-                {agendaItems.map((item, i) => (
-                  <AgendaItem
-                    key={item.id}
-                    item={item}
-                    isLast={i === agendaItems.length - 1}
-                    onToggleDone={() => handleToggleAgendaDone(item.id)}
-                  />
+                {AGENDA.map((item, i) => (
+                  <AgendaItem key={item.id} item={item} isLast={i === AGENDA.length - 1} />
                 ))}
               </div>
+              <button className="mt-2 w-full text-center text-xs font-medium text-indigo-300 hover:text-indigo-200 transition-colors py-2 rounded-lg border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5">
+                View full calendar
+              </button>
             </div>
 
-            {/* Target Company Alignment Widget */}
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-5 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-white/90 tracking-tight flex items-center gap-1.5">
-                  <Building2 className="h-4 w-4 text-cyan-400" /> Target Company Match
-                </h2>
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/[0.02] to-transparent backdrop-blur-md p-5">
+              <p className="text-xs font-medium text-emerald-300 uppercase tracking-wide mb-2">Readiness score</p>
+              <div className="flex items-end gap-2 mb-1">
+                <span className="text-3xl font-bold text-slate-100">78</span>
+                <span className="text-sm text-neutral-500 mb-1">/ 100</span>
               </div>
-              <div className="space-y-3">
-                {TARGET_COMPANIES.map((comp) => (
-                  <div key={comp.name} className="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.02] border border-white/5">
-                    <div>
-                      <p className="text-xs font-semibold text-white">{comp.name}</p>
-                      <span className="text-[10px] text-neutral-400">{comp.status}</span>
-                    </div>
-                    <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${comp.color}`}>
-                      {comp.match}
-                    </span>
+              <p className="text-xs text-neutral-400 mb-4">Up 6 pts since last week</p>
+              <div className="flex gap-1">
+                {[62, 70, 65, 74, 71, 78, 78].map((v, i) => (
+                  <div key={i} className="flex-1 h-8 rounded-sm bg-white/5 relative overflow-hidden">
+                    <div
+                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-emerald-500 to-emerald-300/70 rounded-sm"
+                      style={{ height: `${v}%` }}
+                    />
                   </div>
                 ))}
               </div>
