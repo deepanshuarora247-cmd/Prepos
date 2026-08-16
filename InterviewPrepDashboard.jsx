@@ -21,6 +21,10 @@ import DsaSandboxView from "./DsaSandboxView.jsx";
 import SystemDesignView from "./SystemDesignView.jsx";
 import BehavioralMockView from "./BehavioralMockView.jsx";
 import ResumeGraderView from "./ResumeGraderView.jsx";
+import CoursesView from "./CoursesView.jsx";
+import TutorialsView from "./TutorialsView.jsx";
+import AptitudeView from "./AptitudeView.jsx";
+import JobsView from "./JobsView.jsx";
 
 // ---------------------------------------------------------------------------
 // Module Cards Data
@@ -29,7 +33,7 @@ import ResumeGraderView from "./ResumeGraderView.jsx";
 const MODULES = [
   {
     id: "dsa",
-    title: "DSA Sandbox",
+    title: "DSA Sandbox & Practice",
     subtitle: "Arrays, Graphs & DP drills",
     icon: Code2,
     completion: 68,
@@ -43,7 +47,7 @@ const MODULES = [
   },
   {
     id: "sysdesign",
-    title: "System Design",
+    title: "System Design Studio",
     subtitle: "Scalability & architecture",
     icon: Network,
     completion: 42,
@@ -71,7 +75,7 @@ const MODULES = [
   },
   {
     id: "resume",
-    title: "Resume Grader",
+    title: "Resume Grader & ATS",
     subtitle: "ATS scoring & rewrite tips",
     icon: FileText,
     completion: 30,
@@ -345,7 +349,7 @@ function QuestionTerminal({ onSolveNow }) {
 // ---------------------------------------------------------------------------
 
 export default function InterviewPrepDashboard() {
-  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume"
+  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "jobs"
   const [initialQuestionId, setInitialQuestionId] = useState(null);
 
   const handleOpenDsa = (qId = null) => {
@@ -374,6 +378,22 @@ export default function InterviewPrepDashboard() {
     return <ResumeGraderView onBackToDashboard={() => setActiveView("dashboard")} />;
   }
 
+  if (activeView === "courses") {
+    return <CoursesView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
+  if (activeView === "tutorials") {
+    return <TutorialsView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
+  if (activeView === "aptitude") {
+    return <AptitudeView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
+  if (activeView === "jobs") {
+    return <JobsView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative overflow-hidden">
       {/* signature accent hairline */}
@@ -400,7 +420,7 @@ export default function InterviewPrepDashboard() {
 
           <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 w-80 text-neutral-500">
             <Search className="h-3.5 w-3.5" />
-            <span className="text-xs">Search modules, questions, mentors...</span>
+            <span className="text-xs">Search courses, practice, jobs...</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -415,14 +435,15 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Categories Nav */}
+        {/* Categories Nav (Updated as requested) */}
         <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-x-auto hide-scrollbar">
           {[
             { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
-            { id: "dsa", label: "DSA Sandbox", action: () => handleOpenDsa(null) },
-            { id: "sysdesign", label: "System Design", action: () => setActiveView("sysdesign") },
-            { id: "behavioral", label: "Behavioral Mocks", action: () => setActiveView("behavioral") },
-            { id: "resume", label: "Resume Review", action: () => setActiveView("resume") },
+            { id: "courses", label: "Courses", action: () => setActiveView("courses") },
+            { id: "tutorials", label: "Tutorials", action: () => setActiveView("tutorials") },
+            { id: "dsa", label: "Practice", action: () => handleOpenDsa(null) },
+            { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
+            { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
           ].map((cat) => (
             <button
               key={cat.id}
