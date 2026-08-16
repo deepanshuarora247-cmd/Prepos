@@ -76,7 +76,7 @@ const LEADERBOARD_USERS = [
     rank: 42,
     name: "Arjun S. (You)",
     handle: "@arjun_prepos",
-    company: "PrepOS Pro",
+    company: "PrepOS",
     points: 1950,
     solved: 142,
     streak: 12,

@@ -438,9 +438,6 @@ export default function InterviewPrepDashboard() {
               <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
             </svg>
             <span className="text-3xl font-extrabold tracking-tighter text-slate-100 drop-shadow-sm ml-1">PrepOS</span>
-            <span className="text-[10px] font-bold tracking-wider text-cyan-300 border border-cyan-400/30 bg-cyan-400/10 rounded-full px-2.5 py-0.5 leading-none translate-y-[-10px] shadow-[0_0_12px_-2px_rgba(34,211,238,0.6)]">
-              PRO
-            </span>
           </div>
 
           <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 w-80 text-neutral-500">
