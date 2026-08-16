@@ -17,6 +17,7 @@ import {
   Settings,
   Search,
 } from "lucide-react";
+import DsaSandboxView from "./DsaSandboxView.jsx";
 
 // ---------------------------------------------------------------------------
 // Dummy data
@@ -98,85 +99,59 @@ const AGENDA = [
     time: "2:00 PM",
     day: "Today",
     title: "Resume Review Sync",
-    withWho: "AI Coach",
-    type: "Async",
-    typeColor: "text-neutral-300 bg-white/5 border-white/10",
-    avatarColor: "bg-neutral-600",
+    withWho: "Alex M.",
+    type: "Career",
+    typeColor: "text-amber-300 bg-amber-500/10 border-amber-500/20",
+    avatarColor: "bg-amber-500",
     done: false,
   },
   {
     id: 3,
-    time: "11:00 AM",
+    time: "4:15 PM",
     day: "Tomorrow",
-    title: "System Design — URL Shortener",
-    withWho: "Marcus T.",
+    title: "System Design Practice",
+    withWho: "Karan R.",
     type: "System Design",
     typeColor: "text-purple-300 bg-purple-500/10 border-purple-500/20",
     avatarColor: "bg-purple-500",
     done: false,
   },
-  {
-    id: 4,
-    time: "4:15 PM",
-    day: "Wed",
-    title: "Behavioral — Leadership Round",
-    withWho: "Sasha K.",
-    type: "Behavioral",
-    typeColor: "text-emerald-300 bg-emerald-500/10 border-emerald-500/20",
-    avatarColor: "bg-emerald-500",
-    done: true,
-  },
 ];
 
 // ---------------------------------------------------------------------------
-// Small building blocks
+// Helper components
 // ---------------------------------------------------------------------------
 
-function StreakRing({ value = 12, goal = 30 }) {
-  const radius = 42;
+function StreakRing({ value, goal }) {
+  const radius = 36;
   const circumference = 2 * Math.PI * radius;
-  const pct = Math.min(value / goal, 1);
-  const [dash, setDash] = useState(circumference);
-
-  useEffect(() => {
-    const t = setTimeout(() => setDash(circumference * (1 - pct)), 150);
-    return () => clearTimeout(t);
-  }, [pct, circumference]);
+  const progress = Math.min(value / goal, 1);
+  const strokeDashoffset = circumference - progress * circumference;
 
   return (
-    <div className="relative flex h-28 w-28 items-center justify-center shrink-0">
-      <svg className="h-28 w-28 -rotate-90" viewBox="0 0 100 100">
+    <div className="relative flex items-center justify-center">
+      <svg className="h-24 w-24 -rotate-90 transform">
         <circle
-          cx="50"
-          cy="50"
+          cx="48"
+          cy="48"
           r={radius}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="7"
-          className="text-white/5"
+          className="stroke-white/10"
+          strokeWidth="6"
+          fill="transparent"
         />
         <circle
-          cx="50"
-          cy="50"
+          cx="48"
+          cy="48"
           r={radius}
-          fill="none"
-          stroke="url(#streakGradient)"
-          strokeWidth="7"
-          strokeLinecap="round"
+          className="stroke-cyan-400 transition-all duration-1000 ease-out"
+          strokeWidth="6"
           strokeDasharray={circumference}
-          strokeDashoffset={dash}
-          style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(0.65,0,0.35,1)" }}
-          className="drop-shadow-[0_0_8px_rgba(99,102,241,0.65)]"
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          fill="transparent"
         />
-        <defs>
-          <linearGradient id="streakGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#818cf8" />
-            <stop offset="100%" stopColor="#f97316" />
-          </linearGradient>
-        </defs>
       </svg>
-      <div className="absolute flex flex-col items-center">
-        <Flame className="h-4 w-4 text-orange-400 mb-0.5" fill="currentColor" fillOpacity={0.25} />
+      <div className="absolute flex flex-col items-center justify-center text-center">
         <span className="text-2xl font-bold text-slate-100 tabular-nums leading-none">{value}</span>
         <span className="text-[10px] uppercase tracking-wider text-neutral-500 mt-1">day streak</span>
       </div>
@@ -184,10 +159,11 @@ function StreakRing({ value = 12, goal = 30 }) {
   );
 }
 
-function ModuleCard({ mod }) {
+function ModuleCard({ mod, onClick }) {
   const Icon = mod.icon;
   return (
     <button
+      onClick={onClick}
       className={`group relative text-left rounded-2xl border border-white/10 bg-gradient-to-br ${mod.gradient} bg-slate-900/50 backdrop-blur-md p-5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-white/20 ${mod.glow}`}
     >
       {/* ambient corner glow */}
@@ -269,7 +245,7 @@ function AgendaItem({ item, isLast }) {
 // Terminal / Question of the day block
 // ---------------------------------------------------------------------------
 
-function QuestionTerminal() {
+function QuestionTerminal({ onSolveNow }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0b0f1c] overflow-hidden shadow-[0_0_60px_-15px_rgba(99,102,241,0.15)]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
@@ -354,7 +330,10 @@ function QuestionTerminal() {
           <span className="h-1 w-1 rounded-full bg-neutral-700" />
           <span>Companies: Meta, Amazon, Google</span>
         </div>
-        <button className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-3 py-1.5 rounded-lg shadow-[0_0_20px_-4px_rgba(99,102,241,0.8)]">
+        <button
+          onClick={onSolveNow}
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-3 py-1.5 rounded-lg shadow-[0_0_20px_-4px_rgba(99,102,241,0.8)]"
+        >
           <Play className="h-3.5 w-3.5" fill="currentColor" />
           Solve now
         </button>
@@ -368,6 +347,23 @@ function QuestionTerminal() {
 // ---------------------------------------------------------------------------
 
 export default function InterviewPrepDashboard() {
+  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa"
+  const [initialQuestionId, setInitialQuestionId] = useState(null);
+
+  const handleOpenDsa = (qId = null) => {
+    setInitialQuestionId(qId);
+    setActiveView("dsa");
+  };
+
+  if (activeView === "dsa") {
+    return (
+      <DsaSandboxView
+        onBackToDashboard={() => setActiveView("dashboard")}
+        initialQuestionId={initialQuestionId}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative overflow-hidden">
       {/* signature accent hairline */}
@@ -380,14 +376,17 @@ export default function InterviewPrepDashboard() {
       <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-8">
         {/* Top nav */}
         <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-3.5">
-            <svg viewBox="0 0 32 32" className="h-9 w-9 drop-shadow-[0_0_12px_rgba(254,240,138,0.6)] text-yellow-200">
-              <polygon points="10,12 20,26 0,26" fill="currentColor" fillOpacity="0.4" />
-              <polygon points="22,12 32,26 12,26" fill="currentColor" fillOpacity="0.4" />
-              <polygon points="16,4 28,26 4,26" fill="currentColor" fillOpacity="0.95" />
+          <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => setActiveView("dashboard")}>
+            <svg viewBox="0 0 58 34" className="h-9 w-auto">
+              {/* Circle 1: Blue / Cyan */}
+              <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+              {/* Circle 2: Yellow / Gold */}
+              <circle cx="29" cy="22" r="7.5" fill="none" stroke="#eab308" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
+              {/* Circle 3: Red / Rose */}
+              <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
             </svg>
-            <span className="text-3xl font-extrabold tracking-tighter text-yellow-200 drop-shadow-sm ml-1">PrepOS</span>
-            <span className="text-[10px] font-bold tracking-wider text-yellow-50 border border-yellow-200/30 bg-yellow-200/10 rounded-full px-2.5 py-0.5 leading-none translate-y-[-10px] shadow-[0_0_12px_-2px_rgba(254,240,138,0.6)]">
+            <span className="text-3xl font-extrabold tracking-tighter text-slate-100 drop-shadow-sm ml-1">PrepOS</span>
+            <span className="text-[10px] font-bold tracking-wider text-cyan-300 border border-cyan-400/30 bg-cyan-400/10 rounded-full px-2.5 py-0.5 leading-none translate-y-[-10px] shadow-[0_0_12px_-2px_rgba(34,211,238,0.6)]">
               PRO
             </span>
           </div>
@@ -411,16 +410,24 @@ export default function InterviewPrepDashboard() {
 
         {/* Categories Nav */}
         <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-x-auto hide-scrollbar">
-          {["Overview", "Practice Modules", "System Design", "Behavioral Mocks", "Resume Review", "Community"].map((cat, i) => (
+          {[
+            { label: "Overview", action: () => setActiveView("dashboard") },
+            { label: "Practice Modules (DSA Sandbox)", action: () => handleOpenDsa(null) },
+            { label: "System Design", action: () => {} },
+            { label: "Behavioral Mocks", action: () => {} },
+            { label: "Resume Review", action: () => {} },
+            { label: "Community", action: () => {} },
+          ].map((cat, i) => (
             <button
-              key={cat}
+              key={cat.label}
+              onClick={cat.action}
               className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
                 i === 0
                   ? "text-slate-100"
                   : "text-neutral-400 hover:text-slate-200"
               }`}
             >
-              {cat}
+              {cat.label}
               {i === 0 && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
               )}
@@ -440,7 +447,10 @@ export default function InterviewPrepDashboard() {
               You're 3 sessions from your best week yet. Your next mock interview starts in{" "}
               <span className="text-white/90 font-medium">2h 14m</span>.
             </p>
-            <button className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-4 py-2.5 rounded-xl shadow-[0_0_24px_-6px_rgba(99,102,241,0.8)]">
+            <button
+              onClick={() => handleOpenDsa(null)}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors px-4 py-2.5 rounded-xl shadow-[0_0_24px_-6px_rgba(99,102,241,0.8)]"
+            >
               Resume prep plan
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -466,13 +476,22 @@ export default function InterviewPrepDashboard() {
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-semibold text-white/90 tracking-tight">Prep modules</h2>
-                <button className="text-xs text-neutral-500 hover:text-slate-100 transition-colors flex items-center gap-1">
+                <button
+                  onClick={() => handleOpenDsa(null)}
+                  className="text-xs text-neutral-500 hover:text-slate-100 transition-colors flex items-center gap-1"
+                >
                   View all <ChevronRight className="h-3 w-3" />
                 </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {MODULES.map((mod) => (
-                  <ModuleCard key={mod.id} mod={mod} />
+                  <ModuleCard
+                    key={mod.id}
+                    mod={mod}
+                    onClick={() => {
+                      if (mod.id === "dsa") handleOpenDsa(null);
+                    }}
+                  />
                 ))}
               </div>
             </div>
@@ -482,7 +501,7 @@ export default function InterviewPrepDashboard() {
                 <h2 className="text-sm font-semibold text-white/90 tracking-tight">Question of the day</h2>
                 <span className="text-xs text-neutral-500">Refreshes in 6h 42m</span>
               </div>
-              <QuestionTerminal />
+              <QuestionTerminal onSolveNow={() => handleOpenDsa("longest-substring")} />
             </div>
           </div>
 
