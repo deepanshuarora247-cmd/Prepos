@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Code2,
   Search,
@@ -16,16 +16,17 @@ import {
   Check,
   Flame,
   Award,
-  SlidersHorizontal,
-  Layers,
+  Globe,
+  Loader2,
   ChevronDown
 } from "lucide-react";
-import { DSA_QUESTIONS } from "./dsaQuestions.js";
+import { LOCAL_DSA_QUESTIONS, searchDsaQuestionsApi } from "./dsaQuestions.js";
 
 export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = null }) {
-  const [questions, setQuestions] = useState(DSA_QUESTIONS);
+  const [questions, setQuestions] = useState(LOCAL_DSA_QUESTIONS);
   const [selectedQuestionId, setSelectedQuestionId] = useState(initialQuestionId);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
@@ -35,18 +36,45 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
   const [executionState, setExecutionState] = useState(null); // null | 'running' | 'success' | 'error'
   const [executionDetails, setExecutionDetails] = useState(null);
 
+  const debounceTimerRef = useRef(null);
+
+  // Debounced API search effect on searchQuery change
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    if (!searchQuery || searchQuery.trim() === "") {
+      setQuestions(LOCAL_DSA_QUESTIONS);
+      setIsSearchingApi(false);
+      return;
+    }
+
+    setIsSearchingApi(true);
+    debounceTimerRef.current = setTimeout(async () => {
+      try {
+        const apiResults = await searchDsaQuestionsApi(searchQuery);
+        setQuestions(apiResults);
+      } catch (e) {
+        console.error("API search failed:", e);
+      } finally {
+        setIsSearchingApi(false);
+      }
+    }, 350);
+
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, [searchQuery]);
+
   // Active question object
   const activeQuestion = questions.find((q) => q.id === selectedQuestionId) || null;
 
-  // Filtered questions list
+  // Filtered questions list (difficulty & category)
   const filteredQuestions = questions.filter((q) => {
-    const matchesSearch =
-      q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.companies.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesDifficulty = difficultyFilter === "All" || q.difficulty === difficultyFilter;
     const matchesCategory = categoryFilter === "All" || q.category === categoryFilter;
-    return matchesSearch && matchesDifficulty && matchesCategory;
+    return matchesDifficulty && matchesCategory;
   });
 
   // Get code for current question & language
@@ -164,24 +192,34 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 Master Data Structures & Algorithms
               </h2>
               <p className="text-sm text-neutral-300 mt-2 leading-relaxed">
-                Solve top-tier coding problems curated from FAANG & tier-1 tech interviews with our built-in interactive code editor and real-time execution engine.
+                Search and fetch real LeetCode questions via live API or solve curated FAANG interview drills with our interactive code runner.
               </p>
             </div>
             <Award className="absolute right-8 bottom-6 h-36 w-36 text-indigo-500/10 pointer-events-none" />
           </div>
 
-          {/* Filters Bar */}
+          {/* Filters Bar with API Search */}
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
-            {/* Search Input */}
-            <div className="relative w-full md:w-80">
+            {/* Live API Search Input */}
+            <div className="relative w-full md:w-96">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search problem, tag, or company..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                placeholder="Search via LeetCode API (e.g., Two Sum, Tree, DP...)"
+                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
+              {isSearchingApi ? (
+                <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-indigo-400 animate-spin" />
+              ) : searchQuery ? (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400 hover:text-white bg-white/10 rounded-full h-4 w-4 flex items-center justify-center"
+                >
+                  ×
+                </button>
+              ) : null}
             </div>
 
             {/* Difficulty Pills */}
@@ -202,21 +240,30 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
             </div>
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2 hide-scrollbar">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
-                  categoryFilter === cat
-                    ? "bg-white/10 text-cyan-300 border-cyan-500/30"
-                    : "bg-white/[0.02] text-neutral-400 border-white/5 hover:border-white/15"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+          {/* Category Tabs & API Status indicator */}
+          <div className="flex items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategoryFilter(cat)}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
+                    categoryFilter === cat
+                      ? "bg-white/10 text-cyan-300 border-cyan-500/30"
+                      : "bg-white/[0.02] text-neutral-400 border-white/5 hover:border-white/15"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {searchQuery && (
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-indigo-300 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20 shrink-0">
+                <Globe className="h-3.5 w-3.5" />
+                Live API Search Active
+              </div>
+            )}
           </div>
 
           {/* Questions Grid / Table */}
@@ -224,13 +271,18 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
             <div className="grid grid-cols-12 px-6 py-3.5 border-b border-white/10 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 bg-white/[0.02]">
               <div className="col-span-1">Status</div>
               <div className="col-span-5 md:col-span-4">Title</div>
-              <div className="col-span-3 hidden md:block">Category</div>
+              <div className="col-span-3 hidden md:block">Category / Source</div>
               <div className="col-span-2">Difficulty</div>
               <div className="col-span-4 md:col-span-2 text-right">Action</div>
             </div>
 
             <div className="divide-y divide-white/5">
-              {filteredQuestions.length > 0 ? (
+              {isSearchingApi ? (
+                <div className="p-12 text-center text-neutral-400 text-sm flex items-center justify-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin text-indigo-400" />
+                  Searching LeetCode API for "{searchQuery}"...
+                </div>
+              ) : filteredQuestions.length > 0 ? (
                 filteredQuestions.map((q) => {
                   const diffColor =
                     q.difficulty === "Easy"
@@ -253,12 +305,19 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                       </div>
 
                       <div className="col-span-5 md:col-span-4 pr-4">
-                        <button
-                          onClick={() => setSelectedQuestionId(q.id)}
-                          className="text-sm font-semibold text-white/90 hover:text-cyan-300 text-left transition-colors truncate block max-w-full"
-                        >
-                          {q.title}
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => setSelectedQuestionId(q.id)}
+                            className="text-sm font-semibold text-white/90 hover:text-cyan-300 text-left transition-colors truncate block"
+                          >
+                            {q.title}
+                          </button>
+                          {q.isApiResult && (
+                            <span className="text-[9px] font-medium text-indigo-300 bg-indigo-500/20 px-1.5 py-0.5 rounded border border-indigo-500/30">
+                              API
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                           {q.companies.slice(0, 3).map((comp) => (
                             <span
@@ -272,7 +331,8 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                       </div>
 
                       <div className="col-span-3 hidden md:block">
-                        <span className="text-xs text-neutral-400 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+                        <span className="text-xs text-neutral-400 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5 inline-flex items-center gap-1.5">
+                          {q.isApiResult && <Globe className="h-3 w-3 text-indigo-400" />}
                           {q.category}
                         </span>
                       </div>
@@ -297,7 +357,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 })
               ) : (
                 <div className="p-12 text-center text-neutral-500 text-sm">
-                  No questions match your filters. Try clearing search or filters.
+                  No questions match your query. Try searching for "Two Sum", "Tree", or "DP".
                 </div>
               )}
             </div>

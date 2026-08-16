@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Terminal,
   Code2,
@@ -18,9 +18,12 @@ import {
   Search,
 } from "lucide-react";
 import DsaSandboxView from "./DsaSandboxView.jsx";
+import SystemDesignView from "./SystemDesignView.jsx";
+import BehavioralMockView from "./BehavioralMockView.jsx";
+import ResumeGraderView from "./ResumeGraderView.jsx";
 
 // ---------------------------------------------------------------------------
-// Dummy data
+// Module Cards Data
 // ---------------------------------------------------------------------------
 
 const MODULES = [
@@ -119,7 +122,7 @@ const AGENDA = [
 ];
 
 // ---------------------------------------------------------------------------
-// Helper components
+// Helper Components
 // ---------------------------------------------------------------------------
 
 function StreakRing({ value, goal }) {
@@ -166,7 +169,6 @@ function ModuleCard({ mod, onClick }) {
       onClick={onClick}
       className={`group relative text-left rounded-2xl border border-white/10 bg-gradient-to-br ${mod.gradient} bg-slate-900/50 backdrop-blur-md p-5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-white/20 ${mod.glow}`}
     >
-      {/* ambient corner glow */}
       <div
         className={`pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full blur-3xl opacity-30 bg-${mod.accent}-500`}
       />
@@ -240,10 +242,6 @@ function AgendaItem({ item, isLast }) {
     </div>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Terminal / Question of the day block
-// ---------------------------------------------------------------------------
 
 function QuestionTerminal({ onSolveNow }) {
   return (
@@ -343,11 +341,11 @@ function QuestionTerminal({ onSolveNow }) {
 }
 
 // ---------------------------------------------------------------------------
-// Main dashboard
+// Main Dashboard
 // ---------------------------------------------------------------------------
 
 export default function InterviewPrepDashboard() {
-  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa"
+  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume"
   const [initialQuestionId, setInitialQuestionId] = useState(null);
 
   const handleOpenDsa = (qId = null) => {
@@ -364,6 +362,18 @@ export default function InterviewPrepDashboard() {
     );
   }
 
+  if (activeView === "sysdesign") {
+    return <SystemDesignView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
+  if (activeView === "behavioral") {
+    return <BehavioralMockView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
+  if (activeView === "resume") {
+    return <ResumeGraderView onBackToDashboard={() => setActiveView("dashboard")} />;
+  }
+
   return (
     <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative overflow-hidden">
       {/* signature accent hairline */}
@@ -378,11 +388,8 @@ export default function InterviewPrepDashboard() {
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3.5 cursor-pointer" onClick={() => setActiveView("dashboard")}>
             <svg viewBox="0 0 58 34" className="h-9 w-auto">
-              {/* Circle 1: Blue / Cyan */}
               <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
-              {/* Circle 2: Yellow / Gold */}
               <circle cx="29" cy="22" r="7.5" fill="none" stroke="#eab308" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(234,179,8,0.8)]" />
-              {/* Circle 3: Red / Rose */}
               <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" className="drop-shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
             </svg>
             <span className="text-3xl font-extrabold tracking-tighter text-slate-100 drop-shadow-sm ml-1">PrepOS</span>
@@ -411,24 +418,23 @@ export default function InterviewPrepDashboard() {
         {/* Categories Nav */}
         <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-x-auto hide-scrollbar">
           {[
-            { label: "Overview", action: () => setActiveView("dashboard") },
-            { label: "Practice Modules (DSA Sandbox)", action: () => handleOpenDsa(null) },
-            { label: "System Design", action: () => {} },
-            { label: "Behavioral Mocks", action: () => {} },
-            { label: "Resume Review", action: () => {} },
-            { label: "Community", action: () => {} },
-          ].map((cat, i) => (
+            { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
+            { id: "dsa", label: "DSA Sandbox", action: () => handleOpenDsa(null) },
+            { id: "sysdesign", label: "System Design", action: () => setActiveView("sysdesign") },
+            { id: "behavioral", label: "Behavioral Mocks", action: () => setActiveView("behavioral") },
+            { id: "resume", label: "Resume Review", action: () => setActiveView("resume") },
+          ].map((cat) => (
             <button
-              key={cat.label}
+              key={cat.id}
               onClick={cat.action}
               className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
-                i === 0
+                activeView === cat.id
                   ? "text-slate-100"
                   : "text-neutral-400 hover:text-slate-200"
               }`}
             >
               {cat.label}
-              {i === 0 && (
+              {activeView === cat.id && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
               )}
             </button>
@@ -469,9 +475,9 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Main grid */}
+        {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left / main column */}
+          {/* Left Column */}
           <div className="lg:col-span-2 flex flex-col gap-6">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -488,9 +494,7 @@ export default function InterviewPrepDashboard() {
                   <ModuleCard
                     key={mod.id}
                     mod={mod}
-                    onClick={() => {
-                      if (mod.id === "dsa") handleOpenDsa(null);
-                    }}
+                    onClick={() => setActiveView(mod.id)}
                   />
                 ))}
               </div>
@@ -505,7 +509,7 @@ export default function InterviewPrepDashboard() {
             </div>
           </div>
 
-          {/* Right / sidebar */}
+          {/* Right Column */}
           <div className="flex flex-col gap-6">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-5">
               <div className="flex items-center justify-between mb-5">
