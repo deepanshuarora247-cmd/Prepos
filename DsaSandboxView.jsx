@@ -207,7 +207,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search via LeetCode API (e.g., Two Sum, Tree, DP...)"
+                placeholder="Search Questions"
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               {isSearchingApi ? (
@@ -357,7 +357,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 })
               ) : (
                 <div className="p-12 text-center text-neutral-500 text-sm">
-                  No questions match your query. Try searching for "Two Sum", "Tree", or "DP".
+                  No questions1 match your query. Try searching for "Two Sum", "Tree", or "DP".
                 </div>
               )}
             </div>

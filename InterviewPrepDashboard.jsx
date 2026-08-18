@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Terminal,
   Code2,
@@ -37,6 +37,8 @@ import LeaderboardView from "./LeaderboardView.jsx";
 import PrepPlanSchedulerModal from "./PrepPlanSchedulerModal.jsx";
 import CalendarModal from "./CalendarModal.jsx";
 import AddAgendaModal from "./AddAgendaModal.jsx";
+import PracticeStreakModal from "./PracticeStreakModal.jsx";
+import SettingsModal from "./SettingsModal.jsx";
 
 // ---------------------------------------------------------------------------
 // Module Cards Data
@@ -367,7 +369,25 @@ export default function InterviewPrepDashboard() {
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isAddAgendaOpen, setIsAddAgendaOpen] = useState(false);
+  const [isPracticeStreakOpen, setIsPracticeStreakOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
   const [customEvents, setCustomEvents] = useState({});
+
+  const notificationRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setIsNotificationsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleOpenDsa = (qId = null, category = "All") => {
     setInitialQuestionId(qId);
@@ -443,6 +463,16 @@ export default function InterviewPrepDashboard() {
       {/* Add Agenda Modal */}
       <AddAgendaModal isOpen={isAddAgendaOpen} onClose={() => setIsAddAgendaOpen(false)} onAddEvent={handleAddEvent} />
 
+      {/* Practice Streak & Analytics Modal */}
+      <PracticeStreakModal
+        isOpen={isPracticeStreakOpen}
+        onClose={() => setIsPracticeStreakOpen(false)}
+        onStartPractice={() => handleOpenDsa(null, "All")}
+      />
+
+      {/* Settings & Preferences Modal */}
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+
       {/* signature accent hairline */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
       {/* ambient background glows */}
@@ -468,11 +498,71 @@ export default function InterviewPrepDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="relative h-9 w-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_1px_rgba(34,211,238,0.9)]" />
-            </button>
-            <button className="h-9 w-9 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors">
+            {/* Notification Bell Dropdown */}
+            <div className="relative" ref={notificationRef}>
+              <button
+                onClick={() => {
+                  setIsNotificationsOpen((prev) => !prev);
+                  setHasUnreadNotifications(false);
+                }}
+                className={`relative h-9 w-9 rounded-full border bg-white/5 flex items-center justify-center transition-all ${
+                  isNotificationsOpen
+                    ? "border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.4)]"
+                    : "border-white/10 text-neutral-400 hover:text-slate-100 hover:border-white/20"
+                }`}
+                title="Notifications"
+              >
+                <Bell className="h-4 w-4" />
+                {hasUnreadNotifications && (
+                  <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_1px_rgba(34,211,238,0.9)]" />
+                )}
+              </button>
+
+              {/* Glassmorphic Notifications Popover */}
+              {isNotificationsOpen && (
+                <div className="absolute right-0 top-12 w-80 sm:w-88 rounded-2xl border border-white/10 bg-[#090d19]/95 backdrop-blur-2xl p-4 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-50 animate-fadeIn">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-3">
+                    <div className="flex items-center gap-2">
+                      <Bell className="h-4 w-4 text-cyan-400" />
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-white">Notifications</h3>
+                    </div>
+                    <span className="text-[10px] font-medium text-neutral-500 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                      0 Unread
+                    </span>
+                  </div>
+
+                  <div className="py-7 flex flex-col items-center justify-center text-center px-4">
+                    <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-neutral-500 mb-3 shadow-inner">
+                      <Bell className="h-5 w-5 stroke-1" />
+                    </div>
+                    <h4 className="text-sm font-semibold text-white/90">no notifications yet</h4>
+                    <p className="text-xs text-neutral-400 mt-1 max-w-[230px] leading-relaxed">
+                      You're all caught up! Updates on your practice streaks, mock interview reminders, and course progress will appear here.
+                    </p>
+                  </div>
+
+                  <div className="pt-2.5 border-t border-white/5 flex items-center justify-between text-[11px] text-neutral-500">
+                    <span>PrepOS Notification Center</span>
+                    <button
+                      onClick={() => setIsNotificationsOpen(false)}
+                      className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className={`h-9 w-9 rounded-full border flex items-center justify-center transition-all ${
+                isSettingsOpen
+                  ? "border-cyan-400 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.4)]"
+                  : "border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20"
+              }`}
+              title="Settings & Preferences"
+            >
               <Settings className="h-4 w-4" />
             </button>
             <div className="h-9 w-9 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 ring-2 ring-cyan-400/40" />
@@ -645,6 +735,85 @@ export default function InterviewPrepDashboard() {
               <button className="mt-2 w-full text-center text-xs font-medium text-indigo-300 hover:text-indigo-200 transition-colors py-2 rounded-lg border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5" onClick={() => setIsCalendarOpen(true)}>
                 View full calendar
               </button>
+            </div>
+
+            {/* Daily Questions Practice Streak Box */}
+            <div
+              onClick={() => setIsPracticeStreakOpen(true)}
+              className="group relative cursor-pointer rounded-2xl border border-orange-500/20 bg-gradient-to-br from-orange-500/10 via-white/[0.02] to-transparent backdrop-blur-md p-5 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:shadow-[0_0_35px_-8px_rgba(249,115,22,0.35)]"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                    <Flame className="h-4 w-4 fill-orange-500/30 text-orange-400 animate-pulse" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-semibold text-white/90 tracking-tight">Daily Practice Streak</h2>
+                    <p className="text-[11px] text-neutral-400">Questions & time tracker</p>
+                  </div>
+                </div>
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 flex items-center gap-1 shadow-[0_0_10px_rgba(249,115,22,0.2)]">
+                  <Flame className="h-3 w-3 fill-current text-orange-400" />
+                  12 Days
+                </span>
+              </div>
+
+              {/* Main metrics display */}
+              <div className="grid grid-cols-2 gap-3 mt-4 pt-3 border-t border-white/5">
+                <div className="rounded-xl bg-black/30 p-3 border border-white/5">
+                  <span className="text-[10px] uppercase font-semibold text-neutral-400">Practiced Today</span>
+                  <div className="text-lg font-bold text-white mt-0.5 flex items-baseline gap-1">
+                    <span>6</span>
+                    <span className="text-xs text-neutral-400 font-normal">questions</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-medium">+120% daily target</span>
+                </div>
+
+                <div className="rounded-xl bg-black/30 p-3 border border-white/5">
+                  <span className="text-[10px] uppercase font-semibold text-neutral-400">Time Applied</span>
+                  <div className="text-lg font-bold text-orange-300 mt-0.5 flex items-baseline gap-1">
+                    <span>1h 45m</span>
+                  </div>
+                  <span className="text-[10px] text-neutral-400 font-medium">105m active focus</span>
+                </div>
+              </div>
+
+              {/* 7-day mini heatmap / day pills */}
+              <div className="mt-3.5 flex items-center justify-between gap-1 pt-3 border-t border-white/5">
+                {[
+                  { day: "M", q: 5, active: true },
+                  { day: "T", q: 6, active: true, today: true },
+                  { day: "W", q: 4, active: true },
+                  { day: "T", q: 7, active: true },
+                  { day: "F", q: 5, active: true },
+                  { day: "S", q: 6, active: true },
+                  { day: "S", q: 5, active: true },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-1">
+                    <div
+                      className={`h-6 w-6 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all ${
+                        item.today
+                          ? "bg-orange-500 text-slate-950 shadow-[0_0_10px_rgba(249,115,22,0.8)] scale-105"
+                          : item.active
+                          ? "bg-orange-500/20 text-orange-300 border border-orange-500/30"
+                          : "bg-white/5 text-neutral-500"
+                      }`}
+                    >
+                      {item.day}
+                    </div>
+                    <span className="text-[9px] text-neutral-500">{item.q}q</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Bottom clickable hint */}
+              <div className="mt-3.5 flex items-center justify-between text-xs text-orange-300/90 group-hover:text-orange-200 pt-2 border-t border-white/5">
+                <span className="text-[11px] font-medium flex items-center gap-1">
+                  <Sparkles className="h-3 w-3 text-orange-400" />
+                  View questions & time stats
+                </span>
+                <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/[0.02] to-transparent backdrop-blur-md p-5">
