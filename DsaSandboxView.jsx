@@ -357,7 +357,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 })
               ) : (
                 <div className="p-12 text-center text-neutral-500 text-sm">
-                  No questions1 match your query. Try searching for "Two Sum", "Tree", or "DP".
+                  No questions12 match your query. Try searching for "Two Sum", "Tree", or "DP".
                 </div>
               )}
             </div>
