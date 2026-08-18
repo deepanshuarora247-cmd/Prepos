@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft,
   BookOpen,
@@ -18,10 +18,15 @@ import {
   Check,
   RotateCcw,
   Volume2,
+  VolumeX,
   Maximize2,
   Share2,
   Download,
-  AlertCircle
+  AlertCircle,
+  ExternalLink,
+  Tv,
+  Film,
+  Sliders
 } from "lucide-react";
 import { courseApi } from "./courseApi.js";
 
@@ -36,6 +41,75 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const [quizResult, setQuizResult] = useState(null);
   const [isSubmittingQuiz, setIsSubmittingQuiz] = useState(false);
   const [completedLessons, setCompletedLessons] = useState([]);
+  
+  // Interactive Video Player State
+  const videoRef = useRef(null);
+  const videoContainerRef = useRef(null);
+  const [videoSourceMode, setVideoSourceMode] = useState("iframe"); // "iframe" | "html5"
+  const [isMuted, setIsMuted] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+
+  const togglePlay = () => {
+    if (videoSourceMode === "html5" && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+    }
+    setIsMuted(!isMuted);
+  };
+
+  const handleSpeedChange = (speed) => {
+    setPlaybackSpeed(speed);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = speed;
+    }
+  };
+
+  const handleSeek = (e) => {
+    const newTime = parseFloat(e.target.value);
+    setCurrentTime(newTime);
+    if (videoRef.current) {
+      videoRef.current.currentTime = newTime;
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+      setVideoDuration(videoRef.current.duration || 0);
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (!videoContainerRef.current) return;
+    if (!document.fullscreenElement) {
+      videoContainerRef.current.requestFullscreen().catch((err) => {
+        console.error("Fullscreen error", err);
+      });
+    } else {
+      document.exitFullscreen().catch((err) => {
+        console.error("Exit fullscreen error", err);
+      });
+    }
+  };
+
+  const formatTime = (secs) => {
+    if (!secs || isNaN(secs)) return "00:00";
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
+  };
   
   // AI Tutor Chat state
   const [aiChatMessages, setAiChatMessages] = useState([
@@ -298,46 +372,186 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
               {/* Tab 1: Video Player */}
               {activeTab === "video" && (
                 <div className="space-y-4">
-                  <div className="relative rounded-2xl border border-white/10 bg-slate-950 overflow-hidden shadow-2xl aspect-video flex flex-col items-center justify-center group">
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent pointer-events-none" />
-
-                    <div className="relative z-10 text-center space-y-3">
+                  {/* Top Video Toolbar / Controls */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/60 p-3 rounded-xl border border-white/10 text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-neutral-400 font-medium">Source Mode:</span>
                       <button
-                        onClick={() => setIsPlaying(!isPlaying)}
-                        className="h-16 w-16 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-[0_0_30px_rgba(6,182,212,0.8)]"
+                        onClick={() => setVideoSourceMode("iframe")}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-semibold transition-all ${
+                          videoSourceMode === "iframe"
+                            ? "bg-cyan-500 text-black shadow-[0_0_12px_rgba(6,182,212,0.4)]"
+                            : "bg-white/5 hover:bg-white/10 text-neutral-300"
+                        }`}
                       >
-                        {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 fill-current ml-1" />}
+                        <Tv className="h-3.5 w-3.5" />
+                        YouTube HD Embed
                       </button>
-                      <p className="text-xs font-semibold text-white tracking-wide">
-                        {isPlaying ? "Lesson Video Playing..." : "Click to Start Interactive Lecture"}
-                      </p>
+                      <button
+                        onClick={() => setVideoSourceMode("html5")}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-semibold transition-all ${
+                          videoSourceMode === "html5"
+                            ? "bg-indigo-500 text-white shadow-[0_0_12px_rgba(99,102,241,0.4)]"
+                            : "bg-white/5 hover:bg-white/10 text-neutral-300"
+                        }`}
+                      >
+                        <Film className="h-3.5 w-3.5" />
+                        HTML5 Video Stream
+                      </button>
                     </div>
 
-                    {/* Controls overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between text-xs text-neutral-400 bg-slate-950/80 backdrop-blur-md border-t border-white/10">
-                      <div className="flex items-center gap-3">
-                        <button onClick={() => setIsPlaying(!isPlaying)} className="hover:text-white">
-                          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                        </button>
-                        <span>04:15 / {lessonContent.lesson.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded font-mono">1.25x</span>
-                        <Volume2 className="h-4 w-4 hover:text-white cursor-pointer" />
-                        <Maximize2 className="h-4 w-4 hover:text-white cursor-pointer" />
-                      </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[11px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono px-2 py-0.5 rounded">
+                        1080p 60fps HD
+                      </span>
+                      {lessonContent.lesson.videoUrl && (
+                        <a
+                          href={lessonContent.lesson.videoUrl.replace("/embed/", "/watch?v=")}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-1 text-cyan-400 hover:underline font-mono text-[11px]"
+                        >
+                          Open External <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
                     </div>
                   </div>
 
-                  {/* Transcript box */}
-                  <div className="rounded-xl border border-white/10 bg-slate-900/50 p-4 space-y-2">
-                    <h3 className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
-                      <FileText className="h-3.5 w-3.5" />
-                      Lesson Video Transcript
-                    </h3>
-                    <p className="text-xs text-neutral-300 leading-relaxed font-mono">
-                      "{lessonContent.lesson.transcript}"
-                    </p>
+                  {/* Main Video Viewport Container */}
+                  <div
+                    ref={videoContainerRef}
+                    className="relative rounded-2xl border border-white/10 bg-black overflow-hidden shadow-2xl aspect-video flex flex-col group"
+                  >
+                    {videoSourceMode === "iframe" ? (
+                      <iframe
+                        src={
+                          lessonContent.lesson.videoUrl
+                            ? `${lessonContent.lesson.videoUrl}?autoplay=0&rel=0&modestbranding=1`
+                            : "https://www.youtube.com/embed/MK-NZ4hN7SM?autoplay=0&rel=0"
+                        }
+                        title={lessonContent.lesson.title || "Lesson Video"}
+                        className="w-full h-full aspect-video border-0 rounded-2xl bg-black"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="relative w-full h-full flex flex-col justify-between">
+                        <video
+                          ref={videoRef}
+                          src={
+                            lessonContent.lesson.sampleMp4 ||
+                            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                          }
+                          onTimeUpdate={handleTimeUpdate}
+                          onLoadedMetadata={handleTimeUpdate}
+                          onEnded={() => setIsPlaying(false)}
+                          className="w-full h-full object-cover rounded-2xl bg-black cursor-pointer"
+                          onClick={togglePlay}
+                        />
+
+                        {/* Interactive HTML5 Video Controls Bar */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col gap-2 transition-opacity opacity-90 group-hover:opacity-100">
+                          {/* Seek bar */}
+                          <input
+                            type="range"
+                            min={0}
+                            max={videoDuration || 100}
+                            value={currentTime}
+                            onChange={handleSeek}
+                            className="w-full h-1.5 bg-white/20 hover:bg-white/30 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                          />
+
+                          <div className="flex items-center justify-between text-xs text-neutral-300">
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={togglePlay}
+                                className="h-8 w-8 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black flex items-center justify-center transition-all shadow-[0_0_12px_rgba(6,182,212,0.8)]"
+                              >
+                                {isPlaying ? (
+                                  <Pause className="h-4 w-4" />
+                                ) : (
+                                  <Play className="h-4 w-4 fill-current ml-0.5" />
+                                )}
+                              </button>
+
+                              <button onClick={toggleMute} className="hover:text-white transition-colors">
+                                {isMuted ? <VolumeX className="h-4 w-4 text-rose-400" /> : <Volume2 className="h-4 w-4" />}
+                              </button>
+
+                              <span className="font-mono text-xs">
+                                {formatTime(currentTime)} / {formatTime(videoDuration || 300)}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              {/* Playback speed selector */}
+                              <div className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded-lg">
+                                {[0.75, 1, 1.25, 1.5, 2].map((s) => (
+                                  <button
+                                    key={s}
+                                    onClick={() => handleSpeedChange(s)}
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                                      playbackSpeed === s
+                                        ? "bg-cyan-500 text-black font-bold"
+                                        : "hover:bg-white/10 text-neutral-400"
+                                    }`}
+                                  >
+                                    {s}x
+                                  </button>
+                                ))}
+                              </div>
+
+                              <button onClick={toggleFullscreen} className="hover:text-white transition-colors">
+                                <Maximize2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Transcript & Mark Watched */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="md:col-span-2 rounded-xl border border-white/10 bg-slate-900/50 p-4 space-y-2">
+                      <h3 className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                        <FileText className="h-3.5 w-3.5" />
+                        Lesson Video Transcript
+                      </h3>
+                      <p className="text-xs text-neutral-300 leading-relaxed font-mono">
+                        "{lessonContent.lesson.transcript}"
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-slate-900/50 p-4 flex flex-col justify-between space-y-3">
+                      <div>
+                        <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
+                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                          Lesson Progress Tracker
+                        </h4>
+                        <p className="text-[11px] text-neutral-400 mt-1">
+                          {completedLessons.includes(activeLessonId)
+                            ? "You have already completed this masterclass lesson!"
+                            : "Mark this video as watched to update your course progress percent."}
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          if (!completedLessons.includes(activeLessonId)) {
+                            setCompletedLessons((prev) => [...prev, activeLessonId]);
+                          }
+                        }}
+                        className={`w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
+                          completedLessons.includes(activeLessonId)
+                            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                            : "bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_16px_rgba(6,182,212,0.4)]"
+                        }`}
+                      >
+                        <Check className="h-3.5 w-3.5" />
+                        {completedLessons.includes(activeLessonId) ? "Completed" : "Mark as Watched"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
