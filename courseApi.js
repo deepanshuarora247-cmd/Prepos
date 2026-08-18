@@ -32,8 +32,8 @@ const FALLBACK_COURSES = [
             duration: "18 min",
             type: "video",
             summary: "Learn when to shrink or expand windows, handling subarray constraints with O(N) complexity.",
-            videoUrl: "https://www.youtube.com/embed/MK-NZ4hN7SM",
-            sampleMp4: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            videoUrl: "https://www.youtube.com/embed/GcT7V3L4DG4",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
             transcript: "In this lesson, we breakdown the fundamental difference between fixed length sliding windows and dynamic sliding windows.",
             theory: `### Sliding Window Strategy
 The Sliding Window pattern is used to perform required operations on a specific window size.
@@ -73,8 +73,8 @@ function maxSubarraySum(arr, k) {
             duration: "24 min",
             type: "video",
             summary: "Detailed walkthrough of two-pointer state contraction using hash maps.",
-            videoUrl: "https://www.youtube.com/embed/pbwL_548hDU",
-            sampleMp4: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            videoUrl: "https://www.youtube.com/embed/EXzl7bLzCis",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
             transcript: "We analyze how to maintain at most K unique keys in a Map while moving the right pointer forward.",
             theory: "### At Most K Distinct Pattern\nUse a Map to track key frequencies.",
             quiz: {
@@ -101,8 +101,8 @@ function maxSubarraySum(arr, k) {
             duration: "32 min",
             type: "video",
             summary: "Kahn's Algorithm vs recursion stack states for course schedule resolution.",
-            videoUrl: "https://www.youtube.com/embed/rKBagCO5lP8",
-            sampleMp4: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            videoUrl: "https://www.youtube.com/embed/mqqrf-bgkC8",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
             transcript: "Detecting cycles in directed graphs is crucial for build dependencies.",
             theory: "### Kahn's Algorithm\nTrack in-degrees to order DAG vertices.",
             quiz: {
@@ -144,8 +144,8 @@ function maxSubarraySum(arr, k) {
             duration: "26 min",
             type: "video",
             summary: "Distribute workload without full cache keys re-hashing when servers scale out.",
-            videoUrl: "https://www.youtube.com/embed/zaRkONvyl8s",
-            sampleMp4: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            videoUrl: "https://www.youtube.com/embed/xHnA-5DpNvk",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
             transcript: "Consistent hashing maps keys and nodes to a hash ring, moving only K/N keys.",
             theory: "### Consistent Hashing Ring\nVirtual nodes prevent hot spots.",
             quiz: {
@@ -187,8 +187,8 @@ function maxSubarraySum(arr, k) {
             duration: "20 min",
             type: "video",
             summary: "Understanding vector distance metrics for semantic document retrieval.",
-            videoUrl: "https://www.youtube.com/embed/e9U0QAFbfLI",
-            sampleMp4: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+            videoUrl: "https://www.youtube.com/embed/FSTrj-TuikE",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
             transcript: "Choosing distance metrics impacts vector index search latency.",
             theory: "### Distance Metrics in Vector Space",
             quiz: {

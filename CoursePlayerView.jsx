@@ -50,6 +50,8 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
+  const [iframeError, setIframeError] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const togglePlay = () => {
     if (videoSourceMode === "html5" && videoRef.current) {
@@ -158,6 +160,8 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
         setSelectedOption(null);
         setQuizResult(null);
         setIsPlaying(false);
+        setIframeError(false);
+        setVideoError(false);
         setAiChatMessages([
           {
             sender: "ai",
@@ -423,33 +427,99 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                     className="relative rounded-2xl border border-white/10 bg-black overflow-hidden shadow-2xl aspect-video flex flex-col group"
                   >
                     {videoSourceMode === "iframe" ? (
-                      <iframe
-                        src={
-                          lessonContent.lesson.videoUrl
-                            ? `${lessonContent.lesson.videoUrl}?autoplay=0&rel=0&modestbranding=1`
-                            : "https://www.youtube.com/embed/MK-NZ4hN7SM?autoplay=0&rel=0"
-                        }
-                        title={lessonContent.lesson.title || "Lesson Video"}
-                        className="w-full h-full aspect-video border-0 rounded-2xl bg-black"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
+                      iframeError ? (
+                        /* YouTube blocked fallback */
+                        <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-slate-900/80 rounded-2xl p-6 text-center">
+                          <div className="h-14 w-14 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center">
+                            <AlertCircle className="h-6 w-6 text-rose-400" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-white">YouTube Embed Blocked</p>
+                            <p className="text-xs text-neutral-400 mt-1">Your browser or network is blocking the YouTube embed.</p>
+                          </div>
+                          <div className="flex gap-3">
+                            <a
+                              href={lessonContent.lesson.videoUrl?.replace("/embed/", "/watch?v=")}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-400 text-white text-xs font-bold transition-colors"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5" />
+                              Watch on YouTube
+                            </a>
+                            <button
+                              onClick={() => setVideoSourceMode("html5")}
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
+                            >
+                              <Film className="h-3.5 w-3.5" />
+                              Switch to HTML5
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <iframe
+                          key={lessonContent.lesson.id}
+                          src={
+                            lessonContent.lesson.videoUrl
+                              ? `${lessonContent.lesson.videoUrl}?autoplay=0&rel=0&modestbranding=1`
+                              : "https://www.youtube.com/embed/GcT7V3L4DG4?autoplay=0&rel=0"
+                          }
+                          title={lessonContent.lesson.title || "Lesson Video"}
+                          className="w-full h-full aspect-video border-0 rounded-2xl bg-black"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          onError={() => setIframeError(true)}
+                        />
+                      )
                     ) : (
                       <div className="relative w-full h-full flex flex-col justify-between">
-                        <video
-                          ref={videoRef}
-                          src={
-                            lessonContent.lesson.sampleMp4 ||
-                            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                          }
-                          onTimeUpdate={handleTimeUpdate}
-                          onLoadedMetadata={handleTimeUpdate}
-                          onEnded={() => setIsPlaying(false)}
-                          className="w-full h-full object-cover rounded-2xl bg-black cursor-pointer"
-                          onClick={togglePlay}
-                        />
+                        {videoError ? (
+                          /* HTML5 video error fallback */
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-slate-900/80 rounded-2xl p-6 text-center">
+                            <div className="h-14 w-14 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center">
+                              <AlertCircle className="h-6 w-6 text-amber-400" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-white">Video Failed to Load</p>
+                              <p className="text-xs text-neutral-400 mt-1">The video stream could not be loaded.</p>
+                            </div>
+                            <div className="flex gap-3">
+                              <button
+                                onClick={() => { setVideoError(false); if (videoRef.current) { videoRef.current.load(); } }}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black text-xs font-bold transition-colors"
+                              >
+                                <RotateCcw className="h-3.5 w-3.5" />
+                                Retry
+                              </button>
+                              <button
+                                onClick={() => setVideoSourceMode("iframe")}
+                                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors"
+                              >
+                                <Tv className="h-3.5 w-3.5" />
+                                Try YouTube
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <video
+                            ref={videoRef}
+                            src={
+                              lessonContent.lesson.sampleMp4 ||
+                              "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                            }
+                            crossOrigin="anonymous"
+                            preload="metadata"
+                            onTimeUpdate={handleTimeUpdate}
+                            onLoadedMetadata={handleTimeUpdate}
+                            onEnded={() => setIsPlaying(false)}
+                            onError={() => setVideoError(true)}
+                            className="w-full h-full object-contain rounded-2xl bg-black cursor-pointer"
+                            onClick={togglePlay}
+                          />
+                        )}
 
-                        {/* Interactive HTML5 Video Controls Bar */}
+                        {/* Interactive HTML5 Video Controls Bar — only show when video is working */}
+                        {!videoError && (
                         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent flex flex-col gap-2 transition-opacity opacity-90 group-hover:opacity-100">
                           {/* Seek bar */}
                           <input
@@ -507,6 +577,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                             </div>
                           </div>
                         </div>
+                        )}
                       </div>
                     )}
                   </div>
