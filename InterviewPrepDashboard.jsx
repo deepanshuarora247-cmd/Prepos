@@ -35,6 +35,8 @@ import AptitudeView from "./AptitudeView.jsx";
 import JobsView from "./JobsView.jsx";
 import LeaderboardView from "./LeaderboardView.jsx";
 import PrepPlanSchedulerModal from "./PrepPlanSchedulerModal.jsx";
+import CalendarModal from "./CalendarModal.jsx";
+import AddAgendaModal from "./AddAgendaModal.jsx";
 
 // ---------------------------------------------------------------------------
 // Module Cards Data
@@ -354,353 +356,6 @@ function QuestionTerminal({ onSolveNow }) {
   );
 }
 
-function AddAgendaModal({ isOpen, onClose, onAdd }) {
-  const [formData, setFormData] = React.useState({
-    time: "10:00 AM",
-    day: "Today",
-    title: "",
-    withWho: "",
-    type: "Technical",
-  });
-
-  const typeColors = {
-    Technical: { color: "text-indigo-300 bg-indigo-500/10 border-indigo-500/20", avatar: "bg-indigo-500" },
-    Career: { color: "text-amber-300 bg-amber-500/10 border-amber-500/20", avatar: "bg-amber-500" },
-    "System Design": { color: "text-purple-300 bg-purple-500/10 border-purple-500/20", avatar: "bg-purple-500" },
-    Practice: { color: "text-cyan-300 bg-cyan-500/10 border-cyan-500/20", avatar: "bg-cyan-500" },
-    Interview: { color: "text-rose-300 bg-rose-500/10 border-rose-500/20", avatar: "bg-rose-500" },
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (formData.title && formData.withWho) {
-      onAdd({
-        id: Date.now(),
-        time: formData.time,
-        day: formData.day,
-        title: formData.title,
-        withWho: formData.withWho,
-        type: formData.type,
-        typeColor: typeColors[formData.type].color,
-        avatarColor: typeColors[formData.type].avatar,
-        done: false,
-      });
-      setFormData({ time: "10:00 AM", day: "Today", title: "", withWho: "", type: "Technical" });
-    }
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      
-      {/* Modal */}
-      <div className="relative w-full md:w-xl max-h-[90vh] md:max-h-[85vh] bg-[#0a0e1a] border border-white/10 rounded-t-3xl md:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-white/[0.02]">
-          <h2 className="text-xl font-bold text-slate-100">Add Event</h2>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-slate-100 transition-colors p-1.5 rounded-lg hover:bg-white/5"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Content */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">Event Title</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="e.g., Mock Interview"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">With Who</label>
-            <input
-              type="text"
-              value={formData.withWho}
-              onChange={(e) => setFormData({ ...formData, withWho: e.target.value })}
-              placeholder="e.g., John Doe"
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Day</label>
-              <select
-                value={formData.day}
-                onChange={(e) => setFormData({ ...formData, day: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
-              >
-                <option>Today</option>
-                <option>Tomorrow</option>
-                <option>Friday</option>
-                <option>Saturday</option>
-                <option>Sunday</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-300 mb-2">Time</label>
-              <input
-                type="text"
-                value={formData.time}
-                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                placeholder="10:00 AM"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-2">Type</label>
-            <select
-              value={formData.type}
-              onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
-            >
-              <option>Technical</option>
-              <option>Career</option>
-              <option>System Design</option>
-              <option>Practice</option>
-              <option>Interview</option>
-            </select>
-          </div>
-        </form>
-
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-white/10 bg-white/[0.02] flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 text-center text-sm font-medium text-neutral-400 hover:text-slate-100 transition-colors py-2 rounded-lg border border-white/10 hover:border-white/20 hover:bg-white/5"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="flex-1 text-center text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors py-2 rounded-lg shadow-[0_0_20px_-4px_rgba(99,102,241,0.8)]"
-          >
-            Add Event
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FullCalendarModal({ isOpen, onClose, agendaItems }) {
-  if (!isOpen) return null;
-
-  const [currentDate, setCurrentDate] = React.useState(new Date());
-  const [showYearPicker, setShowYearPicker] = React.useState(false);
-  
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
-  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  const getFirstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-
-  const daysInMonth = getDaysInMonth(currentDate);
-  const firstDay = getFirstDayOfMonth(currentDate);
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const emptyDays = Array.from({ length: firstDay }, () => null);
-  const calendarDays = [...emptyDays, ...days];
-
-  const previousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
-  };
-
-  const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-  };
-
-  const selectYear = (year) => {
-    setCurrentDate(new Date(year, currentDate.getMonth()));
-    setShowYearPicker(false);
-  };
-
-  const getYearRange = () => {
-    const currentYear = currentDate.getFullYear();
-    const start = currentYear - 6;
-    const years = [];
-    for (let i = 0; i < 12; i++) {
-      years.push(start + i);
-    }
-    return years;
-  };
-
-  const hasEvent = (day) => {
-    return agendaItems.some(item => {
-      if (item.day === "Today") {
-        const today = new Date();
-        return today.getDate() === day && today.getMonth() === currentDate.getMonth() && today.getFullYear() === currentDate.getFullYear();
-      }
-      if (item.day === "Tomorrow") {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        return tomorrow.getDate() === day && tomorrow.getMonth() === currentDate.getMonth() && tomorrow.getFullYear() === currentDate.getFullYear();
-      }
-      return false;
-    });
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <div className="relative w-full md:w-2xl max-h-[90vh] md:max-h-[85vh] bg-[#0a0e1a] border border-white/10 rounded-t-3xl md:rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-white/[0.02]">
-          <div>
-            <h2 className="text-xl font-bold text-slate-100">Calendar</h2>
-            <p className="text-xs text-neutral-400 mt-1">{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-neutral-400 hover:text-slate-100 transition-colors p-1.5 rounded-lg hover:bg-white/5"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* Month and Year Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={previousMonth}
-              className="text-neutral-400 hover:text-slate-100 transition-colors p-2 rounded-lg hover:bg-white/5"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            
-            <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-cyan-300">{monthNames[currentDate.getMonth()]}</h3>
-              <div className="relative">
-                <button
-                  onClick={() => setShowYearPicker(!showYearPicker)}
-                  className="text-lg font-semibold text-cyan-300 px-3 py-1 rounded-lg border border-white/10 hover:border-white/20 hover:bg-white/5 transition-all"
-                >
-                  {currentDate.getFullYear()}
-                  <svg className={`h-4 w-4 inline ml-1 transition-transform ${showYearPicker ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                  </svg>
-                </button>
-                
-                {/* Year Picker Dropdown */}
-                {showYearPicker && (
-                  <div className="absolute top-full mt-2 right-0 bg-[#0a0e1a] border border-white/10 rounded-xl shadow-lg z-10 p-3 grid grid-cols-3 gap-2 w-48">
-                    {getYearRange().map((year) => (
-                      <button
-                        key={year}
-                        onClick={() => selectYear(year)}
-                        className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-                          year === currentDate.getFullYear()
-                            ? "bg-indigo-500 text-white shadow-[0_0_12px_-2px_rgba(99,102,241,0.4)]"
-                            : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-slate-100 border border-white/10"
-                        }`}
-                      >
-                        {year}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <button
-              onClick={nextMonth}
-              className="text-neutral-400 hover:text-slate-100 transition-colors p-2 rounded-lg hover:bg-white/5"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Day Headers */}
-          <div className="grid grid-cols-7 gap-2 mb-4">
-            {dayNames.map((day) => (
-              <div key={day} className="text-center text-xs font-semibold text-neutral-400 py-2">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-2">
-            {calendarDays.map((day, index) => (
-              <div
-                key={index}
-                className={`aspect-square flex items-center justify-center rounded-lg border text-sm font-medium transition-all ${
-                  day === null
-                    ? "bg-transparent border-transparent"
-                    : hasEvent(day)
-                    ? "bg-indigo-500/20 border-indigo-400/50 text-indigo-300 shadow-[0_0_12px_-2px_rgba(99,102,241,0.4)]"
-                    : "bg-white/5 border-white/10 text-neutral-400 hover:bg-white/10 hover:border-white/20 cursor-pointer"
-                }`}
-              >
-                {day}
-              </div>
-            ))}
-          </div>
-
-          {/* Upcoming Events */}
-          {agendaItems.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-white/10">
-              <h4 className="text-sm font-semibold text-cyan-300 mb-4 uppercase tracking-wide">Upcoming Events</h4>
-              <div className="space-y-3">
-                {agendaItems.map((item) => (
-                  <div key={item.id} className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10">
-                    <div className={`h-3 w-3 rounded-full shrink-0 mt-1 ${item.avatarColor}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white/90">{item.title}</p>
-                      <p className="text-xs text-neutral-400 mt-1">{item.day} • {item.time}</p>
-                    </div>
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded border whitespace-nowrap ${item.typeColor}`}>
-                      {item.type}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-white/10 bg-white/[0.02]">
-          <button
-            onClick={onClose}
-            className="w-full text-center text-sm font-medium text-neutral-400 hover:text-slate-100 transition-colors py-2 rounded-lg border border-white/10 hover:border-white/20 hover:bg-white/5"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Main Dashboard
 // ---------------------------------------------------------------------------
@@ -710,14 +365,25 @@ export default function InterviewPrepDashboard() {
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
-  const [isFullCalendarOpen, setIsFullCalendarOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isAddAgendaOpen, setIsAddAgendaOpen] = useState(false);
-  const [agendaList, setAgendaList] = useState(AGENDA);
+  const [customEvents, setCustomEvents] = useState({});
 
   const handleOpenDsa = (qId = null, category = "All") => {
     setInitialQuestionId(qId);
     setInitialCategory(category);
     setActiveView("dsa");
+  };
+
+  const handleAddEvent = (newEvent) => {
+    setCustomEvents((prev) => {
+      const dateKey = newEvent.date;
+      return {
+        ...prev,
+        [dateKey]: [...(prev[dateKey] || []), newEvent],
+      };
+    });
+    setIsAddAgendaOpen(false);
   };
 
   if (activeView === "dsa") {
@@ -771,22 +437,11 @@ export default function InterviewPrepDashboard() {
         onStartPractice={() => handleOpenDsa(null, "All")}
       />
 
-      {/* Add Agenda Modal */}
-      <AddAgendaModal
-        isOpen={isAddAgendaOpen}
-        onClose={() => setIsAddAgendaOpen(false)}
-        onAdd={(newItem) => {
-          setAgendaList([...agendaList, newItem]);
-          setIsAddAgendaOpen(false);
-        }}
-      />
+      {/* Calendar Modal */}
+      <CalendarModal isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)} customEvents={customEvents} />
 
-      {/* Full Calendar Modal */}
-      <FullCalendarModal
-        isOpen={isFullCalendarOpen}
-        onClose={() => setIsFullCalendarOpen(false)}
-        agendaItems={agendaList}
-      />
+      {/* Add Agenda Modal */}
+      <AddAgendaModal isOpen={isAddAgendaOpen} onClose={() => setIsAddAgendaOpen(false)} onAddEvent={handleAddEvent} />
 
       {/* signature accent hairline */}
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70" />
@@ -980,18 +635,16 @@ export default function InterviewPrepDashboard() {
                 </span>
               </div>
               <div>
-                {agendaList.map((item, i) => (
-                  <AgendaItem key={item.id} item={item} isLast={i === agendaList.length - 1} />
+                {AGENDA.map((item, i) => (
+                  <AgendaItem key={item.id} item={item} isLast={i === AGENDA.length - 1} />
                 ))}
               </div>
-              <div className="mt-3 space-y-2">
-                <button className="w-full text-center text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-400 transition-colors py-2 rounded-lg shadow-[0_0_20px_-4px_rgba(99,102,241,0.8)]" onClick={() => setIsAddAgendaOpen(true)}>
-                  + Add Agenda
-                </button>
-                <button className="w-full text-center text-xs font-medium text-indigo-300 hover:text-indigo-200 transition-colors py-2 rounded-lg border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5" onClick={() => setIsFullCalendarOpen(true)}>
-                  View full calendar
-                </button>
-              </div>
+              <button className="mt-2 w-full text-center text-xs font-medium text-cyan-300 hover:text-cyan-200 transition-colors py-2 rounded-lg border border-white/5 hover:border-cyan-500/30 hover:bg-cyan-500/5" onClick={() => setIsAddAgendaOpen(true)}>
+                + Add agenda
+              </button>
+              <button className="mt-2 w-full text-center text-xs font-medium text-indigo-300 hover:text-indigo-200 transition-colors py-2 rounded-lg border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5" onClick={() => setIsCalendarOpen(true)}>
+                View full calendar
+              </button>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/10 via-white/[0.02] to-transparent backdrop-blur-md p-5">
