@@ -54,6 +54,9 @@ export default function SettingsModal({ isOpen, onClose }) {
     setSettings((prev) => {
       const updated = { ...prev, [key]: value };
       localStorage.setItem("prepos_user_settings_v1", JSON.stringify(updated));
+      try {
+        window.dispatchEvent(new Event("storage"));
+      } catch (e) {}
       return updated;
     });
   };
@@ -189,6 +192,8 @@ export default function SettingsModal({ isOpen, onClose }) {
                     <option value="13px">13px (Default)</option>
                     <option value="14px">14px (Medium)</option>
                     <option value="16px">16px (Large)</option>
+                    <option value="18px">18px (Extra Large)</option>
+                    <option value="20px">20px (Huge)</option>
                   </select>
                 </div>
               </div>
@@ -251,6 +256,24 @@ export default function SettingsModal({ isOpen, onClose }) {
                   >
                     <div className="bg-slate-950 w-4 h-4 rounded-full shadow-md transform" />
                   </button>
+                </div>
+              </div>
+
+              {/* Live Preview Box */}
+              <div className="rounded-2xl border border-cyan-500/20 bg-black/40 p-4 space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-neutral-400">
+                  <span className="font-semibold text-cyan-300">Live Editor Size Preview ({settings.editorFontSize})</span>
+                  <span className="text-[10px] font-mono text-neutral-500">Updates Sandbox In Realtime</span>
+                </div>
+                <div
+                  className="p-3.5 rounded-xl bg-[#070b16] border border-white/10 font-mono text-slate-200 overflow-x-auto"
+                  style={{ fontSize: settings.editorFontSize || "13px" }}
+                >
+                  <div className="text-neutral-500">// Live size test preview</div>
+                  <div><span className="text-purple-400">function</span> <span className="text-cyan-400">solveProblem</span>(nums, target) &#123;</div>
+                  <div className="pl-4 text-emerald-400">const map = new Map();</div>
+                  <div className="pl-4 text-neutral-300"><span className="text-purple-400">return</span> map.get(target);</div>
+                  <div>&#125;</div>
                 </div>
               </div>
             </div>
