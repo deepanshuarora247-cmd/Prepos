@@ -235,7 +235,7 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
             )}
 
             {/* Buttons */}
-            <div className="flex gap-3 pt-7">
+            <div className="flex gap-3 pt-5">
               <button
                 type="button"
                 onClick={onClose}
