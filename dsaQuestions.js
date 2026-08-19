@@ -18,7 +18,11 @@ export const LOCAL_DSA_QUESTIONS = [
       cpp: `class Solution { public: vector<int> twoSum(vector<int>& nums, int target) { unordered_map<int, int> seen; for (int i = 0; i < nums.size(); i++) { if (seen.count(target - nums[i])) return {seen[target - nums[i]], i}; seen[nums[i]] = i; } return {}; } };`,
       java: `class Solution { public int[] twoSum(int[] nums, int target) { Map<Integer, Integer> seen = new HashMap<>(); for (int i = 0; i < nums.length; i++) { if (seen.containsKey(target - nums[i])) return new int[]{seen.get(target - nums[i]), i}; seen.put(nums[i], i); } return new int[]{}; } }`
     },
-    testCases: [{ input: "[2, 7, 11, 15], 9", expected: "[0, 1]" }]
+    testCases: [
+      { input: "nums = [2, 7, 11, 15], target = 9", expected: "[0, 1]" },
+      { input: "nums = [3, 2, 4], target = 6", expected: "[1, 2]" },
+      { input: "nums = [3, 3], target = 6", expected: "[0, 1]" }
+    ]
   },
   {
     id: "data-science",
@@ -40,7 +44,11 @@ cos(θ) = (A · B) / (||A|| * ||B||).`,
       cpp: `double cosineSimilarity(vector<double>& a, vector<double>& b) { return 0.9746; }`,
       java: `public double cosineSimilarity(double[] a, double[] b) { return 0.9746; }`
     },
-    testCases: [{ input: "[1,2,3], [4,5,6]", expected: "0.9746" }]
+    testCases: [
+      { input: "A = [1, 2, 3], B = [4, 5, 6]", expected: "0.9746" },
+      { input: "A = [1, 0, -1], B = [-1, 0, 1]", expected: "-1.0000" },
+      { input: "A = [3, 4], B = [3, 4]", expected: "1.0000" }
+    ]
   },
   {
     id: "ai-foundation",
@@ -62,7 +70,11 @@ Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V.`,
       cpp: `void attention() {}`,
       java: `public void attention() {}`
     },
-    testCases: [{ input: "q, k, v, 64", expected: "[0.5, 0.8]" }]
+    testCases: [
+      { input: "d_k = 64, Q = [1, 0], K = [1, 0], V = [0.5, 0.8]", expected: "[0.5, 0.8]" },
+      { input: "d_k = 1, Q = [[1, 0]], K = [[1, 0]], V = [[2, 3]]", expected: "[[2, 3]]" },
+      { input: "d_k = 1, Q = [[0, 1]], K = [[0, 1]], V = [[4, 5]]", expected: "[[4, 5]]" }
+    ]
   },
   {
     id: "devops",
@@ -83,7 +95,11 @@ Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V.`,
       cpp: `vector<string> parseFailingPods() { return {"api-1"}; }`,
       java: `public String[] parseFailingPods() { return new String[]{"api-1"}; }`
     },
-    testCases: [{ input: "logs", expected: '["api-1"]' }]
+    testCases: [
+      { input: 'logs = [{"pod": "api-1", "status": "CrashLoopBackOff"}]', expected: '["api-1"]' },
+      { input: 'logs = [{"pod": "auth-svc", "restarts": 4}, ...]', expected: '["auth-svc"]' },
+      { input: 'logs = [{"pod": "worker-1", "status": "Running"}]', expected: '[]' }
+    ]
   },
   {
     id: "operating-systems",
@@ -104,7 +120,11 @@ Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V.`,
       cpp: `class LRUCache { public: LRUCache(int capacity) {} int get(int key) { return -1; } void put(int key, int value) {} };`,
       java: `class LRUCache { public LRUCache(int capacity) {} public int get(int key) { return -1; } public void put(int key, int value) {} }`
     },
-    testCases: [{ input: "capacity = 2", expected: "-1" }]
+    testCases: [
+      { input: "capacity = 2, put(1, 1), put(2, 2), get(1)", expected: "1" },
+      { input: "capacity = 2, put(3, 3), get(2) [evicted]", expected: "-1" },
+      { input: "capacity = 2, put(4, 4), get(1) [evicted], get(3), get(4)", expected: "get(1): -1, get(3): 3, get(4): 4" }
+    ]
   },
   {
     id: "databases",
@@ -125,7 +145,11 @@ Attention(Q, K, V) = softmax(Q * K^T / sqrt(d_k)) * V.`,
       cpp: `// SQL: SELECT DISTINCT salary FROM Employee ORDER BY salary DESC LIMIT 1 OFFSET N-1;`,
       java: `// SQL query`
     },
-    testCases: [{ input: "N = 2", expected: "100" }]
+    testCases: [
+      { input: 'Employees = [100, 200, 300], N = 2', expected: "200" },
+      { input: 'Employees = [100, 200, 300], N = 1', expected: "300" },
+      { input: 'Employees = [100, 100], N = 3', expected: "null" }
+    ]
   }
 ];
 

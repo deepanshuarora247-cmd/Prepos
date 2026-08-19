@@ -31,10 +31,44 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
   const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [activeTab, setActiveTab] = useState("description"); // description | hints
-  const [consoleTab, setConsoleTab] = useState("testcases"); // testcases | output
   const [userCodeMap, setUserCodeMap] = useState({});
-  const [executionState, setExecutionState] = useState(null); // null | 'running' | 'success' | 'error'
-  const [executionDetails, setExecutionDetails] = useState(null);
+
+  // User preferences & settings state
+  const [editorSettings, setEditorSettings] = useState(() => {
+    const saved = localStorage.getItem("prepos_user_settings_v1");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return {
+      defaultLanguage: "javascript",
+      editorFontSize: "13px",
+      keybinding: "standard",
+      tabSize: "2",
+      lineNumbers: true,
+      autoCloseBrackets: true,
+    };
+  });
+
+  // Re-read settings whenever window gains focus or storage changes
+  useEffect(() => {
+    const handleStorage = () => {
+      const saved = localStorage.getItem("prepos_user_settings_v1");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setEditorSettings(parsed);
+        } catch (e) {}
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("focus", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("focus", handleStorage);
+    };
+  }, []);
 
   const debounceTimerRef = useRef(null);
 
@@ -101,36 +135,6 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
         [selectedLanguage]: activeQuestion.starterCode[selectedLanguage],
       },
     }));
-  };
-
-  const handleRunCode = (isSubmit = false) => {
-    if (!activeQuestion) return;
-    setExecutionState("running");
-    setConsoleTab("output");
-
-    setTimeout(() => {
-      const runtime = Math.floor(Math.random() * 35) + 25;
-      const memory = (Math.random() * 4 + 38).toFixed(1);
-      const passedCount = activeQuestion.testCases.length;
-
-      setExecutionState("success");
-      setExecutionDetails({
-        status: isSubmit ? "Accepted" : "Finished",
-        runtime: `${runtime} ms`,
-        runtimeBeats: `${(85 + Math.random() * 12).toFixed(1)}%`,
-        memory: `${memory} MB`,
-        memoryBeats: `${(70 + Math.random() * 20).toFixed(1)}%`,
-        passed: `${passedCount}/${passedCount} test cases passed`,
-        isSubmit,
-        outputLogs: `stdout:\nInput: ${activeQuestion.testCases[0]?.input || "N/A"}\nOutput: ${activeQuestion.testCases[0]?.expected || "N/A"}\nStatus: PASS`,
-      });
-
-      if (isSubmit) {
-        setQuestions((prev) =>
-          prev.map((q) => (q.id === activeQuestion.id ? { ...q, solved: true } : q))
-        );
-      }
-    }, 600);
   };
 
   const categories = ["All", "DSA", "Data Science", "AI & Foundation", "DevOps", "Operating Systems", "Databases"];
@@ -527,118 +531,106 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
               </div>
             </div>
 
-            {/* Code Textarea Area */}
-            <div className="flex-1 relative flex font-mono text-xs overflow-hidden bg-[#070b16]">
+            {/* Code Textarea Area with Dynamic Editor Font Size */}
+            <div
+              className="flex-1 relative flex font-mono overflow-hidden bg-[#070b16]"
+              style={{ fontSize: editorSettings.editorFontSize || "13px" }}
+            >
               {/* Line Numbers */}
-              <div className="w-10 py-4 bg-[#0a0e1c] border-r border-white/5 text-neutral-600 text-right pr-3 select-none leading-relaxed">
-                {currentCode.split("\n").map((_, i) => (
-                  <div key={i}>{i + 1}</div>
-                ))}
-              </div>
+              {editorSettings.lineNumbers !== false && (
+                <div
+                  className="w-12 py-4 bg-[#0a0e1c] border-r border-white/5 text-neutral-600 text-right pr-3.5 select-none leading-relaxed overflow-hidden shrink-0"
+                  style={{ fontSize: editorSettings.editorFontSize || "13px" }}
+                >
+                  {currentCode.split("\n").map((_, i) => (
+                    <div key={i}>{i + 1}</div>
+                  ))}
+                </div>
+              )}
 
               {/* Textarea */}
               <textarea
                 value={currentCode}
                 onChange={(e) => handleCodeChange(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Tab") {
+                    e.preventDefault();
+                    const spaces = " ".repeat(Number(editorSettings.tabSize) || 2);
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    const val = e.target.value;
+                    const updated = val.substring(0, start) + spaces + val.substring(end);
+                    handleCodeChange(updated);
+                    setTimeout(() => {
+                      e.target.selectionStart = e.target.selectionEnd = start + spaces.length;
+                    }, 0);
+                  } else if (editorSettings.autoCloseBrackets) {
+                    const pairs = { "(": ")", "[": "]", "{": "}", '"': '"', "'": "'" };
+                    if (pairs[e.key]) {
+                      const start = e.target.selectionStart;
+                      const end = e.target.selectionEnd;
+                      if (start === end) {
+                        e.preventDefault();
+                        const val = e.target.value;
+                        const closing = pairs[e.key];
+                        const updated = val.substring(0, start) + e.key + closing + val.substring(end);
+                        handleCodeChange(updated);
+                        setTimeout(() => {
+                          e.target.selectionStart = e.target.selectionEnd = start + 1;
+                        }, 0);
+                      }
+                    }
+                  }
+                }}
                 spellCheck={false}
+                style={{
+                  fontSize: editorSettings.editorFontSize || "13px",
+                  tabSize: Number(editorSettings.tabSize) || 2,
+                  MozTabSize: Number(editorSettings.tabSize) || 2,
+                }}
                 className="flex-1 p-4 bg-transparent text-slate-100 placeholder-neutral-600 font-mono leading-relaxed focus:outline-none resize-none overflow-y-auto"
               />
             </div>
 
-            {/* Bottom Console / Output Panel */}
-            <div className="h-56 border-t border-white/10 bg-[#090d19] flex flex-col">
-              {/* Console Tabs & Actions */}
-              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/[0.02]">
-                <div className="flex items-center gap-2 text-xs">
-                  <button
-                    onClick={() => setConsoleTab("testcases")}
-                    className={`px-3 py-1 rounded font-medium transition-colors ${
-                      consoleTab === "testcases" ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white"
-                    }`}
-                  >
-                    Testcases
-                  </button>
-                  <button
-                    onClick={() => setConsoleTab("output")}
-                    className={`px-3 py-1 rounded font-medium transition-colors ${
-                      consoleTab === "output" ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white"
-                    }`}
-                  >
-                    Result / Output
-                  </button>
+            {/* Bottom Testcases Panel */}
+            <div className="h-64 border-t border-white/10 bg-[#090d19] flex flex-col shrink-0">
+              <div className="flex items-center justify-between px-5 py-2.5 border-b border-white/10 bg-white/[0.02]">
+                <div className="flex items-center gap-2 text-xs text-neutral-300 font-semibold">
+                  <Terminal className="h-4 w-4 text-indigo-400" />
+                  <span className="tracking-wide">Test Cases ({activeQuestion.testCases.length})</span>
                 </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleRunCode(false)}
-                    disabled={executionState === "running"}
-                    className="flex items-center gap-1.5 text-xs font-medium text-neutral-200 bg-white/10 hover:bg-white/15 border border-white/10 px-3.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                  >
-                    <Play className="h-3 w-3" />
-                    Run Code
-                  </button>
-                  <button
-                    onClick={() => handleRunCode(true)}
-                    disabled={executionState === "running"}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/30 px-4 py-1.5 rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Submit Solution
-                  </button>
-                </div>
+                <span className="text-[11px] text-neutral-500 font-mono">3 Sample Cases</span>
               </div>
 
-              {/* Console Tab Content */}
-              <div className="flex-1 p-4 overflow-y-auto font-mono text-xs">
-                {consoleTab === "testcases" ? (
-                  <div className="space-y-3">
-                    <div className="text-[11px] text-neutral-400">Default Test Cases:</div>
-                    <div className="flex gap-2">
-                      {activeQuestion.testCases.map((tc, idx) => (
-                        <div key={idx} className="rounded-lg border border-white/10 bg-black/30 p-2.5 flex-1 space-y-1">
-                          <div className="text-[10px] text-neutral-500">Case {idx + 1}:</div>
-                          <div className="text-cyan-300 text-[11px] truncate">{tc.input}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : executionState === "running" ? (
-                  <div className="flex items-center justify-center h-full text-indigo-400 gap-2">
-                    <div className="h-4 w-4 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
-                    Executing test cases against sandbox runner...
-                  </div>
-                ) : executionDetails ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-emerald-400 flex items-center gap-1.5">
-                        <CheckCircle2 className="h-5 w-5" />
-                        {executionDetails.status}
+              {/* Testcases Vertical Content */}
+              <div className="flex-1 p-4 overflow-y-auto space-y-3.5">
+                {activeQuestion.testCases.map((tc, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-indigo-500/40 transition-all p-4 space-y-3 shadow-md"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-indigo-300 bg-indigo-500/10 px-2.5 py-0.5 rounded-md border border-indigo-500/20">
+                        Case {idx + 1}
                       </span>
-                      <span className="text-xs text-neutral-400">{executionDetails.passed}</span>
+                      <span className="text-[10px] text-neutral-500 uppercase tracking-wider font-mono">Sample Testcase</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 max-w-sm">
-                      <div className="rounded-lg border border-white/10 bg-white/5 p-2.5">
-                        <div className="text-[10px] text-neutral-500">Runtime</div>
-                        <div className="text-sm font-bold text-white mt-0.5">{executionDetails.runtime}</div>
-                        <div className="text-[10px] text-emerald-400">Beats {executionDetails.runtimeBeats}</div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+                      <div className="rounded-xl bg-black/40 border border-white/5 p-3">
+                        <div className="text-[10px] font-sans text-neutral-400 mb-1 font-semibold uppercase tracking-wider">Input</div>
+                        <div className="text-cyan-300 text-xs break-all leading-relaxed">{tc.input}</div>
                       </div>
-                      <div className="rounded-lg border border-white/10 bg-white/5 p-2.5">
-                        <div className="text-[10px] text-neutral-500">Memory</div>
-                        <div className="text-sm font-bold text-white mt-0.5">{executionDetails.memory}</div>
-                        <div className="text-[10px] text-indigo-400">Beats {executionDetails.memoryBeats}</div>
-                      </div>
-                    </div>
 
-                    <pre className="p-3 rounded-lg border border-white/10 bg-black/40 text-neutral-300 text-[11px] whitespace-pre-wrap">
-                      {executionDetails.outputLogs}
-                    </pre>
+                      {tc.expected && (
+                        <div className="rounded-xl bg-black/40 border border-white/5 p-3">
+                          <div className="text-[10px] font-sans text-neutral-400 mb-1 font-semibold uppercase tracking-wider">Expected Output</div>
+                          <div className="text-emerald-400 text-xs break-all leading-relaxed font-semibold">{tc.expected}</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <div className="text-neutral-500 text-center py-6">
-                    Click "Run Code" or "Submit Solution" to see execution results.
-                  </div>
-                )}
+                ))}
               </div>
             </div>
           </div>
