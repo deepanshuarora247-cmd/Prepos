@@ -6,14 +6,10 @@ import {
   Circle,
   Play,
   ArrowLeft,
-  Terminal,
-  Sparkles,
   ChevronRight,
   RotateCcw,
-  BookOpen,
   Building2,
   Lightbulb,
-  Check,
   Flame,
   Award,
   Globe,
@@ -31,10 +27,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
   const [categoryFilter, setCategoryFilter] = useState(initialCategory);
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [activeTab, setActiveTab] = useState("description"); // description | hints
-  const [consoleTab, setConsoleTab] = useState("testcases"); // testcases | output
   const [userCodeMap, setUserCodeMap] = useState({});
-  const [executionState, setExecutionState] = useState(null); // null | 'running' | 'success' | 'error'
-  const [executionDetails, setExecutionDetails] = useState(null);
 
   const debounceTimerRef = useRef(null);
 
@@ -103,35 +96,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
     }));
   };
 
-  const handleRunCode = (isSubmit = false) => {
-    if (!activeQuestion) return;
-    setExecutionState("running");
-    setConsoleTab("output");
 
-    setTimeout(() => {
-      const runtime = Math.floor(Math.random() * 35) + 25;
-      const memory = (Math.random() * 4 + 38).toFixed(1);
-      const passedCount = activeQuestion.testCases.length;
-
-      setExecutionState("success");
-      setExecutionDetails({
-        status: isSubmit ? "Accepted" : "Finished",
-        runtime: `${runtime} ms`,
-        runtimeBeats: `${(85 + Math.random() * 12).toFixed(1)}%`,
-        memory: `${memory} MB`,
-        memoryBeats: `${(70 + Math.random() * 20).toFixed(1)}%`,
-        passed: `${passedCount}/${passedCount} test cases passed`,
-        isSubmit,
-        outputLogs: `stdout:\nInput: ${activeQuestion.testCases[0]?.input || "N/A"}\nOutput: ${activeQuestion.testCases[0]?.expected || "N/A"}\nStatus: PASS`,
-      });
-
-      if (isSubmit) {
-        setQuestions((prev) =>
-          prev.map((q) => (q.id === activeQuestion.id ? { ...q, solved: true } : q))
-        );
-      }
-    }, 600);
-  };
 
   const categories = ["All", "DSA", "Data Science", "AI & Foundation", "DevOps", "Operating Systems", "Databases"];
 
@@ -545,100 +510,27 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
               />
             </div>
 
-            {/* Bottom Console / Output Panel */}
-            <div className="h-56 border-t border-white/10 bg-[#090d19] flex flex-col">
-              {/* Console Tabs & Actions */}
+            {/* Bottom Test Cases Panel */}
+            <div className="h-52 border-t border-white/10 bg-[#090d19] flex flex-col">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/[0.02]">
-                <div className="flex items-center gap-2 text-xs">
-                  <button
-                    onClick={() => setConsoleTab("testcases")}
-                    className={`px-3 py-1 rounded font-medium transition-colors ${
-                      consoleTab === "testcases" ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white"
-                    }`}
-                  >
-                    Testcases
-                  </button>
-                  <button
-                    onClick={() => setConsoleTab("output")}
-                    className={`px-3 py-1 rounded font-medium transition-colors ${
-                      consoleTab === "output" ? "bg-white/10 text-white" : "text-neutral-400 hover:text-white"
-                    }`}
-                  >
-                    Result / Output
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleRunCode(false)}
-                    disabled={executionState === "running"}
-                    className="flex items-center gap-1.5 text-xs font-medium text-neutral-200 bg-white/10 hover:bg-white/15 border border-white/10 px-3.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
-                  >
-                    <Play className="h-3 w-3" />
-                    Run Code
-                  </button>
-                  <button
-                    onClick={() => handleRunCode(true)}
-                    disabled={executionState === "running"}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/30 px-4 py-1.5 rounded-lg shadow-[0_0_16px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Submit Solution
-                  </button>
+                <div className="flex items-center gap-2 text-xs font-semibold text-neutral-300">
+                  <span>Test Cases</span>
                 </div>
               </div>
 
-              {/* Console Tab Content */}
+              {/* Test Cases Content */}
               <div className="flex-1 p-4 overflow-y-auto font-mono text-xs">
-                {consoleTab === "testcases" ? (
-                  <div className="space-y-3">
-                    <div className="text-[11px] text-neutral-400">Default Test Cases:</div>
-                    <div className="flex gap-2">
-                      {activeQuestion.testCases.map((tc, idx) => (
-                        <div key={idx} className="rounded-lg border border-white/10 bg-black/30 p-2.5 flex-1 space-y-1">
-                          <div className="text-[10px] text-neutral-500">Case {idx + 1}:</div>
-                          <div className="text-cyan-300 text-[11px] truncate">{tc.input}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : executionState === "running" ? (
-                  <div className="flex items-center justify-center h-full text-indigo-400 gap-2">
-                    <div className="h-4 w-4 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
-                    Executing test cases against sandbox runner...
-                  </div>
-                ) : executionDetails ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-lg font-bold text-emerald-400 flex items-center gap-1.5">
-                        <CheckCircle2 className="h-5 w-5" />
-                        {executionDetails.status}
-                      </span>
-                      <span className="text-xs text-neutral-400">{executionDetails.passed}</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 max-w-sm">
-                      <div className="rounded-lg border border-white/10 bg-white/5 p-2.5">
-                        <div className="text-[10px] text-neutral-500">Runtime</div>
-                        <div className="text-sm font-bold text-white mt-0.5">{executionDetails.runtime}</div>
-                        <div className="text-[10px] text-emerald-400">Beats {executionDetails.runtimeBeats}</div>
+                <div className="space-y-3">
+                  <div className="text-[11px] text-neutral-400">Default Test Cases:</div>
+                  <div className="flex gap-2 flex-wrap">
+                    {activeQuestion.testCases.map((tc, idx) => (
+                      <div key={idx} className="rounded-lg border border-white/10 bg-black/30 p-2.5 flex-1 min-w-[200px] space-y-1">
+                        <div className="text-[10px] text-neutral-500">Case {idx + 1}:</div>
+                        <div className="text-cyan-300 text-[11px] truncate">{tc.input}</div>
                       </div>
-                      <div className="rounded-lg border border-white/10 bg-white/5 p-2.5">
-                        <div className="text-[10px] text-neutral-500">Memory</div>
-                        <div className="text-sm font-bold text-white mt-0.5">{executionDetails.memory}</div>
-                        <div className="text-[10px] text-indigo-400">Beats {executionDetails.memoryBeats}</div>
-                      </div>
-                    </div>
-
-                    <pre className="p-3 rounded-lg border border-white/10 bg-black/40 text-neutral-300 text-[11px] whitespace-pre-wrap">
-                      {executionDetails.outputLogs}
-                    </pre>
+                    ))}
                   </div>
-                ) : (
-                  <div className="text-neutral-500 text-center py-6">
-                    Click "Run Code" or "Submit Solution" to see execution results.
-                  </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

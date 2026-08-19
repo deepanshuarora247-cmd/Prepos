@@ -14,9 +14,9 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
   const [formData, setFormData] = useState({
     title: "",
     withWho: "",
-    date: new Date().toISOString().split("T")[0],
-    time: "10:00 AM",
-    type: "Technical",
+    date: "",
+    time: "",
+    type: "Select",
   });
 
   const [error, setError] = useState("");
@@ -43,12 +43,22 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.title.trim() || !formData.withWho.trim()) {
-      setError("Please fill in all fields");
+    if (
+      !formData.title.trim() ||
+      !formData.withWho.trim() ||
+      !formData.date ||
+      !formData.time.trim() ||
+      !formData.type ||
+      formData.type === "Select"
+    ) {
+      setError("Please fill in all fields and select an event type");
       return;
     }
 
-    const selectedType = EVENT_TYPES.find((t) => t.label === formData.type);
+    const selectedType = EVENT_TYPES.find((t) => t.label === formData.type) || {
+      color: "text-indigo-300 bg-indigo-500/10 border-indigo-500/20",
+      avatarColor: "bg-indigo-500",
+    };
 
     const newEvent = {
       id: `event-${Date.now()}`,
@@ -65,16 +75,19 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
     setFormData({
       title: "",
       withWho: "",
-      date: new Date().toISOString().split("T")[0],
-      time: "10:00 AM",
-      type: "Technical",
+      date: "",
+      time: "",
+      type: "Select",
     });
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      onClick={onClose}
+    >
       <style>{`
         select option {
           background-color: #0a0e1a;
@@ -89,17 +102,29 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
           color: #ffffff;
         }
       `}</style>
-      <div className="relative rounded-3xl border border-white/10 bg-[#0a0e1a] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] w-full max-w-md">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 z-10 p-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors"
-        >
-          <X className="h-5 w-5" />
-        </button>
+      <div
+        className="relative rounded-3xl border border-indigo-500/20 bg-[#0a0e1a] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(99,102,241,0.3)] w-full max-w-md max-h-[85vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Ambient Glows */}
+        <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-44 w-80 rounded-full bg-indigo-600/25 blur-[90px]" />
+        <div className="pointer-events-none absolute -bottom-20 right-0 h-40 w-40 rounded-full bg-cyan-600/15 blur-[80px]" />
 
-        <div className="p-8">
-          <h2 className="text-2xl font-bold text-slate-100 mb-6">Add New Event</h2>
+        <div className="p-8 relative z-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-slate-100">Add New Event</h2>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="p-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors cursor-pointer"
+              title="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Event Title */}
@@ -172,18 +197,27 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
                   onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
                   className="w-full px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-slate-100 focus:border-cyan-400/50 focus:bg-white/[0.08] focus:outline-none transition-colors text-sm flex items-center justify-between hover:border-white/20 hover:bg-white/[0.08]"
                 >
-                  <span>{formData.type}</span>
+                  <span className={formData.type === "Select" ? "text-neutral-400" : "text-slate-100"}>
+                    {formData.type}
+                  </span>
                   <ChevronDown className={`h-4 w-4 text-neutral-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {isTypeDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 rounded-lg border border-white/10 bg-[#0f1419] backdrop-blur-md shadow-lg z-10">
+                  <div className="absolute top-full left-0 right-0 mt-1 rounded-xl border border-indigo-500/30 bg-[#0f1419]/95 backdrop-blur-xl shadow-[0_15px_35px_-5px_rgba(0,0,0,0.8)] z-20 max-h-48 overflow-y-auto">
+                    <button
+                      type="button"
+                      onClick={() => handleTypeSelect("Select")}
+                      className="w-full text-left px-4 py-2.5 text-sm text-neutral-400 hover:bg-white/10 hover:text-slate-100 transition-colors first:rounded-t-xl border-b border-white/5"
+                    >
+                      Select
+                    </button>
                     {EVENT_TYPES.map((type) => (
                       <button
                         key={type.label}
                         type="button"
                         onClick={() => handleTypeSelect(type.label)}
-                        className="w-full text-left px-4 py-2.5 text-sm text-slate-100 hover:bg-white/10 transition-colors first:rounded-t-lg last:rounded-b-lg border-b border-white/5 last:border-b-0"
+                        className="w-full text-left px-4 py-2.5 text-sm text-slate-100 hover:bg-indigo-600/20 hover:text-indigo-200 transition-colors last:rounded-b-xl border-b border-white/5 last:border-b-0"
                       >
                         {type.label}
                       </button>

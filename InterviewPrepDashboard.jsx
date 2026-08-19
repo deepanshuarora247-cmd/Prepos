@@ -569,8 +569,8 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Categories Nav with Minimal Professional Hover Unordered List on COURSES */}
-        <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-visible hide-scrollbar relative">
+        {/* Categories Nav */}
+        <nav className="flex items-center gap-8 mb-8 border-b border-white/10 overflow-x-auto hide-scrollbar relative">
           {[
             { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
             { id: "courses", label: "Courses", action: () => setActiveView("courses") },
@@ -581,68 +581,20 @@ export default function InterviewPrepDashboard() {
             { id: "leaderboard", label: "Leaderboard", action: () => setActiveView("leaderboard") },
             { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
           ].map((cat) => (
-            cat.id === "courses" ? (
-              <div key={cat.id} className="relative group pb-4">
-                <button
-                  onClick={cat.action}
-                  className={`flex items-center gap-1.5 text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeView === "courses"
-                      ? "text-slate-100"
-                      : "text-neutral-400 hover:text-slate-200"
-                  }`}
-                >
-                  <span>{cat.label}</span>
-                  <ChevronDown className="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" />
-                </button>
-                {activeView === "courses" && (
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                )}
-
-                {/* Minimal Professional Glassmorphic Hover Unordered List Dropdown */}
-                <ul className="absolute left-0 top-full mt-0 w-64 rounded-2xl border border-white/10 bg-[#090d19]/95 backdrop-blur-2xl p-2 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 space-y-0.5">
-                  <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-neutral-500 border-b border-white/5 mb-1 flex items-center justify-between">
-                    <span>Course Tracks & Domains</span>
-                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  </div>
-
-                  {[
-                    { name: "DSA", desc: "Algorithms & Data Structures", cat: "DSA" },
-                    { name: "Data Science", desc: "Statistics, Pandas & Analytics", cat: "Data Science" },
-                    { name: "AI & Foundation", desc: "LLMs, Neural Networks & PyTorch", cat: "AI & Foundation" },
-                    { name: "DevOps", desc: "Docker, Kubernetes & CI/CD", cat: "DevOps" },
-                    { name: "Operating Systems", desc: "Concurrency, Threads & Linux", cat: "Operating Systems" },
-                    { name: "Databases", desc: "SQL, Indexing & NoSQL Sharding", cat: "Databases" },
-                  ].map((item) => (
-                    <li key={item.name} className="list-none">
-                      <button
-                        onClick={() => handleOpenDsa(null, item.cat)}
-                        className="w-full text-left px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-white/[0.06] border border-transparent group/item"
-                      >
-                        <div className="text-xs font-semibold text-slate-100 group-hover/item:text-cyan-300 transition-colors">
-                          {item.name}
-                        </div>
-                        <p className="text-[10px] text-neutral-400 mt-0.5">{item.desc}</p>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              <button
-                key={cat.id}
-                onClick={cat.action}
-                className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
-                  activeView === cat.id
-                    ? "text-slate-100"
-                    : "text-neutral-400 hover:text-slate-200"
-                }`}
-              >
-                {cat.label}
-                {activeView === cat.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                )}
-              </button>
-            )
+            <button
+              key={cat.id}
+              onClick={cat.action}
+              className={`relative text-sm font-medium whitespace-nowrap transition-colors pb-4 ${
+                activeView === cat.id
+                  ? "text-slate-100"
+                  : "text-neutral-400 hover:text-slate-200"
+              }`}
+            >
+              {cat.label}
+              {activeView === cat.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+              )}
+            </button>
           ))}
         </nav>
 
@@ -782,7 +734,7 @@ export default function InterviewPrepDashboard() {
               <div className="mt-3.5 flex items-center justify-between gap-1 pt-3 border-t border-white/5">
                 {[
                   { day: "M", q: 5, active: true },
-                  { day: "T", q: 6, active: true, today: true },
+                  { day: "T", q: 6, active: true },
                   { day: "W", q: 4, active: true },
                   { day: "T", q: 7, active: true },
                   { day: "F", q: 5, active: true },

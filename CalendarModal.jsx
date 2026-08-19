@@ -162,36 +162,6 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   const selectedDateEvents =
     selectedDate && mergedEvents[selectedDate] ? mergedEvents[selectedDate] : [];
 
-  // Get upcoming events (next 7 days)
-  const getUpcomingEvents = () => {
-    const upcoming = [];
-    const currentDate = new Date();
-
-    for (let i = 0; i < 14; i++) {
-      const date = new Date(currentDate);
-      date.setDate(date.getDate() + i);
-      const dateKey = date.toISOString().split("T")[0];
-
-      if (mergedEvents[dateKey]) {
-        mergedEvents[dateKey].forEach((event) => {
-          upcoming.push({
-            ...event,
-            date: dateKey,
-            dateDisplay: date.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              weekday: "short",
-            }),
-          });
-        });
-      }
-    }
-
-    return upcoming;
-  };
-
-  const upcomingEvents = useMemo(getUpcomingEvents, [mergedEvents]);
-
   const isToday = (year, month, day) => {
     const checkDate = new Date(year, month, day);
     const todayDate = new Date();
@@ -205,8 +175,8 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="relative rounded-3xl border border-white/10 bg-[#0a0e1a] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="relative rounded-3xl border border-white/10 bg-[#0a0e1a] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] max-w-5xl w-full max-h-[90vh] overflow-y-auto">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -215,12 +185,17 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
           <X className="h-5 w-5" />
         </button>
 
-        <div className="p-8">
-          <h2 className="text-2xl font-bold text-slate-100 mb-6">Full Calendar</h2>
+        <div className="p-6 md:p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-100">Full Calendar</h2>
+              <p className="text-xs text-neutral-400 mt-0.5">Select any date on the calendar to view its scheduled sessions</p>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Calendar Grid */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-7">
               {/* Month & Year Navigation */}
               <div className="flex items-center justify-between mb-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
                 <button
@@ -331,90 +306,69 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
               </div>
             </div>
 
-            {/* Right Sidebar */}
-            <div className="lg:col-span-2 flex flex-col gap-6">
-              {/* Events for selected date */}
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-5">
-                <h3 className="text-sm font-semibold text-white/90 mb-4">
-                  {selectedDate
-                    ? new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
-                        weekday: "long",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                    : "Select a date"}
-                </h3>
+            {/* Right Sidebar - Selected Date Events */}
+            <div className="lg:col-span-5 flex flex-col">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6 h-full flex flex-col">
+                <div className="border-b border-white/10 pb-4 mb-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">Scheduled Sessions</span>
+                    <h3 className="text-sm font-semibold text-white/90 mt-0.5">
+                      {selectedDate
+                        ? new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
+                        : "Select a date"}
+                    </h3>
+                  </div>
+                  {selectedDateEvents.length > 0 && (
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                      {selectedDateEvents.length} {selectedDateEvents.length === 1 ? "Event" : "Events"}
+                    </span>
+                  )}
+                </div>
 
                 {selectedDateEvents.length > 0 ? (
-                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                  <div className="space-y-3 overflow-y-auto max-h-[420px] pr-1">
                     {selectedDateEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="p-3 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.08] transition-colors"
+                        className="p-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/20 transition-all"
                       >
-                        <div className="flex items-start gap-2 mb-2">
-                          <div
-                            className={`h-6 w-6 rounded-full shrink-0 flex items-center justify-center text-[9px] font-semibold text-white ${event.avatarColor} ring-2 ring-[#0a0e1a]`}
-                          >
-                            {event.withWho
-                              .split(" ")
-                              .map((w) => w[0])
-                              .join("")
-                              .slice(0, 2)}
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`h-6 w-6 rounded-full shrink-0 flex items-center justify-center text-[9px] font-semibold text-white ${event.avatarColor} ring-2 ring-[#0a0e1a]`}
+                            >
+                              {event.withWho
+                                .split(" ")
+                                .map((w) => w[0])
+                                .join("")
+                                .slice(0, 2)}
+                            </div>
+                            <span className="text-xs text-neutral-300 font-medium">{event.withWho}</span>
                           </div>
-                          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${event.typeColor}`}>
+                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${event.typeColor}`}>
                             {event.type}
                           </span>
                         </div>
-                        <p className="text-xs font-medium text-white/90 leading-tight mb-1">
+                        <p className="text-sm font-semibold text-white/95 leading-tight mb-2">
                           {event.title}
                         </p>
-                        <div className="flex items-center gap-2 text-[10px] text-neutral-500">
-                          <span>{event.withWho}</span>
-                          <span className="h-0.5 w-0.5 rounded-full bg-neutral-600" />
-                          <span>{event.time}</span>
+                        <div className="flex items-center gap-2 text-xs text-neutral-400 pt-2 border-t border-white/5 font-mono">
+                          <span>🕒 {event.time}</span>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-neutral-500 italic">
-                    {selectedDate ? "No events scheduled" : "Choose a date to view events"}
-                  </p>
-                )}
-              </div>
-
-              {/* Upcoming Events */}
-              <div className="rounded-xl border border-white/10 bg-gradient-to-br from-indigo-500/10 via-white/[0.02] to-transparent backdrop-blur-md p-5">
-                <h3 className="text-sm font-semibold text-indigo-300 mb-4">Upcoming Events</h3>
-                {upcomingEvents.length > 0 ? (
-                  <div className="space-y-2.5 max-h-80 overflow-y-auto">
-                    {upcomingEvents.slice(0, 10).map((event) => (
-                      <div
-                        key={event.id}
-                        className="p-2.5 rounded-lg border border-white/10 bg-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer"
-                        onClick={() => setSelectedDate(event.date)}
-                      >
-                        <div className="flex items-start gap-2 mb-1">
-                          <div className="flex-1">
-                            <p className="text-xs font-medium text-white/90">{event.title}</p>
-                            <p className="text-[10px] text-cyan-300 font-medium">{event.dateDisplay}</p>
-                          </div>
-                          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded border whitespace-nowrap ${event.typeColor}`}>
-                            {event.type}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-[10px] text-neutral-500">
-                          <span>{event.withWho}</span>
-                          <span>•</span>
-                          <span>{event.time}</span>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-white/10 rounded-xl my-auto">
+                    <p className="text-xs text-neutral-400">
+                      {selectedDate ? "No events scheduled for this day." : "Choose a date on the calendar to view details."}
+                    </p>
                   </div>
-                ) : (
-                  <p className="text-xs text-neutral-500 italic">No upcoming events</p>
                 )}
               </div>
             </div>
