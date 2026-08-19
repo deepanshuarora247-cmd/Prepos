@@ -11,7 +11,7 @@
 @media print {
   body {
     background: #ffffff !important;
-    color: #000000 !important;
+    color: #e82b2b !important;
   }
   header, nav, button, select, .no-print, [class*="pointer-events-none"] {
     display: none !important;
