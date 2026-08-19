@@ -239,7 +239,7 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-white/10 bg-white/5 text-neutral-300 hover:text-slate-100 hover:border-white/20 transition-colors font-medium text-sm"
+                className="flex-1 px-5 py-2.5 rounded-lg border border-white/10 bg-white/5 text-neutral-300 hover:text-slate-100 hover:border-white/20 transition-colors font-medium text-sm"
               >
                 Cancel
               </button>
