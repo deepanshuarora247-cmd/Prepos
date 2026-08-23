@@ -907,6 +907,66 @@ export default function InterviewPrepDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Footer Section */}
+        <footer className="dashboard-footer">
+          <div className="footer-top">
+            <div className="footer-brand">
+              <div className="footer-brand-logo" onClick={() => setActiveView("dashboard")}>
+                <svg viewBox="0 0 58 34">
+                  <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(56,189,248,0.8))" }} />
+                  <circle cx="29" cy="22" r="7.5" fill="none" stroke="#eab308" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(234,179,8,0.8))" }} />
+                  <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(244,63,94,0.8))" }} />
+                </svg>
+                <span>PrepOS</span>
+              </div>
+              <p className="footer-brand-desc">
+                PrepOS is an premium developer-centric environment built to help software engineers master technical loops, system design, behavioral mocks, and resume evaluation.
+              </p>
+            </div>
+
+            <div className="footer-col">
+              <h4>Practice Areas</h4>
+              <ul>
+                <li><button onClick={() => handleOpenDsa(null, "All")} style={{ cursor: "pointer" }}>DSA Sandbox</button></li>
+                <li><button onClick={() => setActiveView("sysdesign")} style={{ cursor: "pointer" }}>System Design</button></li>
+                <li><button onClick={() => setActiveView("behavioral")} style={{ cursor: "pointer" }}>Behavioral AI</button></li>
+                <li><button onClick={() => setActiveView("aptitude")} style={{ cursor: "pointer" }}>Aptitude Drills</button></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <h4>Resources</h4>
+              <ul>
+                <li><button onClick={() => setActiveView("courses")} style={{ cursor: "pointer" }}>Masterclass Courses</button></li>
+                <li><button onClick={() => setActiveView("tutorials")} style={{ cursor: "pointer" }}>Cheat Sheets</button></li>
+                <li><button onClick={() => setActiveView("roadmap")} style={{ cursor: "pointer" }}>Prep Roadmap</button></li>
+                <li><button onClick={() => setActiveView("leaderboard")} style={{ cursor: "pointer" }}>Peer Leaderboard</button></li>
+              </ul>
+            </div>
+
+            <div className="footer-col">
+              <h4>Company</h4>
+              <ul>
+                <li><a href="#about" onClick={(e) => e.preventDefault()}>About Us</a></li>
+                <li><a href="#careers" onClick={(e) => e.preventDefault()}>Careers</a></li>
+                <li><a href="#contact" onClick={(e) => e.preventDefault()}>Contact Support</a></li>
+                <li><a href="#github" onClick={(e) => e.preventDefault()}>Open Source</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <span className="footer-copy">
+              &copy; {new Date().getFullYear()} PrepOS. All rights reserved.
+            </span>
+            <div className="footer-bottom-links">
+              <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
+              <a href="#terms" onClick={(e) => e.preventDefault()}>Terms of Service</a>
+              <a href="#cookies" onClick={(e) => e.preventDefault()}>Cookies settings</a>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

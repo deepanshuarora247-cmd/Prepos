@@ -293,14 +293,8 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     autoCloseBrackets: true
   });
 
-  const debounceTimerRef = useRef(null);
-
-  // Debounced API search effect
+  // Debounced API search effect (using simple local timer instead of useRef)
   useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
     if (!searchQuery || searchQuery.trim() === "") {
       setQuestions(LOCAL_DSA_QUESTIONS);
       setIsSearchingApi(false);
@@ -308,7 +302,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     }
 
     setIsSearchingApi(true);
-    debounceTimerRef.current = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       try {
         const apiResults = await searchDsaQuestionsApi(searchQuery);
         setQuestions(apiResults);
@@ -320,7 +314,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     }, 350);
 
     return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      clearTimeout(timer);
     };
   }, [searchQuery]);
 

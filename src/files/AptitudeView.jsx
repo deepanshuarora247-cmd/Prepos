@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ArrowLeft,
   Brain,
@@ -109,7 +109,7 @@ export default function AptitudeView({ onBackToDashboard }) {
   const [userAnswers, setUserAnswers] = useState({});
   const [submittedAnswers, setSubmittedAnswers] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [flaggedQuestions, setFlaggedQuestions] = useState(new Set());
+  const [flaggedQuestions, setFlaggedQuestions] = useState([]); // Array instead of Set
   
   // Timer states
   const [timeLeft, setTimeLeft] = useState(60);
@@ -118,9 +118,7 @@ export default function AptitudeView({ onBackToDashboard }) {
   const [scratchpadText, setScratchpadText] = useState("");
   const [overallAttempts, setOverallAttempts] = useState([]);
 
-  const timerRef = useRef(null);
-  const totalTimerRef = useRef(null);
-
+  // Load overall attempts from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("prepos_aptitude_attempts");
     if (saved) {
@@ -130,114 +128,118 @@ export default function AptitudeView({ onBackToDashboard }) {
     }
   }, []);
 
-  const filteredQuestions = React.useMemo(() => {
-    return APTITUDE_QUESTIONS.filter(
-      (q) => selectedCategory === "All" || q.category === selectedCategory
-    );
-  }, [selectedCategory]);
+  // Filter questions (calculated on every render instead of useMemo)
+  const filteredQuestions = [];
+  for (let i = 0; i < APTITUDE_QUESTIONS.length; i++) {
+    const q = APTITUDE_QUESTIONS[i];
+    if (selectedCategory === "All" || q.category === selectedCategory) {
+      filteredQuestions.push(q);
+    }
+  }
 
   const activeQuestion = filteredQuestions[currentQuestionIndex] || null;
 
-  // Timed session handler
+  // Session timer handler
   useEffect(() => {
+    let interval = null;
     if (viewState === "quiz") {
-      totalTimerRef.current = setInterval(() => {
+      interval = setInterval(function() {
         setTimeSpent((t) => t + 1);
       }, 1000);
-    } else {
-      if (totalTimerRef.current) clearInterval(totalTimerRef.current);
     }
     return () => {
-      if (totalTimerRef.current) clearInterval(totalTimerRef.current);
+      if (interval !== null) {
+        clearInterval(interval);
+      }
     };
   }, [viewState]);
 
+  // Question timer handler (60s countdown)
   useEffect(() => {
+    let interval = null;
     if (viewState === "quiz" && quizMode === "test") {
       setTimeLeft(60);
-      timerRef.current = setInterval(() => {
+      interval = setInterval(function() {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            handleTimeExpiry();
+            handleNextQuestion();
             return 60;
           }
           return prev - 1;
         });
       }, 1000);
-    } else {
-      if (timerRef.current) clearInterval(timerRef.current);
     }
-
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (interval !== null) {
+        clearInterval(interval);
+      }
     };
-  }, [viewState, currentQuestionIndex, quizMode]);
+  }, [viewState, currentQuestionIndex, quizMode, filteredQuestions.length]);
 
-  const handleTimeExpiry = () => {
-    handleNextQuestion();
-  };
-
-  const handleStartQuiz = () => {
+  const handleStartQuiz = function() {
     setUserAnswers({});
     setSubmittedAnswers({});
     setCurrentQuestionIndex(0);
-    setFlaggedQuestions(new Set());
+    setFlaggedQuestions([]);
     setTimeSpent(0);
     setViewState("quiz");
   };
 
-  const handleSelectOption = (idx) => {
+  const handleSelectOption = function(idx) {
     if (!activeQuestion) return;
-    setUserAnswers((prev) => ({
-      ...prev,
-      [activeQuestion.id]: idx
-    }));
+    const nextAnswers = { ...userAnswers };
+    nextAnswers[activeQuestion.id] = idx;
+    setUserAnswers(nextAnswers);
   };
 
-  const handleSubmitPracticeAnswer = () => {
+  const handleSubmitPracticeAnswer = function() {
     if (!activeQuestion) return;
-    setSubmittedAnswers((prev) => ({
-      ...prev,
-      [activeQuestion.id]: true
-    }));
+    const nextSubmitted = { ...submittedAnswers };
+    nextSubmitted[activeQuestion.id] = true;
+    setSubmittedAnswers(nextSubmitted);
   };
 
-  const handleToggleFlag = () => {
+  const handleToggleFlag = function() {
     if (!activeQuestion) return;
-    setFlaggedQuestions((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(activeQuestion.id)) {
-        updated.delete(activeQuestion.id);
-      } else {
-        updated.add(activeQuestion.id);
+    const questionId = activeQuestion.id;
+    const hasFlag = flaggedQuestions.includes(questionId);
+    if (hasFlag) {
+      const nextFlags = [];
+      for (let i = 0; i < flaggedQuestions.length; i++) {
+        if (flaggedQuestions[i] !== questionId) {
+          nextFlags.push(flaggedQuestions[i]);
+        }
       }
-      return updated;
-    });
+      setFlaggedQuestions(nextFlags);
+    } else {
+      setFlaggedQuestions([...flaggedQuestions, questionId]);
+    }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = function() {
     if (currentQuestionIndex + 1 < filteredQuestions.length) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       handleFinishQuiz();
     }
   };
 
-  const handleFinishQuiz = () => {
+  const handleFinishQuiz = function() {
     setViewState("results");
     
     // Save attempts to local history
     let score = 0;
-    filteredQuestions.forEach((q) => {
+    for (let i = 0; i < filteredQuestions.length; i++) {
+      const q = filteredQuestions[i];
       if (userAnswers[q.id] === q.correctIndex) {
-        score++;
+        score = score + 1;
       }
-    });
+    }
 
     const newAttempt = {
       category: selectedCategory,
       mode: quizMode,
-      score,
+      score: score,
       total: filteredQuestions.length,
       timeTaken: timeSpent,
       date: new Date().toLocaleDateString()
@@ -248,23 +250,58 @@ export default function AptitudeView({ onBackToDashboard }) {
     localStorage.setItem("prepos_aptitude_attempts", JSON.stringify(updatedAttempts));
   };
 
-  const totalCorrect = React.useMemo(() => {
-    let score = 0;
-    filteredQuestions.forEach((q) => {
-      if (userAnswers[q.id] === q.correctIndex) {
-        score++;
-      }
-    });
-    return score;
-  }, [filteredQuestions, userAnswers]);
+  // Simple statistics calculations
+  let totalCorrect = 0;
+  for (let i = 0; i < filteredQuestions.length; i++) {
+    const q = filteredQuestions[i];
+    if (userAnswers[q.id] === q.correctIndex) {
+      totalCorrect = totalCorrect + 1;
+    }
+  }
 
-  const accuracy = filteredQuestions.length > 0 ? Math.round((totalCorrect / filteredQuestions.length) * 100) : 0;
+  let accuracy = 0;
+  if (filteredQuestions.length > 0) {
+    accuracy = Math.round((totalCorrect / filteredQuestions.length) * 100);
+  }
 
-  const formatTime = (secs) => {
+  const formatTime = function(secs) {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
-    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+    let mStr = m.toString();
+    if (mStr.length < 2) {
+      mStr = "0" + mStr;
+    }
+    let sStr = s.toString();
+    if (sStr.length < 2) {
+      sStr = "0" + sStr;
+    }
+    return mStr + ":" + sStr;
   };
+
+  // Calculate counts for categories UI
+  let totalQuestionsCount = APTITUDE_QUESTIONS.length;
+  let quantQuestionsCount = 0;
+  let logicalQuestionsCount = 0;
+  let dataQuestionsCount = 0;
+  for (let i = 0; i < APTITUDE_QUESTIONS.length; i++) {
+    const q = APTITUDE_QUESTIONS[i];
+    if (q.category === "Quantitative Ability") {
+      quantQuestionsCount = quantQuestionsCount + 1;
+    }
+    if (q.category === "Logical Reasoning") {
+      logicalQuestionsCount = logicalQuestionsCount + 1;
+    }
+    if (q.category === "Data Interpretation") {
+      dataQuestionsCount = dataQuestionsCount + 1;
+    }
+  }
+
+  const categoriesList = [
+    { id: "All", label: "All Topics Combined", desc: "Comprehensive mix of quant, logic, and metrics", count: totalQuestionsCount },
+    { id: "Quantitative Ability", label: "Quantitative Ability", desc: "Speed, work time, ratios, profit calculations", count: quantQuestionsCount },
+    { id: "Logical Reasoning", label: "Logical Reasoning", desc: "Sequences, relations, syllogisms, and patterns", count: logicalQuestionsCount },
+    { id: "Data Interpretation", label: "Data Interpretation", desc: "Pie charts, business growth tables, graphs", count: dataQuestionsCount }
+  ];
 
   return (
     <div className="aptitude-container">
@@ -272,7 +309,7 @@ export default function AptitudeView({ onBackToDashboard }) {
       <header className="aptitude-header">
         <div className="aptitude-header-left">
           <button
-            onClick={() => {
+            onClick={function() {
               if (viewState !== "dashboard") {
                 setViewState("dashboard");
               } else {
@@ -305,7 +342,7 @@ export default function AptitudeView({ onBackToDashboard }) {
               Session Time: <strong style={{ color: "#fff" }}>{formatTime(timeSpent)}</strong>
             </span>
             <button
-              onClick={() => setScratchpadOpen(!scratchpadOpen)}
+              onClick={function() { setScratchpadOpen(!scratchpadOpen); }}
               className="sandbox-back-btn"
               style={{ display: "inline-flex", gap: "0.25rem" }}
             >
@@ -339,24 +376,21 @@ export default function AptitudeView({ onBackToDashboard }) {
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       <label className="resume-field-lbl">Select Topic Category</label>
                       <div className="sysdesign-nodes-grid" style={{ gap: "0.75rem" }}>
-                        {[
-                          { id: "All", label: "All Topics Combined", desc: "Comprehensive mix of quant, logic, and metrics", count: APTITUDE_QUESTIONS.length },
-                          { id: "Quantitative Ability", label: "Quantitative Ability", desc: "Speed, work time, ratios, profit calculations", count: APTITUDE_QUESTIONS.filter((q) => q.category === "Quantitative Ability").length },
-                          { id: "Logical Reasoning", label: "Logical Reasoning", desc: "Sequences, relations, syllogisms, and patterns", count: APTITUDE_QUESTIONS.filter((q) => q.category === "Logical Reasoning").length },
-                          { id: "Data Interpretation", label: "Data Interpretation", desc: "Pie charts, business growth tables, graphs", count: APTITUDE_QUESTIONS.filter((q) => q.category === "Data Interpretation").length }
-                        ].map((cat) => (
-                          <button
-                            key={cat.id}
-                            onClick={() => setSelectedCategory(cat.id)}
-                            className={`aptitude-select-btn ${selectedCategory === cat.id ? "active emerald" : ""}`}
-                          >
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                              <span style={{ fontSize: "13px", fontWeight: "bold", color: "#fff" }}>{cat.label}</span>
-                              <span className="q-api-badge" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>{cat.count} Questions</span>
-                            </div>
-                            <p style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "0.25rem", margin: 0 }}>{cat.desc}</p>
-                          </button>
-                        ))}
+                        {categoriesList.map(function(cat) {
+                          return (
+                            <button
+                              key={cat.id}
+                              onClick={function() { setSelectedCategory(cat.id); }}
+                              className={`aptitude-select-btn ${selectedCategory === cat.id ? "active emerald" : ""}`}
+                            >
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                                <span style={{ fontSize: "13px", fontWeight: "bold", color: "#fff" }}>{cat.label}</span>
+                                <span className="q-api-badge" style={{ backgroundColor: "rgba(255,255,255,0.03)" }}>{cat.count} Questions</span>
+                              </div>
+                              <p style={{ fontSize: "11px", color: "var(--text-secondary)", marginTop: "0.25rem", margin: 0 }}>{cat.desc}</p>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -365,7 +399,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                       <label className="resume-field-lbl">Select Practice Mode</label>
                       <div className="sysdesign-nodes-grid" style={{ gap: "0.75rem" }}>
                         <button
-                          onClick={() => setQuizMode("practice")}
+                          onClick={function() { setQuizMode("practice"); }}
                           className={`aptitude-select-btn ${quizMode === "practice" ? "active indigo" : ""}`}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
@@ -376,7 +410,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                         </button>
 
                         <button
-                          onClick={() => setQuizMode("test")}
+                          onClick={function() { setQuizMode("test"); }}
                           className={`aptitude-select-btn ${quizMode === "test" ? "active emerald" : ""}`}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
@@ -406,7 +440,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                 <div className="practice-streak-card" style={{ padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <span className="q-api-badge" style={{ backgroundColor: "var(--emerald-bg)", color: "var(--emerald-accent)", borderColor: "var(--emerald-border)" }}>{activeQuestion.category}</span>
-                    {flaggedQuestions.has(activeQuestion.id) && (
+                    {flaggedQuestions.includes(activeQuestion.id) && (
                       <span className="q-api-badge" style={{ backgroundColor: "var(--amber-bg)", color: "var(--amber-accent)", borderColor: "var(--amber-border)" }}>Flagged</span>
                     )}
                   </div>
@@ -420,7 +454,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                   </div>
 
                   <div className="sysdesign-nodes-grid" style={{ gap: "0.75rem" }}>
-                    {activeQuestion.options.map((opt, idx) => {
+                    {activeQuestion.options.map(function(opt, idx) {
                       const isSelected = userAnswers[activeQuestion.id] === idx;
                       const hasSubmitted = submittedAnswers[activeQuestion.id];
                       const isCorrect = idx === activeQuestion.correctIndex;
@@ -446,7 +480,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                       return (
                         <button
                           key={idx}
-                          onClick={() => handleSelectOption(idx)}
+                          onClick={function() { handleSelectOption(idx); }}
                           disabled={quizMode === "practice" && hasSubmitted}
                           className="table-row-item"
                           style={{
@@ -483,7 +517,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                       className="sandbox-back-btn"
                     >
                       <Bookmark className="h-4 w-4" />
-                      {flaggedQuestions.has(activeQuestion.id) ? "Remove flag" : "Flag for review"}
+                      {flaggedQuestions.includes(activeQuestion.id) ? "Remove flag" : "Flag for review"}
                     </button>
 
                     <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -537,7 +571,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                   <h3 className="behavioral-rewrite-header" style={{ color: "var(--indigo-accent)", marginBottom: "0.75rem" }}>Question Diagnostics</h3>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                    {filteredQuestions.map((q, idx) => {
+                    {filteredQuestions.map(function(q, idx) {
                       const userSel = userAnswers[q.id];
                       const isCorrect = userSel === q.correctIndex;
 
@@ -576,7 +610,7 @@ export default function AptitudeView({ onBackToDashboard }) {
 
                 <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.75rem" }}>
                   <button
-                    onClick={() => setViewState("dashboard")}
+                    onClick={function() { setViewState("dashboard"); }}
                     className="sandbox-back-btn"
                   >
                     Back to Setup
@@ -599,7 +633,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--panel-border)", paddingBottom: "0.5rem" }}>
                   <span className="behavioral-rewrite-header" style={{ color: "var(--emerald-accent)" }}><Calculator className="h-4 w-4" /> Scratchpad</span>
                   <button
-                    onClick={() => setScratchpadOpen(false)}
+                    onClick={function() { setScratchpadOpen(false); }}
                     className="popover-header-badge"
                     style={{ border: "none", cursor: "pointer" }}
                   >
@@ -609,13 +643,13 @@ export default function AptitudeView({ onBackToDashboard }) {
 
                 <textarea
                   value={scratchpadText}
-                  onChange={(e) => setScratchpadText(e.target.value)}
+                  onChange={function(e) { setScratchpadText(e.target.value); }}
                   placeholder="Use this space for formulas..."
                   className="aptitude-notepad-textarea"
                 />
 
                 <button
-                  onClick={() => setScratchpadText("")}
+                  onClick={function() { setScratchpadText(""); }}
                   className="ide-reset-btn"
                   style={{ border: "none", background: "none", fontSize: "10px", color: "var(--rose-accent)", alignSelf: "flex-end" }}
                 >

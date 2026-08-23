@@ -191,7 +191,10 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     setActiveLessonId(firstLesson);
 
     const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
-    const completed = enrolledMap[courseId] || [];
+    let completed = enrolledMap[courseId] || [];
+    if (!Array.isArray(completed)) {
+      completed = [];
+    }
     setCompletedLessons(completed);
   }, [courseId]);
 
@@ -203,26 +206,39 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(enrolledMap));
   }, [completedLessons, courseId]);
 
-  const lessonContent = React.useMemo(() => {
-    if (!courseData || !activeLessonId) return null;
-    for (const mod of courseData.modules) {
-      const les = mod.lessons.find((l) => l.id === activeLessonId);
-      if (les) {
-        return {
+  // Active lesson content details (calculated directly on render)
+  let lessonContent = null;
+  if (courseData && activeLessonId) {
+    for (let i = 0; i < courseData.modules.length; i++) {
+      const mod = courseData.modules[i];
+      let foundLesson = null;
+      for (let j = 0; j < mod.lessons.length; j++) {
+        if (mod.lessons[j].id === activeLessonId) {
+          foundLesson = mod.lessons[j];
+          break;
+        }
+      }
+      if (foundLesson) {
+        lessonContent = {
           moduleTitle: mod.title,
-          lesson: les
+          lesson: foundLesson
         };
+        break;
       }
     }
-    return null;
-  }, [courseData, activeLessonId]);
+  }
 
-  const progressPercent = React.useMemo(() => {
-    if (!courseData) return 0;
-    const total = courseData.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-    if (total === 0) return 0;
-    return Math.round((completedLessons.length / total) * 100);
-  }, [courseData, completedLessons]);
+  // Active lesson progress calculations (calculated directly on render)
+  let progressPercent = 0;
+  if (courseData) {
+    let totalLessonsCount = 0;
+    for (let i = 0; i < courseData.modules.length; i++) {
+      totalLessonsCount = totalLessonsCount + courseData.modules[i].lessons.length;
+    }
+    if (totalLessonsCount > 0) {
+      progressPercent = Math.round((completedLessons.length / totalLessonsCount) * 100);
+    }
+  }
 
   // Video Handlers
   const togglePlay = () => {

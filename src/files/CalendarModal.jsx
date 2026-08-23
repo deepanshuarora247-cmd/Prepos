@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "./CalendarModal.css";
 
@@ -97,21 +97,19 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   const [currentDate, setCurrentDate] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today.toISOString().split("T")[0]);
 
-  // Merge custom events with generated events
-  const mergedEvents = useMemo(() => {
-    const baseEvents = generateCalendarEvents();
-    const merged = { ...baseEvents };
-
-    Object.entries(customEvents).forEach(([dateKey, events]) => {
-      if (merged[dateKey]) {
-        merged[dateKey] = [...merged[dateKey], ...events];
-      } else {
-        merged[dateKey] = events;
-      }
-    });
-
-    return merged;
-  }, [customEvents]);
+  // Merge custom events with generated events (calculated directly on render)
+  const baseEvents = CALENDAR_EVENTS;
+  const mergedEvents = { ...baseEvents };
+  const customKeys = Object.keys(customEvents);
+  for (let i = 0; i < customKeys.length; i++) {
+    const dateKey = customKeys[i];
+    const events = customEvents[dateKey];
+    if (mergedEvents[dateKey]) {
+      mergedEvents[dateKey] = mergedEvents[dateKey].concat(events);
+    } else {
+      mergedEvents[dateKey] = events;
+    }
+  }
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",

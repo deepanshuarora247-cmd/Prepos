@@ -178,7 +178,7 @@ export const localCourseApi = {
     const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
     return FALLBACK_COURSES.map((course) => {
       const isEnrolled = !!enrolledMap[course.id];
-      const completedIds = enrolledMap[course.id] || [];
+      const completedIds = Array.isArray(enrolledMap[course.id]) ? enrolledMap[course.id] : [];
       const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
       return {
         ...course,
