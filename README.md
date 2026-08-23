@@ -79,30 +79,31 @@ Prepos/
 ├── package.json
 ├── vite.config.js
 └── src/
-    ├── index.css                     # Global design variables & reset rules
-    ├── main.jsx                      # Application entry point
-    ├── InterviewPrepDashboard.jsx     # Main workspace sidebar & router
-    ├── InterviewPrepDashboard.css    # Dashboard view layout styles
-    │
-    # Prep Module Views
-    ├── DsaSandboxView.jsx            # DSA compiler & code editor component
-    ├── SystemDesignView.jsx          # Architecture workspace component
-    ├── BehavioralMockView.jsx        # STAR method behavioral audio simulator
-    ├── ResumeGraderView.jsx          # ATS score checker & resume optimizer
-    ├── CoursesView.jsx               # Learning tracks list view
-    ├── CoursePlayerView.jsx          # Video playback & split-terminal playground
-    ├── TutorialsView.jsx             # Cheat sheets & guides
-    ├── AptitudeView.jsx              # Logical reasoning interactive quizzes
-    ├── LeaderboardView.jsx           # Peer leaderboard & profile badges
-    ├── RoadmapView.jsx               # Career roadmap node timeline view
-    │
-    # Utility Modals & Popups
-    ├── CalendarModal.jsx             # Smart calendar agenda view
-    ├── PrepPlanSchedulerModal.jsx    # Target study hour weekly planner
-    ├── AddAgendaModal.jsx            # Event scheduler dialog
-    ├── PracticeStreakModal.jsx       # Analytics dashboard for study sessions
-    ├── DailyStreakMilestoneModal.jsx # Visual milestone reward selector
-    └── SettingsModal.jsx             # Profile, theme, & notification settings
+    └── files/
+        ├── index.css                     # Global design variables & reset rules
+        ├── main.jsx                      # Application entry point
+        ├── InterviewPrepDashboard.jsx     # Main workspace sidebar & router
+        ├── InterviewPrepDashboard.css    # Dashboard view layout styles
+        │
+        # Prep Module Views
+        ├── DsaSandboxView.jsx            # DSA compiler & code editor component
+        ├── SystemDesignView.jsx          # Architecture workspace component
+        ├── BehavioralMockView.jsx        # STAR method behavioral audio simulator
+        ├── ResumeGraderView.jsx          # ATS score checker & resume optimizer
+        ├── CoursesView.jsx               # Learning tracks list view
+        ├── CoursePlayerView.jsx          # Video playback & split-terminal playground
+        ├── TutorialsView.jsx             # Cheat sheets & guides
+        ├── AptitudeView.jsx              # Logical reasoning interactive quizzes
+        ├── LeaderboardView.jsx           # Peer leaderboard & profile badges
+        ├── RoadmapView.jsx               # Career roadmap node timeline view
+        │
+        # Utility Modals & Popups
+        ├── CalendarModal.jsx             # Smart calendar agenda view
+        ├── PrepPlanSchedulerModal.jsx    # Target study hour weekly planner
+        ├── AddAgendaModal.jsx            # Event scheduler dialog
+        ├── PracticeStreakModal.jsx       # Analytics dashboard for study sessions
+        ├── DailyStreakMilestoneModal.jsx # Visual milestone reward selector
+        └── SettingsModal.jsx             # Profile, theme, & notification settings
 ```
 
 ---
