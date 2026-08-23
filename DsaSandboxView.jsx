@@ -33,6 +33,18 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
   const [activeTab, setActiveTab] = useState("description"); // description | hints
   const [userCodeMap, setUserCodeMap] = useState({});
 
+  useEffect(() => {
+    if (initialQuestionId) {
+      setSelectedQuestionId(initialQuestionId);
+    }
+  }, [initialQuestionId]);
+
+  useEffect(() => {
+    if (initialCategory) {
+      setCategoryFilter(initialCategory);
+    }
+  }, [initialCategory]);
+
   // User preferences & settings state
   const [editorSettings, setEditorSettings] = useState(() => {
     const saved = localStorage.getItem("prepos_user_settings_v1");
@@ -211,7 +223,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId = 
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search via LeetCode API (e.g., Two Sum, Tree, DP...)"
+                placeholder="Search Questions"
                 className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-2 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-indigo-500 transition-colors"
               />
               {isSearchingApi ? (
