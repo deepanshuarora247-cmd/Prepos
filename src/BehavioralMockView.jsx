@@ -12,8 +12,10 @@ import {
   Bot,
   User,
   Flame,
-  Lightbulb
+  Lightbulb,
+  Loader2
 } from "lucide-react";
+import "./BehavioralMockView.css";
 
 const BEHAVIORAL_SCENARIOS = [
   {
@@ -83,61 +85,58 @@ export default function BehavioralMockView({ onBackToDashboard }) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0e1a] text-slate-100/90 font-sans antialiased relative">
-      {/* Ambient Lighting */}
-      <div className="pointer-events-none fixed -top-40 left-1/3 h-[500px] w-[500px] rounded-full bg-emerald-600/10 blur-[150px]" />
+    <div className="behavioral-container">
+      {/* Background blurs */}
+      <div className="glow-bg-1" style={{ backgroundColor: "rgba(16, 185, 129, 0.08)" }} />
 
       {/* Top Navbar */}
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#0a0e1a]/90 backdrop-blur-md px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={onBackToDashboard}
-            className="flex items-center gap-2 text-xs font-medium text-neutral-400 hover:text-slate-100 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 transition-colors"
-          >
+      <header className="behavioral-header">
+        <div className="behavioral-header-left">
+          <button onClick={onBackToDashboard} className="behavioral-back-btn">
             <ArrowLeft className="h-3.5 w-3.5" />
             Dashboard
           </button>
-          <span className="text-neutral-600">/</span>
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          <span className="behavioral-header-divider">/</span>
+          <div className="behavioral-header-title">
+            <div className="q-solve-btn" style={{ padding: "0.25rem 0.5rem", borderRadius: "0.375rem", backgroundColor: "var(--emerald-bg)", color: "var(--emerald-accent)", borderColor: "var(--emerald-border)" }}>
               <MessagesSquare className="h-4 w-4" />
             </div>
-            <h1 className="text-base font-bold text-white tracking-tight">Behavioral Mock AI</h1>
+            <span>Behavioral Mock AI</span>
           </div>
         </div>
       </header>
 
       {!activeScenario ? (
         /* Scenario Selection List */
-        <main className="max-w-7xl mx-auto px-6 py-8 relative">
-          <div className="mb-8 rounded-3xl border border-white/10 bg-gradient-to-r from-emerald-900/30 via-slate-900/50 to-indigo-900/30 backdrop-blur-md p-8 relative overflow-hidden">
-            <div className="relative z-10 max-w-2xl">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+        <main className="behavioral-main">
+          <div className="behavioral-banner">
+            <div className="behavioral-banner-content">
+              <span className="behavioral-banner-tag">
                 STAR Method Interview Simulator
               </span>
-              <h2 className="text-3xl font-extrabold text-white mt-3 tracking-tight">
+              <h2 className="behavioral-banner-title">
                 AI Behavioral Mock Practice
               </h2>
-              <p className="text-sm text-neutral-300 mt-2 leading-relaxed">
+              <p className="behavioral-banner-desc">
                 Practice answering behavioral interview questions using the STAR framework. Get instant AI breakdown on Situation, Task, Action, and Result.
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="behavioral-grid">
             {BEHAVIORAL_SCENARIOS.map((sc) => (
               <div
                 key={sc.id}
-                className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-md p-6 flex flex-col justify-between hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300 group"
+                className="behavioral-card"
               >
                 <div>
-                  <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full border bg-emerald-500/10 text-emerald-300 border-emerald-500/20">
+                  <span className="behavioral-card-category">
                     {sc.category}
                   </span>
-                  <h3 className="text-lg font-bold text-white mt-3 group-hover:text-emerald-300 transition-colors">
+                  <h3 className="behavioral-card-title">
                     {sc.title}
                   </h3>
-                  <p className="text-xs text-neutral-300 mt-3 leading-relaxed bg-white/[0.02] p-3 rounded-xl border border-white/5 italic">
+                  <p className="behavioral-card-question">
                     "{sc.question}"
                   </p>
                 </div>
@@ -148,7 +147,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
                     setUserResponse("");
                     setStarAnalysis(null);
                   }}
-                  className="mt-6 w-full inline-flex items-center justify-center gap-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 transition-colors py-2.5 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.5)]"
+                  className="behavioral-start-btn"
                 >
                   <Bot className="h-4 w-4" />
                   Start AI Mock Session
@@ -159,35 +158,35 @@ export default function BehavioralMockView({ onBackToDashboard }) {
         </main>
       ) : (
         /* Active Behavioral Practice View */
-        <main className="max-w-5xl mx-auto px-6 py-8 relative space-y-6">
-          <div className="flex items-center justify-between">
+        <main className="behavioral-active-layout">
+          <div className="behavioral-active-actions-row">
             <button
               onClick={() => setSelectedScenarioId(null)}
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded border border-white/10"
+              className="ide-back-to-list-btn"
             >
               <ArrowLeft className="h-3 w-3" /> All Questions
             </button>
-            <span className="text-xs text-emerald-400 font-mono">{activeScenario.category}</span>
+            <span className="behavioral-active-category-label">{activeScenario.category}</span>
           </div>
 
           {/* AI Question Prompt Card */}
-          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 flex items-start gap-4">
-            <div className="h-10 w-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-              <Bot className="h-5 w-5 text-emerald-400" />
+          <div className="behavioral-prompt-card">
+            <div className="behavioral-prompt-avatar">
+              <Bot className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-emerald-300">AI Mock Interviewer Prompt:</h3>
-              <p className="text-base font-medium text-white mt-1 leading-relaxed">
+              <h3 className="behavioral-prompt-title">AI Mock Interviewer Prompt:</h3>
+              <p className="behavioral-prompt-text">
                 "{activeScenario.question}"
               </p>
             </div>
           </div>
 
           {/* Response Textarea */}
-          <div className="rounded-2xl border border-white/10 bg-slate-900/80 p-6 space-y-4">
-            <div className="flex items-center justify-between text-xs text-neutral-400">
-              <span className="flex items-center gap-1.5 font-semibold text-white">
-                <User className="h-4 w-4 text-indigo-400" /> Your Response (STAR Method)
+          <div className="behavioral-editor-card">
+            <div className="behavioral-editor-header">
+              <span className="behavioral-editor-label">
+                <User className="h-4 w-4" style={{ color: "var(--indigo-accent)" }} /> Your Response (STAR Method)
               </span>
               <span>Min 50 words recommended</span>
             </div>
@@ -196,20 +195,19 @@ export default function BehavioralMockView({ onBackToDashboard }) {
               value={userResponse}
               onChange={(e) => setUserResponse(e.target.value)}
               placeholder="Structure your answer: Situation, Task, Action, and Result..."
-              className="w-full h-44 bg-black/40 border border-white/10 rounded-xl p-4 text-xs text-slate-100 placeholder-neutral-500 focus:outline-none focus:border-emerald-500 leading-relaxed resize-none font-sans"
+              className="behavioral-textarea-field"
             />
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] text-neutral-500 font-mono">
-                  {userResponse.trim().split(/\s+/).filter(Boolean).length} words
-                </span>
+            <div className="behavioral-editor-footer">
+              <div className="behavioral-word-counter">
+                {userResponse.trim().split(/\s+/).filter(Boolean).length} words
               </div>
 
               <button
                 onClick={handleAnalyzeResponse}
                 disabled={isAnalyzing || userResponse.trim().length < 20}
-                className="flex items-center gap-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-500 border border-emerald-500/30 px-5 py-2 rounded-xl shadow-[0_0_16px_rgba(16,185,129,0.5)] transition-all disabled:opacity-50"
+                className="sysdesign-audit-btn"
+                style={{ backgroundColor: "var(--emerald-accent)", borderColor: "var(--emerald-border)", boxShadow: "0 0 16px rgba(16, 185, 129, 0.5)" }}
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze Answer with AI
@@ -219,38 +217,38 @@ export default function BehavioralMockView({ onBackToDashboard }) {
 
           {/* AI Analysis Feedback Card */}
           {isAnalyzing ? (
-            <div className="p-8 text-center text-xs text-emerald-400 flex items-center justify-center gap-2">
-              <div className="h-4 w-4 rounded-full border-2 border-emerald-400 border-t-transparent animate-spin" />
+            <div className="popover-body" style={{ color: "var(--emerald-accent)" }}>
+              <Loader2 className="search-loader" style={{ position: "static", margin: "1rem", color: "var(--emerald-accent)" }} />
               Evaluating STAR Framework alignment and impact metrics...
             </div>
           ) : starAnalysis ? (
-            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">STAR Evaluation Score</span>
-                  <h4 className="text-xl font-bold text-white mt-0.5">FAANG Interview Ready</h4>
+            <div className="behavioral-eval-card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div className="behavioral-eval-header-title">
+                  <span className="popover-header-badge" style={{ color: "var(--emerald-accent)", backgroundColor: "var(--emerald-bg)", borderColor: "var(--emerald-border)", width: "fit-content" }}>STAR Evaluation Score</span>
+                  <h4>FAANG Interview Ready</h4>
                 </div>
-                <div className="text-right">
-                  <span className="text-3xl font-bold text-emerald-400">{starAnalysis.score}</span>
-                  <span className="text-xs text-neutral-500"> / 100</span>
+                <div style={{ textAlign: "right" }}>
+                  <span style={{ fontSize: "1.875rem", fontWeight: "bold", color: "var(--emerald-accent)" }}>{starAnalysis.score}</span>
+                  <span className="ide-example-label"> / 100</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="behavioral-eval-grid">
                 {Object.entries(starAnalysis.starBreakdown).map(([key, val]) => (
-                  <div key={key} className="bg-black/30 p-3 rounded-xl border border-white/10">
-                    <span className="text-[10px] uppercase font-bold text-emerald-400">{key}</span>
-                    <p className="text-xs font-semibold text-white mt-0.5">{val.status}</p>
-                    <p className="text-[11px] text-neutral-400 mt-1">{val.feedback}</p>
+                  <div key={key} className="behavioral-eval-pill">
+                    <span className="behavioral-eval-pill-lbl">{key}</span>
+                    <p className="behavioral-eval-pill-status">{val.status}</p>
+                    <p className="behavioral-eval-pill-desc">{val.feedback}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-black/40 p-4 rounded-xl border border-white/10 space-y-1">
-                <span className="text-xs font-bold text-cyan-300 flex items-center gap-1">
+              <div className="behavioral-rewrite-panel">
+                <span className="behavioral-rewrite-header">
                   <Lightbulb className="h-3.5 w-3.5" /> High-Impact Rewrite Suggestion:
                 </span>
-                <p className="text-xs text-neutral-200 leading-relaxed font-sans">{starAnalysis.improvedSummary}</p>
+                <p className="behavioral-rewrite-text">{starAnalysis.improvedSummary}</p>
               </div>
             </div>
           ) : null}

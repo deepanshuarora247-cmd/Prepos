@@ -1,0 +1,303 @@
+/* ResumeGraderView.css - Premium Vanilla CSS Styles for PrepOS Resume Grader */
+
+.resume-container {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  position: relative;
+}
+
+/* Header Navbar */
+.resume-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--panel-border);
+  background-color: rgba(10, 14, 26, 0.9);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resume-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.resume-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resume-back-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.resume-header-divider {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.resume-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.resume-header-title span {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Main Area Layout */
+.resume-main {
+  max-width: 80rem; /* 7xl */
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resume-banner-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--panel-border);
+  background: linear-gradient(to right, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.5), rgba(99, 102, 241, 0.15));
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .resume-banner-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.resume-banner-title-box h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 0.5rem;
+  letter-spacing: -0.025em;
+}
+
+.resume-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+/* Resume PDF sheet design */
+.resume-sheet {
+  border-radius: 1.5rem;
+  border: 1px solid var(--panel-border);
+  background-color: #0d1222;
+  padding: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .resume-sheet {
+    padding: 2rem;
+  }
+}
+
+.resume-sheet-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.resume-sheet-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .resume-sheet-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.resume-sheet-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .resume-sheet-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.resume-field-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.resume-input-text {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #fff;
+}
+
+.resume-input-text:focus {
+  border-color: var(--amber-accent);
+}
+
+/* Experience block styles */
+.resume-experience-item {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resume-exp-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .resume-exp-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.resume-exp-meta-fields {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.resume-exp-bullets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.resume-exp-bullet-item {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.resume-bullet-input {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.resume-bullet-input:focus {
+  border-color: var(--amber-accent);
+}
+
+.resume-bullet-btn {
+  padding: 0.25rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.resume-bullet-btn:hover {
+  color: var(--rose-accent);
+}
+
+/* Grader score block */
+.resume-grader-scorecard {
+  border-radius: 1rem;
+  border: 1px solid var(--amber-border);
+  background-color: rgba(245, 158, 11, 0.1);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.resume-grader-scorecard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resume-grader-score-large {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--amber-accent);
+}
+
+/* Print Overrides */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-area {
+    border: none !important;
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  input, textarea {
+    background: transparent !important;
+    color: #000000 !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+}

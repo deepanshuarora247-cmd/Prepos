@@ -1,0 +1,182 @@
+/* AptitudeView.css - Premium Vanilla CSS Styles for PrepOS Aptitude Suite */
+
+.aptitude-container {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  position: relative;
+  padding-bottom: 4rem;
+}
+
+/* Header Navbar */
+.aptitude-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--panel-border);
+  background-color: rgba(10, 14, 26, 0.9);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aptitude-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.aptitude-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--panel-border);
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aptitude-back-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.aptitude-header-divider {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.aptitude-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.aptitude-header-title span {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Main Layout Grid */
+.aptitude-main {
+  max-width: 80rem; /* 7xl */
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .aptitude-layout-split {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .aptitude-layout-left {
+    flex: 1;
+    min-width: 0;
+  }
+  .aptitude-layout-right {
+    width: 20rem;
+    flex-shrink: 0;
+  }
+}
+
+/* Hero Banner */
+.aptitude-banner {
+  margin-bottom: 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--panel-border);
+  background: linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.5), rgba(99, 102, 241, 0.15));
+  backdrop-filter: blur(12px);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Settings Form elements */
+.aptitude-card {
+  border-radius: 1rem;
+  border: 1px solid var(--panel-border);
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.aptitude-card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Option / Selector grid button */
+.aptitude-select-btn {
+  width: 100%;
+  text-align: left;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.aptitude-select-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.aptitude-select-btn.active.emerald {
+  border-color: var(--emerald-accent);
+  background-color: rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.3);
+}
+
+.aptitude-select-btn.active.indigo {
+  border-color: var(--indigo-accent);
+  background-color: rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 20px -5px rgba(99, 102, 241, 0.3);
+}
+
+/* Scratchpad Notepad design */
+.aptitude-notepad-card {
+  border-radius: 1rem;
+  border: 1px solid var(--panel-border);
+  background-color: rgba(10, 14, 26, 0.95);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  height: 20rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.aptitude-notepad-textarea {
+  width: 100%;
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #fff;
+  resize: none;
+}

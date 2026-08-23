@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import "./CalendarModal.css";
 
 // Generate events for upcoming dates
 const generateCalendarEvents = () => {
@@ -175,56 +176,56 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="relative rounded-3xl border border-white/10 bg-[#0a0e1a] backdrop-blur-2xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="cal-modal-backdrop" onClick={onClose}>
+      <div className="cal-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 z-10 p-2 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors"
+          className="cal-modal-close-btn"
+          style={{ border: "none", background: "none" }}
         >
           <X className="h-5 w-5" />
         </button>
 
-        <div className="p-6 md:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-100">Full Calendar</h2>
-              <p className="text-xs text-neutral-400 mt-0.5">Select any date on the calendar to view its scheduled sessions</p>
-            </div>
+        <div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", marginBottom: "1rem" }}>
+            <span className="popover-header-badge" style={{ color: "var(--cyan-accent)", backgroundColor: "var(--cyan-bg)", borderColor: "var(--cyan-border)", width: "fit-content" }}>Full Schedule</span>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: "bold", color: "#fff" }}>Full Calendar</h2>
+            <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: 0 }}>Select any date on the calendar to view its scheduled sessions</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="cal-modal-grid-12">
             {/* Calendar Grid */}
-            <div className="lg:col-span-7">
+            <div style={{ gridColumn: "span 7" }}>
               {/* Month & Year Navigation */}
-              <div className="flex items-center justify-between mb-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="cal-nav-bar">
                 <button
                   onClick={previousMonth}
-                  className="p-2 rounded-lg border border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors"
-                  title="Previous month"
+                  className="sandbox-back-btn"
+                  style={{ padding: "0.5rem" }}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
 
-                <div className="text-center flex-1">
-                  <h3 className="text-lg font-semibold text-slate-100">
+                <div style={{ textAlign: "center", flex: 1 }}>
+                  <h3 style={{ fontSize: "1rem", fontWeight: "bold", color: "#fff" }}>
                     {monthNames[currentDate.getMonth()]}
                   </h3>
-                  <div className="flex items-center justify-center gap-3 mt-2">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", marginTop: "0.25rem" }}>
                     <button
                       onClick={previousYear}
-                      className="px-2 py-1 text-xs font-medium text-neutral-400 hover:text-slate-100 hover:bg-white/10 rounded transition-colors"
-                      title="Previous year"
+                      className="ide-reset-btn"
+                      style={{ padding: "0.125rem 0.25rem", border: "none", fontSize: "10px", background: "none" }}
                     >
                       ←
                     </button>
-                    <span className="text-sm font-medium text-neutral-300 w-12">
+                    <span style={{ fontSize: "11px", fontWeight: "bold", color: "var(--text-secondary)" }}>
                       {currentDate.getFullYear()}
                     </span>
                     <button
                       onClick={nextYear}
-                      className="px-2 py-1 text-xs font-medium text-neutral-400 hover:text-slate-100 hover:bg-white/10 rounded transition-colors"
-                      title="Next year"
+                      className="ide-reset-btn"
+                      style={{ padding: "0.125rem 0.25rem", border: "none", fontSize: "10px", background: "none" }}
                     >
                       →
                     </button>
@@ -233,19 +234,19 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
 
                 <button
                   onClick={nextMonth}
-                  className="p-2 rounded-lg border border-white/10 bg-white/5 text-neutral-400 hover:text-slate-100 hover:border-white/20 transition-colors"
-                  title="Next month"
+                  className="sandbox-back-btn"
+                  style={{ padding: "0.5rem" }}
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
 
               {/* Day names */}
-              <div className="grid grid-cols-7 gap-2 mb-4">
+              <div className="cal-grid-7" style={{ marginBottom: "0.5rem" }}>
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                   <div
                     key={day}
-                    className="text-center text-xs font-semibold text-neutral-500 uppercase tracking-wide py-2"
+                    style={{ textAlign: "center", fontSize: "11px", fontWeight: "bold", color: "var(--text-muted)", textTransform: "uppercase" }}
                   >
                     {day}
                   </div>
@@ -253,7 +254,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
               </div>
 
               {/* Calendar Days */}
-              <div className="grid grid-cols-7 gap-2 mb-6">
+              <div className="cal-grid-7">
                 {days.map((day, idx) => {
                   const dateKey =
                     day &&
@@ -265,54 +266,41 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
                   const hasEvents = day && mergedEvents[dateKey];
                   const isTodayDate = day && isToday(currentDate.getFullYear(), currentDate.getMonth(), day);
 
+                  if (day === null) {
+                    return <div key={idx} className="cal-day-cell empty" />;
+                  }
+
+                  let cellClass = "";
+                  if (hasEvents) cellClass = "has-events";
+
                   return (
                     <button
                       key={idx}
-                      onClick={() => day && setSelectedDate(dateKey)}
-                      className={`relative aspect-square p-2 rounded-lg border transition-all duration-200 ${
-                        day === null
-                          ? "border-white/5 bg-transparent text-neutral-600"
-                          : hasEvents
-                          ? "border-cyan-400/50 bg-cyan-500/10 hover:border-cyan-300 hover:bg-cyan-500/20"
-                          : isTodayDate
-                          ? "border-cyan-400/50 bg-cyan-500/10 hover:border-cyan-300 hover:bg-cyan-500/20"
-                          : "border-white/10 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.08]"
-                      }`}
+                      onClick={() => setSelectedDate(dateKey)}
+                      className={`cal-day-cell ${cellClass}`}
                     >
-                      <div className={`text-xs font-semibold ${day === null ? "text-neutral-600" : "text-slate-100"}`}>
+                      <div className="cal-day-cell-number">
                         {day}
                       </div>
                       {hasEvents && (
-                        <div className="absolute bottom-1 left-2 right-2 h-1 bg-gradient-to-r from-indigo-400 to-cyan-400 rounded-full" />
+                        <div className="cal-day-cell-dot" />
                       )}
                       {isTodayDate && (
-                        <div className="absolute top-1 right-1 h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+                        <div className="cal-day-cell-today-marker" />
                       )}
                     </button>
                   );
                 })}
               </div>
-
-              {/* Legend */}
-              <div className="pt-6 border-t border-white/10 flex flex-wrap items-center gap-4 text-xs text-neutral-400">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-sm bg-gradient-to-r from-indigo-400 to-cyan-400" />
-                  <span>Has events</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                  <span>Today</span>
-                </div>
-              </div>
             </div>
 
             {/* Right Sidebar - Selected Date Events */}
-            <div className="lg:col-span-5 flex flex-col">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-6 h-full flex flex-col">
-                <div className="border-b border-white/10 pb-4 mb-4 flex items-center justify-between">
+            <div style={{ gridColumn: "span 5" }}>
+              <div className="cal-sidebar-card">
+                <div className="cal-sidebar-card-header">
                   <div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-cyan-400">Scheduled Sessions</span>
-                    <h3 className="text-sm font-semibold text-white/90 mt-0.5">
+                    <span className="popover-header-badge" style={{ color: "var(--cyan-accent)", backgroundColor: "var(--cyan-bg)", borderColor: "var(--cyan-border)", margin: 0 }}>Scheduled Sessions</span>
+                    <h3 style={{ fontSize: "12px", color: "#fff", fontWeight: "bold", marginTop: "0.25rem" }}>
                       {selectedDate
                         ? new Date(selectedDate + "T00:00:00").toLocaleDateString("en-US", {
                             weekday: "long",
@@ -324,23 +312,25 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
                     </h3>
                   </div>
                   {selectedDateEvents.length > 0 && (
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                      {selectedDateEvents.length} {selectedDateEvents.length === 1 ? "Event" : "Events"}
+                    <span className="q-api-badge" style={{ backgroundColor: "var(--cyan-bg)", color: "var(--cyan-accent)", borderColor: "var(--cyan-border)" }}>
+                      {selectedDateEvents.length} Event(s)
                     </span>
                   )}
                 </div>
 
                 {selectedDateEvents.length > 0 ? (
-                  <div className="space-y-3 overflow-y-auto max-h-[420px] pr-1">
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", overflowY: "auto", maxHeight: "15rem" }}>
                     {selectedDateEvents.map((event) => (
                       <div
                         key={event.id}
-                        className="p-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.07] hover:border-white/20 transition-all"
+                        className="practice-streak-card"
+                        style={{ padding: "0.75rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}
                       >
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-2">
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem" }}>
                             <div
-                              className={`h-6 w-6 rounded-full shrink-0 flex items-center justify-center text-[9px] font-semibold text-white ${event.avatarColor} ring-2 ring-[#0a0e1a]`}
+                              className="sandbox-back-btn"
+                              style={{ padding: "0.25rem 0.5rem", borderRadius: "50%", minWidth: "1.5rem", height: "1.5rem", fontSize: "9px", display: "flex", alignItems: "center", justifyContent: "center" }}
                             >
                               {event.withWho
                                 .split(" ")
@@ -348,25 +338,25 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
                                 .join("")
                                 .slice(0, 2)}
                             </div>
-                            <span className="text-xs text-neutral-300 font-medium">{event.withWho}</span>
+                            <span style={{ fontSize: "11px", color: "var(--text-secondary)" }}>{event.withWho}</span>
                           </div>
-                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${event.typeColor}`}>
+                          <span className="q-api-badge" style={{ backgroundColor: "rgba(255,255,255,0.03)", color: "#fff" }}>
                             {event.type}
                           </span>
                         </div>
-                        <p className="text-sm font-semibold text-white/95 leading-tight mb-2">
+                        <p style={{ fontSize: "12px", color: "#fff", fontWeight: "bold", margin: 0 }}>
                           {event.title}
                         </p>
-                        <div className="flex items-center gap-2 text-xs text-neutral-400 pt-2 border-t border-white/5 font-mono">
-                          <span>🕒 {event.time}</span>
-                        </div>
+                        <p style={{ fontSize: "10px", color: "var(--text-muted)", margin: 0 }}>
+                          🕒 {event.time}
+                        </p>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-white/10 rounded-xl my-auto">
-                    <p className="text-xs text-neutral-400">
-                      {selectedDate ? "No events scheduled for this day." : "Choose a date on the calendar to view details."}
+                  <div className="popover-body" style={{ color: "var(--text-muted)", borderStyle: "dashed" }}>
+                    <p style={{ margin: 0 }}>
+                      No events scheduled for this day.
                     </p>
                   </div>
                 )}

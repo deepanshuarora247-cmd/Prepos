@@ -1,0 +1,118 @@
+/* PrepPlanSchedulerModal.css - Premium Vanilla CSS Styles for PrepOS Plan Scheduler */
+
+.plan-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.plan-modal-card {
+  width: 100%;
+  max-width: 42rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--panel-border);
+  background-color: #0c101d;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .plan-modal-card {
+    padding: 2rem;
+  }
+}
+
+.plan-modal-header {
+  border-bottom: 1px solid var(--panel-border);
+  padding-bottom: 1rem;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.plan-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.plan-modal-header-left h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.025em;
+}
+
+.plan-modal-header-left p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.plan-modal-close-btn {
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+}
+
+.plan-modal-close-btn:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.plan-modal-scroll-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Modal slider & option buttons */
+.plan-intensity-btn-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.plan-intensity-option-btn {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--panel-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.plan-intensity-option-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.plan-intensity-option-btn.active {
+  border-color: var(--indigo-accent);
+  background-color: rgba(99, 102, 241, 0.1);
+}
+
+.plan-intensity-option-btn-lbl {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.plan-intensity-option-btn-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
