@@ -228,23 +228,6 @@ export default function SettingsModal({ isOpen, onClose }) {
               <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.02] space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-white">Line Numbers in Code Runner</span>
-                    <p className="text-[11px] text-neutral-400">Display gutter line counts in DSA sandbox</p>
-                  </div>
-                  <button
-                    onClick={() => updateSetting("lineNumbers", !settings.lineNumbers)}
-                    className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors ${
-                      settings.lineNumbers ? "bg-cyan-500 justify-end" : "bg-white/10 justify-start"
-                    }`}
-                  >
-                    <div className="bg-slate-950 w-4 h-4 rounded-full shadow-md transform" />
-                  </button>
-                </div>
-
-                <div className="h-px bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
                     <span className="font-semibold text-white">Auto-Close Brackets & Quotes</span>
                     <p className="text-[11px] text-neutral-400">Automatically pair (), [], {}, and "" in editor</p>
                   </div>
@@ -414,7 +397,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                   <div>
                     <span className="font-semibold text-white flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-purple-400" />
-                      AI Tutor Auto-Suggestions
+                      Auto Suggestions
                     </span>
                     <p className="text-[11px] text-neutral-400">Provide complexity hints and trade-off tips while coding</p>
                   </div>

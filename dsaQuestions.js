@@ -1,5 +1,56 @@
 export const LOCAL_DSA_QUESTIONS = [
   {
+    id: "longest-substring",
+    title: "Longest Substring Without Repeating Characters",
+    difficulty: "Medium",
+    category: "DSA",
+    companies: ["Meta", "Amazon", "Google", "Microsoft", "Apple"],
+    acceptance: "34.2%",
+    solved: false,
+    isApiResult: false,
+    description: `Given a string \`s\`, find the length of the **longest substring** without repeating characters.`,
+    examples: [
+      {
+        id: 1,
+        input: 's = "abcabcbb"',
+        output: "3",
+        explanation: 'The answer is "abc", with the length of 3.'
+      },
+      {
+        id: 2,
+        input: 's = "bbbbb"',
+        output: "1",
+        explanation: 'The answer is "b", with the length of 1.'
+      },
+      {
+        id: 3,
+        input: 's = "pwwkew"',
+        output: "3",
+        explanation: 'The answer is "wke", with the length of 3. Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.'
+      }
+    ],
+    constraints: [
+      "0 <= s.length <= 5 * 10^4",
+      "s consists of English letters, digits, symbols and spaces."
+    ],
+    hints: [
+      "Use a sliding window approach with two pointers (left and right).",
+      "Keep track of characters and their most recent indices or presence in a Set/Map.",
+      "When a duplicate is encountered, advance the left pointer past the previous occurrence."
+    ],
+    starterCode: {
+      javascript: `function lengthOfLongestSubstring(s) {\n    const seen = new Set();\n    let left = 0, best = 0;\n    for (let right = 0; right < s.length; right++) {\n        while (seen.has(s[right])) {\n            seen.delete(s[left]);\n            left++;\n        }\n        seen.add(s[right]);\n        best = Math.max(best, right - left + 1);\n    }\n    return best;\n}`,
+      python: `class Solution:\n    def lengthOfLongestSubstring(self, s: str) -> int:\n        seen = set()\n        left = best = 0\n        for right in range(len(s)):\n            while s[right] in seen:\n                seen.remove(s[left])\n                left += 1\n            seen.add(s[right])\n            best = max(best, right - left + 1)\n        return best`,
+      cpp: `class Solution {\npublic:\n    int lengthOfLongestSubstring(string s) {\n        unordered_set<char> seen;\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            while (seen.count(s[right])) {\n                seen.erase(s[left++]);\n            }\n            seen.insert(s[right]);\n            best = max(best, right - left + 1);\n        }\n        return best;\n    }\n};`,
+      java: `class Solution {\n    public int lengthOfLongestSubstring(String s) {\n        Set<Character> seen = new HashSet<>();\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            while (seen.contains(s.charAt(right))) {\n                seen.remove(s.charAt(left++));\n            }\n            seen.add(s.charAt(right));\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n}`
+    },
+    testCases: [
+      { input: 's = "abcabcbb"', expected: "3" },
+      { input: 's = "bbbbb"', expected: "1" },
+      { input: 's = "pwwkew"', expected: "3" }
+    ]
+  },
+  {
     id: "two-sum",
     title: "Two Sum",
     difficulty: "Easy",
