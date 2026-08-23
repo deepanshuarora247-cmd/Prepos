@@ -3,8 +3,6 @@ import {
   ArrowLeft, BookOpen, Clock, Tag, ChevronRight, FileText, Search, 
   Key, ShieldCheck, RefreshCw, Eye, EyeOff, ExternalLink, ThumbsUp, Sparkles, Check 
 } from "lucide-react";
-import { courseApi } from "./courseApi";
-
 const DEFAULT_TUTORIALS = [
   {
     id: "sliding-window-pattern",
@@ -44,6 +42,43 @@ const DEFAULT_TUTORIALS = [
   }
 ];
 
+const fetchLiveTutorials = async (apiKey = "", query = "programming") => {
+  try {
+    const headers = { "Content-Type": "application/json" };
+    if (apiKey) headers["api-key"] = apiKey;
+
+    const devToRes = await fetch(`https://dev.to/api/articles?tag=${encodeURIComponent(query)}&per_page=9`, { headers });
+    if (!devToRes.ok) throw new Error("Direct Dev.to fetch failed");
+
+    const data = await devToRes.json();
+    const tutorials = data.map((item) => ({
+      id: `devto-${item.id}`,
+      title: item.title,
+      category: item.tag_list && item.tag_list.length > 0 ? item.tag_list[0].toUpperCase() : "GUIDE",
+      readTime: `${item.reading_time_minutes || 5} min read`,
+      type: "Live Article",
+      summary: item.description || "Developer article and tutorial guide.",
+      tags: item.tag_list ? item.tag_list.slice(0, 4) : ["Tutorial"],
+      url: item.url,
+      author: item.user?.name || "Tech Author",
+      likes: item.public_reactions_count || 0,
+      publishedAt: item.readable_publish_date || "Recent"
+    }));
+
+    return {
+      status: 200,
+      source: apiKey ? "Dev.to Direct (API Key Authenticated)" : "Dev.to Direct (Public)",
+      tutorials
+    };
+  } catch (err) {
+    return {
+      status: 500,
+      source: "Fallback Local Database",
+      tutorials: DEFAULT_TUTORIALS
+    };
+  }
+};
+
 export default function TutorialsView({ onBackToDashboard }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem("prepos_tutorials_api_key") || "");
   const [tempApiKey, setTempApiKey] = useState(apiKey);
@@ -60,7 +95,7 @@ export default function TutorialsView({ onBackToDashboard }) {
   const loadTutorials = async (keyToUse = apiKey, query = searchQuery) => {
     setLoading(true);
     try {
-      const res = await courseApi.fetchLiveTutorials(keyToUse, query || "programming");
+      const res = await fetchLiveTutorials(keyToUse, query || "programming");
       if (res && res.tutorials && res.tutorials.length > 0) {
         setTutorials(res.tutorials);
         setApiSource(res.source || "Dev.to API");

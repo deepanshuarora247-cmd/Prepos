@@ -28,7 +28,321 @@ import {
   Film,
   Sliders
 } from "lucide-react";
-import { courseApi } from "./courseApi.js";
+const STORAGE_KEY_PROGRESS = "prepos_course_progress_v1";
+
+const FALLBACK_COURSES = [
+  {
+    id: "dsa-deep-dive",
+    title: "Data Structures & Algorithms Deep Dive",
+    instructor: "Ex-Google Staff Engineer",
+    instructorRole: "Former Lead Tech Interviewer @ Google",
+    level: "Intermediate to Advanced",
+    duration: "24 hours • 82 lessons",
+    rating: 4.9,
+    enrolled: "14.2k students",
+    category: "Algorithms",
+    description: "Master all core patterns required for Tier-1 coding interviews: Two Pointers, Sliding Window, Dynamic Programming, and Graph Traversals.",
+    topics: ["Arrays & HashMaps", "Trees & Graphs", "Dynamic Programming", "Bit Manipulation"],
+    modules: [
+      {
+        id: "mod-1",
+        title: "Module 1: Sliding Window & Two Pointers",
+        lessons: [
+          {
+            id: "les-1-1",
+            title: "Fixed vs Dynamic Window Patterns",
+            duration: "18 min",
+            type: "video",
+            summary: "Learn when to shrink or expand windows, handling subarray constraints with O(N) complexity.",
+            videoUrl: "https://www.youtube.com/embed/GcT7V3L4DG4",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            transcript: "In this lesson, we breakdown the fundamental difference between fixed length sliding windows and dynamic sliding windows.",
+            theory: `### Sliding Window Strategy
+The Sliding Window pattern is used to perform required operations on a specific window size.
+
+#### Key Principles:
+1. **Right Pointer**: Expands the window by incorporating new elements.
+2. **Left Pointer**: Shrinks the window when constraints are violated.
+
+\`\`\`javascript
+function maxSubarraySum(arr, k) {
+  let maxSum = 0, windowSum = 0;
+  for (let i = 0; i < arr.length; i++) {
+    windowSum += arr[i];
+    if (i >= k - 1) {
+      maxSum = Math.max(maxSum, windowSum);
+      windowSum -= arr[i - k];
+    }
+  }
+  return maxSum;
+}
+\`\`\``,
+            quiz: {
+              question: "What is the primary advantage of the Sliding Window technique over brute-force nested loops?",
+              options: [
+                "It reduces space complexity to O(1) in all cases.",
+                "It reduces time complexity from O(N^2) to O(N) by reusing computation of overlapping subarrays.",
+                "It guarantees recursive call stack safety.",
+                "It works on unsorted string permutations only."
+              ],
+              correctIndex: 1,
+              explanation: "Sliding window avoids re-calculating overlapping subproblem sums by maintaining a running state."
+            }
+          },
+          {
+            id: "les-1-2",
+            title: "Fruit Into Baskets & At Most K Distinct",
+            duration: "24 min",
+            type: "video",
+            summary: "Detailed walkthrough of two-pointer state contraction using hash maps.",
+            videoUrl: "https://www.youtube.com/embed/EXzl7bLzCis",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            transcript: "We analyze how to maintain at most K unique keys in a Map while moving the right pointer forward.",
+            theory: "### At Most K Distinct Pattern\nUse a Map to track key frequencies.",
+            quiz: {
+              question: "When should the left pointer be incremented in an 'At Most K Distinct' problem?",
+              options: [
+                "Whenever the right pointer hits an even index.",
+                "When the total number of unique keys in the hash map exceeds K.",
+                "Only when the array is sorted in ascending order.",
+                "Never, because left pointer is stationary."
+              ],
+              correctIndex: 1,
+              explanation: "When map.size > K, the window is invalid, so left pointer advances."
+            }
+          }
+        ]
+      },
+      {
+        id: "mod-2",
+        title: "Module 2: Graph Traversals & Topological Sort",
+        lessons: [
+          {
+            id: "les-2-1",
+            title: "BFS vs DFS: Cycle Detection in Directed Graphs",
+            duration: "32 min",
+            type: "video",
+            summary: "Kahn's Algorithm vs recursion stack states for course schedule resolution.",
+            videoUrl: "https://www.youtube.com/embed/mqqrf-bgkC8",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            transcript: "Detecting cycles in directed graphs is crucial for build dependencies.",
+            theory: "### Kahn's Algorithm\nTrack in-degrees to order DAG vertices.",
+            quiz: {
+              question: "In Kahn's Algorithm for Topological Sort, what condition signifies that a graph contains a cycle?",
+              options: [
+                "The queue becomes empty before processing all graph vertices.",
+                "The in-degree of the starting node is greater than 0.",
+                "The adjacency list contains self-loops only.",
+                "The graph is undirected."
+              ],
+              correctIndex: 0,
+              explanation: "If processed nodes count is less than total vertices when queue empties, a cycle exists."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "system-design-mastery",
+    title: "System Design for FAANG Tech Leads",
+    instructor: "Principal Architect @ Meta",
+    instructorRole: "Infrastructure Lead, Distributed Databases",
+    level: "Advanced",
+    duration: "18 hours • 54 lessons",
+    rating: 4.95,
+    enrolled: "9.8k students",
+    category: "System Design",
+    description: "Learn how to architect high-throughput distributed systems handling millions of QPS, database sharding, caching strategies, and event-driven queues.",
+    topics: ["Microservices", "Distributed Caching", "Database Sharding", "Event-Driven Queues"],
+    modules: [
+      {
+        id: "sysmod-1",
+        title: "Module 1: Scalable Caching & Consistent Hashing",
+        lessons: [
+          {
+            id: "sysles-1-1",
+            title: "Consistent Hashing & Ring Rebalance",
+            duration: "26 min",
+            type: "video",
+            summary: "Distribute workload without full cache keys re-hashing when servers scale out.",
+            videoUrl: "https://www.youtube.com/embed/xHnA-5DpNvk",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            transcript: "Consistent hashing maps keys and nodes to a hash ring, moving only K/N keys.",
+            theory: "### Consistent Hashing Ring\nVirtual nodes prevent hot spots.",
+            quiz: {
+              question: "Why are virtual nodes added to a Consistent Hashing ring?",
+              options: [
+                "To speed up SSL/TLS handshake latency.",
+                "To prevent hot spots and achieve uniform data distribution across physical servers.",
+                "To compress database index tables.",
+                "To automatically encrypt cache keys at rest."
+              ],
+              correctIndex: 1,
+              explanation: "Virtual nodes spread physical server positions, preventing key skew."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "llm-ai-engineering",
+    title: "Fullstack AI & LLM Engineering 2026",
+    instructor: "AI Research Lead @ OpenAI",
+    instructorRole: "Foundational Models & RAG Architecture",
+    level: "All Levels",
+    duration: "16 hours • 48 lessons",
+    rating: 4.88,
+    enrolled: "18.5k students",
+    category: "AI & ML",
+    description: "Build autonomous AI agents, RAG pipelines, fine-tune models, and integrate vector databases into production web applications.",
+    topics: ["RAG Architecture", "Vector DBs (Pinecone/Milvus)", "LangChain & LlamaIndex", "AI Agents"],
+    modules: [
+      {
+        id: "aimod-1",
+        title: "Module 1: Vector Embeddings & Hybrid Search",
+        lessons: [
+          {
+            id: "ailes-1-1",
+            title: "Cosine Similarity vs Dot Product in Vector DBs",
+            duration: "20 min",
+            type: "video",
+            summary: "Understanding vector distance metrics for semantic document retrieval.",
+            videoUrl: "https://www.youtube.com/embed/FSTrj-TuikE",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+            transcript: "Choosing distance metrics impacts vector index search latency.",
+            theory: "### Distance Metrics in Vector Space",
+            quiz: {
+              question: "When are Dot Product and Cosine Similarity mathematical equivalents in vector search?",
+              options: [
+                "When vector dimensions are less than 128.",
+                "When all vectors are L2-normalized (length of 1.0).",
+                "When using HNSW index without quantization.",
+                "Only when querying sparse keyword matrices."
+              ],
+              correctIndex: 1,
+              explanation: "When vectors are L2-normalized, dot product equals cosine similarity."
+            }
+          }
+        ]
+      }
+    ]
+  }
+];
+
+function getStoredProgressMap() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PROGRESS);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch (e) {
+    return {};
+  }
+}
+
+function setStoredProgressMap(map) {
+  try {
+    localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(map));
+  } catch (e) {}
+}
+
+const localCourseApi = {
+  async fetchCourseDetails(courseId) {
+    const course = FALLBACK_COURSES.find((c) => c.id === courseId);
+    if (!course) throw new Error("Course not found");
+    const progressMap = getStoredProgressMap();
+    const userProg = progressMap[courseId] || { completedLessons: [], enrolled: false };
+
+    return {
+      status: 200,
+      course: {
+        ...course,
+        enrolled: userProg.enrolled,
+        completedLessons: userProg.completedLessons || []
+      }
+    };
+  },
+
+  async fetchLessonContent(courseId, lessonId) {
+    const course = FALLBACK_COURSES.find((c) => c.id === courseId);
+    if (!course) throw new Error("Course not found");
+
+    let foundLesson = null;
+    let parentModule = null;
+    for (const m of course.modules) {
+      const l = m.lessons.find((les) => les.id === lessonId);
+      if (l) {
+        foundLesson = l;
+        parentModule = m;
+        break;
+      }
+    }
+
+    if (!foundLesson) throw new Error("Lesson not found");
+    const progressMap = getStoredProgressMap();
+    const userProg = progressMap[courseId] || { completedLessons: [] };
+    const isCompleted = userProg.completedLessons.includes(lessonId);
+
+    return {
+      status: 200,
+      courseId,
+      moduleTitle: parentModule.title,
+      lesson: foundLesson,
+      isCompleted
+    };
+  },
+
+  async submitQuizAnswer(courseId, lessonId, selectedOptionIndex) {
+    const course = FALLBACK_COURSES.find((c) => c.id === courseId);
+    if (!course) throw new Error("Course not found");
+
+    let quiz = null;
+    for (const m of course.modules) {
+      const l = m.lessons.find((les) => les.id === lessonId);
+      if (l && l.quiz) {
+        quiz = l.quiz;
+        break;
+      }
+    }
+
+    if (!quiz) throw new Error("Quiz not found");
+    const isCorrect = selectedOptionIndex === quiz.correctIndex;
+    const progressMap = getStoredProgressMap();
+    const userProg = progressMap[courseId] || { completedLessons: [], enrolled: true };
+
+    if (isCorrect && !userProg.completedLessons.includes(lessonId)) {
+      userProg.completedLessons.push(lessonId);
+      userProg.enrolled = true;
+      progressMap[courseId] = userProg;
+      setStoredProgressMap(progressMap);
+    }
+
+    return {
+      status: 200,
+      evaluator: "Client Evaluator",
+      isCorrect,
+      correctIndex: quiz.correctIndex,
+      explanation: quiz.explanation,
+      completedLessons: userProg.completedLessons
+    };
+  },
+
+  async askCourseAiTutor(courseId, lessonId, question) {
+    const qLower = question.toLowerCase();
+    let reply = "AI Assistant: ";
+
+    if (qLower.includes("time complexity") || qLower.includes("o(n)")) {
+      reply += "Because each element enters and leaves the sliding window at most once, time complexity is **O(N)**.";
+    } else if (qLower.includes("space") || qLower.includes("memory")) {
+      reply += "Space complexity is **O(K)** for tracking frequencies in a Map of size K.";
+    } else {
+      reply += "Always state your boundary conditions (empty/single element inputs) before coding in technical interviews.";
+    }
+
+    return { status: 200, reply };
+  }
+};
 
 export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const [courseData, setCourseData] = useState(null);
@@ -129,7 +443,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     async function initCourse() {
       setLoading(true);
       try {
-        const res = await courseApi.fetchCourseDetails(courseId);
+        const res = await localCourseApi.fetchCourseDetails(courseId);
         setCourseData(res.course);
         setCompletedLessons(res.course.completedLessons || []);
 
@@ -155,7 +469,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
 
     async function loadLesson() {
       try {
-        const res = await courseApi.fetchLessonContent(courseId, activeLessonId);
+        const res = await localCourseApi.fetchLessonContent(courseId, activeLessonId);
         setLessonContent(res);
         setSelectedOption(null);
         setQuizResult(null);
@@ -181,7 +495,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     setIsSubmittingQuiz(true);
 
     try {
-      const res = await courseApi.submitQuizAnswer(courseId, activeLessonId, selectedOption);
+      const res = await localCourseApi.submitQuizAnswer(courseId, activeLessonId, selectedOption);
       setQuizResult(res);
       if (res.isCorrect) {
         setCompletedLessons(res.completedLessons);
@@ -203,7 +517,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     setIsAiResponding(true);
 
     try {
-      const res = await courseApi.askCourseAiTutor(courseId, activeLessonId, userMsg);
+      const res = await localCourseApi.askCourseAiTutor(courseId, activeLessonId, userMsg);
       setAiChatMessages((prev) => [...prev, { sender: "ai", text: res.reply }]);
     } catch (e) {
       setAiChatMessages((prev) => [

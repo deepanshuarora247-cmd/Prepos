@@ -33,7 +33,7 @@ import ResumeGraderView from "./ResumeGraderView.jsx";
 import CoursesView from "./CoursesView.jsx";
 import TutorialsView from "./TutorialsView.jsx";
 import AptitudeView from "./AptitudeView.jsx";
-import JobsView from "./JobsView.jsx";
+import RoadmapView from "./RoadmapView.jsx";
 import LeaderboardView from "./LeaderboardView.jsx";
 import PrepPlanSchedulerModal from "./PrepPlanSchedulerModal.jsx";
 import AddAgendaModal from "./addagendamodel.jsx";
@@ -378,7 +378,7 @@ function QuestionTerminal({ onSolveNow }) {
 // ---------------------------------------------------------------------------
 
 export default function InterviewPrepDashboard() {
-  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "leaderboard" | "jobs"
+  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "leaderboard" | "roadmap"
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
 
@@ -546,8 +546,8 @@ export default function InterviewPrepDashboard() {
     return <LeaderboardView onBackToDashboard={() => setActiveView("dashboard")} />;
   }
 
-  if (activeView === "jobs") {
-    return <JobsView onBackToDashboard={() => setActiveView("dashboard")} />;
+  if (activeView === "roadmap") {
+    return <RoadmapView onBackToDashboard={() => setActiveView("dashboard")} />;
   }
 
   return (
@@ -614,7 +614,7 @@ export default function InterviewPrepDashboard() {
 
           <div className="hidden md:flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 w-80 text-neutral-500">
             <Search className="h-3.5 w-3.5" />
-            <span className="text-xs">Search courses, practice, jobs...</span>
+            <span className="text-xs">Search courses, practice, roadmap...</span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -700,7 +700,7 @@ export default function InterviewPrepDashboard() {
             { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
             { id: "resume", label: "Resume Review", action: () => setActiveView("resume") },
             { id: "leaderboard", label: "Leaderboard", action: () => setActiveView("leaderboard") },
-            { id: "jobs", label: "Jobs", action: () => setActiveView("jobs") },
+            { id: "roadmap", label: "Roadmap", action: () => setActiveView("roadmap") },
           ].map((cat) => (
             <button
               key={cat.id}

@@ -22,8 +22,322 @@ import {
   TrendingUp,
   RefreshCw
 } from "lucide-react";
-import { courseApi } from "./courseApi.js";
 import CoursePlayerView from "./CoursePlayerView.jsx";
+
+const STORAGE_KEY_PROGRESS = "prepos_course_progress_v1";
+
+const FALLBACK_COURSES = [
+  {
+    id: "dsa-deep-dive",
+    title: "Data Structures & Algorithms Deep Dive",
+    instructor: "Ex-Google Staff Engineer",
+    instructorRole: "Former Lead Tech Interviewer @ Google",
+    level: "Intermediate to Advanced",
+    duration: "24 hours • 82 lessons",
+    rating: 4.9,
+    enrolled: "14.2k students",
+    category: "Algorithms",
+    description: "Master all core patterns required for Tier-1 coding interviews: Two Pointers, Sliding Window, Dynamic Programming, and Graph Traversals.",
+    topics: ["Arrays & HashMaps", "Trees & Graphs", "Dynamic Programming", "Bit Manipulation"],
+    modules: [
+      {
+        id: "mod-1",
+        title: "Module 1: Sliding Window & Two Pointers",
+        lessons: [
+          {
+            id: "les-1-1",
+            title: "Fixed vs Dynamic Window Patterns",
+            duration: "18 min",
+            type: "video",
+            summary: "Learn when to shrink or expand windows, handling subarray constraints with O(N) complexity.",
+            videoUrl: "https://www.youtube.com/embed/GcT7V3L4DG4",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            transcript: "In this lesson, we breakdown the fundamental difference between fixed length sliding windows and dynamic sliding windows.",
+            theory: `### Sliding Window Strategy
+The Sliding Window pattern is used to perform required operations on a specific window size.
+
+#### Key Principles:
+1. **Right Pointer**: Expands the window by incorporating new elements.
+2. **Left Pointer**: Shrinks the window when constraints are violated.
+
+\`\`\`javascript
+function maxSubarraySum(arr, k) {
+  let maxSum = 0, windowSum = 0;
+  for (let i = 0; i < arr.length; i++) {
+    windowSum += arr[i];
+    if (i >= k - 1) {
+      maxSum = Math.max(maxSum, windowSum);
+      windowSum -= arr[i - k];
+    }
+  }
+  return maxSum;
+}
+\`\`\``,
+            quiz: {
+              question: "What is the primary advantage of the Sliding Window technique over brute-force nested loops?",
+              options: [
+                "It reduces space complexity to O(1) in all cases.",
+                "It reduces time complexity from O(N^2) to O(N) by reusing computation of overlapping subarrays.",
+                "It guarantees recursive call stack safety.",
+                "It works on unsorted string permutations only."
+              ],
+              correctIndex: 1,
+              explanation: "Sliding window avoids re-calculating overlapping subproblem sums by maintaining a running state."
+            }
+          },
+          {
+            id: "les-1-2",
+            title: "Fruit Into Baskets & At Most K Distinct",
+            duration: "24 min",
+            type: "video",
+            summary: "Detailed walkthrough of two-pointer state contraction using hash maps.",
+            videoUrl: "https://www.youtube.com/embed/EXzl7bLzCis",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            transcript: "We analyze how to maintain at most K unique keys in a Map while moving the right pointer forward.",
+            theory: "### At Most K Distinct Pattern\nUse a Map to track key frequencies.",
+            quiz: {
+              question: "When should the left pointer be incremented in an 'At Most K Distinct' problem?",
+              options: [
+                "Whenever the right pointer hits an even index.",
+                "When the total number of unique keys in the hash map exceeds K.",
+                "Only when the array is sorted in ascending order.",
+                "Never, because left pointer is stationary."
+              ],
+              correctIndex: 1,
+              explanation: "When map.size > K, the window is invalid, so left pointer advances."
+            }
+          }
+        ]
+      },
+      {
+        id: "mod-2",
+        title: "Module 2: Graph Traversals & Topological Sort",
+        lessons: [
+          {
+            id: "les-2-1",
+            title: "BFS vs DFS: Cycle Detection in Directed Graphs",
+            duration: "32 min",
+            type: "video",
+            summary: "Kahn's Algorithm vs recursion stack states for course schedule resolution.",
+            videoUrl: "https://www.youtube.com/embed/mqqrf-bgkC8",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            transcript: "Detecting cycles in directed graphs is crucial for build dependencies.",
+            theory: "### Kahn's Algorithm\nTrack in-degrees to order DAG vertices.",
+            quiz: {
+              question: "In Kahn's Algorithm for Topological Sort, what condition signifies that a graph contains a cycle?",
+              options: [
+                "The queue becomes empty before processing all graph vertices.",
+                "The in-degree of the starting node is greater than 0.",
+                "The adjacency list contains self-loops only.",
+                "The graph is undirected."
+              ],
+              correctIndex: 0,
+              explanation: "If processed nodes count is less than total vertices when queue empties, a cycle exists."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "system-design-mastery",
+    title: "System Design for FAANG Tech Leads",
+    instructor: "Principal Architect @ Meta",
+    instructorRole: "Infrastructure Lead, Distributed Databases",
+    level: "Advanced",
+    duration: "18 hours • 54 lessons",
+    rating: 4.95,
+    enrolled: "9.8k students",
+    category: "System Design",
+    description: "Learn how to architect high-throughput distributed systems handling millions of QPS, database sharding, caching strategies, and event-driven queues.",
+    topics: ["Microservices", "Distributed Caching", "Database Sharding", "Event-Driven Queues"],
+    modules: [
+      {
+        id: "sysmod-1",
+        title: "Module 1: Scalable Caching & Consistent Hashing",
+        lessons: [
+          {
+            id: "sysles-1-1",
+            title: "Consistent Hashing & Ring Rebalance",
+            duration: "26 min",
+            type: "video",
+            summary: "Distribute workload without full cache keys re-hashing when servers scale out.",
+            videoUrl: "https://www.youtube.com/embed/xHnA-5DpNvk",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            transcript: "Consistent hashing maps keys and nodes to a hash ring, moving only K/N keys.",
+            theory: "### Consistent Hashing Ring\nVirtual nodes prevent hot spots.",
+            quiz: {
+              question: "Why are virtual nodes added to a Consistent Hashing ring?",
+              options: [
+                "To speed up SSL/TLS handshake latency.",
+                "To prevent hot spots and achieve uniform data distribution across physical servers.",
+                "To compress database index tables.",
+                "To automatically encrypt cache keys at rest."
+              ],
+              correctIndex: 1,
+              explanation: "Virtual nodes spread physical server positions, preventing key skew."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "llm-ai-engineering",
+    title: "Fullstack AI & LLM Engineering 2026",
+    instructor: "AI Research Lead @ OpenAI",
+    instructorRole: "Foundational Models & RAG Architecture",
+    level: "All Levels",
+    duration: "16 hours • 48 lessons",
+    rating: 4.88,
+    enrolled: "18.5k students",
+    category: "AI & ML",
+    description: "Build autonomous AI agents, RAG pipelines, fine-tune models, and integrate vector databases into production web applications.",
+    topics: ["RAG Architecture", "Vector DBs (Pinecone/Milvus)", "LangChain & LlamaIndex", "AI Agents"],
+    modules: [
+      {
+        id: "aimod-1",
+        title: "Module 1: Vector Embeddings & Hybrid Search",
+        lessons: [
+          {
+            id: "ailes-1-1",
+            title: "Cosine Similarity vs Dot Product in Vector DBs",
+            duration: "20 min",
+            type: "video",
+            summary: "Understanding vector distance metrics for semantic document retrieval.",
+            videoUrl: "https://www.youtube.com/embed/FSTrj-TuikE",
+            sampleMp4: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+            transcript: "Choosing distance metrics impacts vector index search latency.",
+            theory: "### Distance Metrics in Vector Space",
+            quiz: {
+              question: "When are Dot Product and Cosine Similarity mathematical equivalents in vector search?",
+              options: [
+                "When vector dimensions are less than 128.",
+                "When all vectors are L2-normalized (length of 1.0).",
+                "When using HNSW index without quantization.",
+                "Only when querying sparse keyword matrices."
+              ],
+              correctIndex: 1,
+              explanation: "When vectors are L2-normalized, dot product equals cosine similarity."
+            }
+          }
+        ]
+      }
+    ]
+  }
+];
+
+function getStoredProgressMap() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PROGRESS);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch (e) {
+    return {};
+  }
+}
+
+function setStoredProgressMap(map) {
+  try {
+    localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(map));
+  } catch (e) {}
+}
+
+const localCourseApi = {
+  async fetchCourses({ category = "All", search = "" } = {}) {
+    const progressMap = getStoredProgressMap();
+    let list = FALLBACK_COURSES.map((course) => {
+      const userProg = progressMap[course.id] || { completedLessons: [], enrolled: false };
+      let totalLessons = 0;
+      course.modules.forEach((m) => (totalLessons += m.lessons.length));
+      const completedCount = userProg.completedLessons.length;
+      const computedPercent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+      return {
+        ...course,
+        enrolled: userProg.enrolled || false,
+        progress: userProg.enrolled ? Math.max(0, computedPercent) : 0,
+        completedCount,
+        totalLessons,
+        isFastApi: false
+      };
+    });
+
+    if (category && category !== "All") {
+      list = list.filter((c) => c.category.toLowerCase() === category.toLowerCase());
+    }
+
+    if (search && search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(
+        (c) =>
+          c.title.toLowerCase().includes(q) ||
+          c.description.toLowerCase().includes(q) ||
+          c.instructor.toLowerCase().includes(q) ||
+          c.topics.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+    return { status: 200, courses: list };
+  },
+
+  async enrollCourse(courseId) {
+    const progressMap = getStoredProgressMap();
+    const userProg = progressMap[courseId] || { completedLessons: [], enrolled: true };
+    userProg.enrolled = true;
+    progressMap[courseId] = userProg;
+    setStoredProgressMap(progressMap);
+    return { status: 200, enrolled: true };
+  },
+
+  async fetchLiveGithubCourseRepos(query = "interview-prep") {
+    try {
+      const ghRes = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}+in:name,description&sort=stars&order=desc&per_page=6`);
+      if (!ghRes.ok) throw new Error("GitHub API direct fetch failed");
+      const data = await ghRes.json();
+      const repos = (data.items || []).map((r) => ({
+        id: `gh-${r.id}`,
+        title: r.name.replace(/-/g, " ").toUpperCase(),
+        fullName: r.full_name,
+        instructor: `@${r.owner.login}`,
+        description: r.description || "Open source course repository.",
+        stars: r.stargazers_count,
+        forks: r.forks_count,
+        language: r.language || "Code",
+        url: r.html_url,
+        topics: r.topics ? r.topics.slice(0, 4) : []
+      }));
+      return { status: 200, source: "GitHub API Direct", repos };
+    } catch (err) {
+      return { status: 500, repos: [] };
+    }
+  },
+
+  async fetchLiveTechNewsApi() {
+    try {
+      const hnRes = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
+      if (!hnRes.ok) throw new Error("HN direct fetch failed");
+      const ids = (await hnRes.json()).slice(0, 5);
+      const storyPromises = ids.map(async (id) => {
+        const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`);
+        return itemRes.json();
+      });
+      const stories = (await Promise.all(storyPromises)).filter(Boolean);
+      return {
+        status: 200,
+        source: "HN Firebase Direct",
+        stories: stories.map((s) => ({
+          id: s.id,
+          title: s.title,
+          url: s.url || `https://news.ycombinator.com/item?id=${s.id}`,
+          by: s.by,
+          score: s.score || 0,
+          comments: s.descendants || 0
+        }))
+      };
+    } catch (err) {
+      return { status: 500, stories: [] };
+    }
+  }
+};
 
 const CATEGORIES = ["All", "Algorithms", "System Design", "AI & ML", "DevOps"];
 
@@ -45,7 +359,7 @@ export default function CoursesView({ onBackToDashboard }) {
   const loadCourses = async () => {
     setLoading(true);
     try {
-      const res = await courseApi.fetchCourses({
+      const res = await localCourseApi.fetchCourses({
         category: selectedCategory,
         search: searchQuery
       });
@@ -61,7 +375,7 @@ export default function CoursesView({ onBackToDashboard }) {
   const loadLiveGithubApi = async (query = "coding-interview-university") => {
     setIsFetchingLiveApi(true);
     try {
-      const res = await courseApi.fetchLiveGithubCourseRepos(query);
+      const res = await localCourseApi.fetchLiveGithubCourseRepos(query);
       setLiveGithubRepos(res.repos || []);
       setLiveApiSource(res.source || "GitHub API");
     } catch (e) {
@@ -74,7 +388,7 @@ export default function CoursesView({ onBackToDashboard }) {
   // Load live HackerNews Tech News API data
   const loadLiveNewsApi = async () => {
     try {
-      const res = await courseApi.fetchLiveTechNewsApi();
+      const res = await localCourseApi.fetchLiveTechNewsApi();
       if (res.stories) setLiveNews(res.stories);
     } catch (e) {
       console.error("Failed to fetch HackerNews API data", e);
@@ -92,7 +406,7 @@ export default function CoursesView({ onBackToDashboard }) {
 
   const handleEnrollOrContinue = async (courseId) => {
     try {
-      await courseApi.enrollCourse(courseId);
+      await localCourseApi.enrollCourse(courseId);
       setActiveCourseId(courseId);
     } catch (e) {
       console.error("Failed to enroll course", e);
