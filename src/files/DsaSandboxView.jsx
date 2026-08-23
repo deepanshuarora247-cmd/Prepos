@@ -822,24 +822,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   <Terminal className="h-4 w-4" style={{ color: "var(--indigo-accent)" }} />
                   <span>Console & Test Cases</span>
                 </div>
-                <div className="ide-console-action-row">
-                  <button
-                    onClick={handleRunCode}
-                    disabled={isRunningCode || !activeQuestion}
-                    className="ide-console-run-btn"
-                  >
-                    {isRunningCode ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}
-                    Run Code
-                  </button>
-                  <button
-                    onClick={handleSubmitCode}
-                    disabled={isRunningCode || !activeQuestion}
-                    className="ide-console-submit-btn"
-                  >
-                    <CheckCircle2 className="h-3 w-3" />
-                    Submit
-                  </button>
-                </div>
+
               </div>
 
               <div className="ide-console-body">

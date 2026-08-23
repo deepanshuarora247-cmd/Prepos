@@ -482,11 +482,13 @@ export default function CoursesView({ onBackToDashboard }) {
                     </div>
 
                     <a
-                      href={repo.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="#"
+                      onClick={function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
                       className="course-card-enroll-btn enrolled"
-                      style={{ textDecoration: "none", display: "inline-flex", gap: "0.5rem" }}
+                      style={{ textDecoration: "none", display: "inline-flex", gap: "0.5rem", opacity: 0.5, cursor: "not-allowed" }}
                     >
                       Explore Repo <ExternalLink className="h-3.5 w-3.5" />
                     </a>

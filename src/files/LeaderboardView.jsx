@@ -87,7 +87,6 @@ const LEADERBOARD_USERS = [
 ];
 
 export default function LeaderboardView({ onBackToDashboard }) {
-  const [timeframe, setTimeframe] = useState("Weekly");
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredUsers = LEADERBOARD_USERS.filter(
@@ -96,10 +95,6 @@ export default function LeaderboardView({ onBackToDashboard }) {
       u.handle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       u.company.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const top1 = LEADERBOARD_USERS.find((u) => u.rank === 1);
-  const top2 = LEADERBOARD_USERS.find((u) => u.rank === 2);
-  const top3 = LEADERBOARD_USERS.find((u) => u.rank === 3);
 
   return (
     <div className="leaderboard-container">
@@ -121,98 +116,9 @@ export default function LeaderboardView({ onBackToDashboard }) {
             <span>Global Leaderboard</span>
           </div>
         </div>
-
-        {/* Timeframe Filters */}
-        <div className="resume-banner-actions" style={{ gap: "0.25rem", padding: "0.25rem", border: "1px solid var(--panel-border)", backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "0.75rem" }}>
-          {["Weekly", "Monthly", "All Time"].map((tf) => (
-            <button
-              key={tf}
-              onClick={() => setTimeframe(tf)}
-              className="category-tab"
-              style={{
-                border: "none",
-                fontSize: "11px",
-                padding: "0.25rem 0.5rem",
-                color: timeframe === tf ? "var(--amber-accent)" : "var(--text-muted)",
-                backgroundColor: timeframe === tf ? "var(--amber-bg)" : "transparent",
-                borderRadius: "0.5rem"
-              }}
-            >
-              {tf}
-            </button>
-          ))}
-        </div>
       </header>
 
       <main className="leaderboard-main">
-        {/* Podium Top 3 */}
-        <div className="podium-grid">
-          {/* 2nd Place */}
-          {top2 && (
-            <div className="podium-card silver-tier">
-              <div className="podium-card-rank-badge">#2</div>
-              <div className="podium-avatar-wrapper">
-                <div className="podium-avatar-circle">
-                  {top2.name.split(" ").map(n => n[0]).join("")}
-                </div>
-                <span className="podium-medal-ribbon">
-                  SILVER
-                </span>
-              </div>
-              <h3 className="podium-card-name">{top2.name}</h3>
-              <p className="podium-card-company">{top2.company}</p>
-              <div className="podium-card-points-row">
-                <span className="val">{top2.points.toLocaleString()}</span>
-                <span className="lbl">points</span>
-              </div>
-            </div>
-          )}
-
-          {/* 1st Place GOLD */}
-          {top1 && (
-            <div className="podium-card gold-tier">
-              <div className="podium-card-rank-badge">
-                <Trophy className="h-4 w-4 fill-current" /> #1
-              </div>
-              <div className="podium-avatar-wrapper">
-                <div className="podium-avatar-circle">
-                  {top1.name.split(" ").map(n => n[0]).join("")}
-                </div>
-                <span className="podium-medal-ribbon">
-                  GOLD 🥇
-                </span>
-              </div>
-              <h3 className="podium-card-name">{top1.name}</h3>
-              <p className="podium-card-company">{top1.company}</p>
-              <div className="podium-card-points-row">
-                <span className="val">{top1.points.toLocaleString()}</span>
-                <span className="lbl">points</span>
-              </div>
-            </div>
-          )}
-
-          {/* 3rd Place */}
-          {top3 && (
-            <div className="podium-card bronze-tier">
-              <div className="podium-card-rank-badge">#3</div>
-              <div className="podium-avatar-wrapper">
-                <div className="podium-avatar-circle">
-                  {top3.name.split(" ").map(n => n[0]).join("")}
-                </div>
-                <span className="podium-medal-ribbon">
-                  BRONZE
-                </span>
-              </div>
-              <h3 className="podium-card-name">{top3.name}</h3>
-              <p className="podium-card-company">{top3.company}</p>
-              <div className="podium-card-points-row">
-                <span className="val">{top3.points.toLocaleString()}</span>
-                <span className="lbl">points</span>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Search & List Table */}
         <div className="ide-split-pane" style={{ border: "1px solid var(--panel-border)", borderRadius: "1rem", flexDirection: "column", height: "auto" }}>
           <div className="resume-banner-row no-print" style={{ padding: "0.75rem 1.25rem", border: "none", borderBottom: "1px solid var(--panel-border)", background: "rgba(255, 255, 255, 0.02)", flexDirection: "row", justifyContent: "space-between", borderRadius: "1rem 1rem 0 0" }}>

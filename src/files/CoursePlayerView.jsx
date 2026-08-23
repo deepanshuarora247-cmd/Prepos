@@ -163,7 +163,6 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const [isMuted, setIsMuted] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [videoSourceMode, setVideoSourceMode] = useState("html5"); // "html5" | "iframe"
-  const [videoError, setVideoError] = useState(false);
 
   // Quiz states
   const [selectedOption, setSelectedOption] = useState(null);
@@ -507,59 +506,49 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                       />
                     ) : (
                       <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                        {videoError ? (
-                          <div className="popover-body" style={{ color: "var(--rose-accent)", height: "100%", justifyContent: "center" }}>
-                            <AlertCircle className="h-8 w-8 mb-2" />
-                            <span>Failed to load local sample MP4 source.</span>
-                          </div>
-                        ) : (
-                          <video
-                            ref={videoRef}
-                            src={lessonContent.lesson.sampleMp4 || "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
-                            crossOrigin="anonymous"
-                            preload="metadata"
-                            onTimeUpdate={handleTimeUpdate}
-                            onLoadedMetadata={handleTimeUpdate}
-                            onEnded={() => setIsPlaying(false)}
-                            onError={() => setVideoError(true)}
-                            className="player-html5-media"
-                            onClick={togglePlay}
-                          />
-                        )}
+                        <video
+                          ref={videoRef}
+                          src={lessonContent.lesson.sampleMp4 || "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
+                          crossOrigin="anonymous"
+                          preload="metadata"
+                          onTimeUpdate={handleTimeUpdate}
+                          onLoadedMetadata={handleTimeUpdate}
+                          onEnded={() => setIsPlaying(false)}
+                          className="player-html5-media"
+                          onClick={togglePlay}
+                        />
 
-                        {!videoError && (
-                          <div className="player-video-controls-overlay">
-                            <div className="player-video-controls-left">
-                              <button onClick={togglePlay} className="player-ctrl-btn">
-                                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                              </button>
-                              <button onClick={toggleMute} className="player-ctrl-btn">
-                                {isMuted ? <VolumeX className="h-4 w-4 text-rose-400" /> : <Volume2 className="h-4 w-4" />}
-                              </button>
-                              <span style={{ fontSize: "11px" }}>
-                                {formatTime(currentTime)} / {formatTime(videoDuration || 300)}
-                              </span>
-                            </div>
-
-                            <div className="player-video-controls-left">
-                              <div style={{ display: "flex", gap: "0.25rem" }}>
-                                {[1, 1.25, 1.5, 2].map((s) => (
-                                  <button
-                                    key={s}
-                                    onClick={() => handleSpeedChange(s)}
-                                    className="popover-header-badge"
-                                    style={{ padding: "0.125rem 0.25rem", cursor: "pointer", color: playbackSpeed === s ? "var(--cyan-accent)" : undefined }}
-                                  >
-                                    {s}x
-                                  </button>
-                                ))}
-                              </div>
-                              <button onClick={toggleFullscreen} className="player-ctrl-btn">
-                                <Maximize2 className="h-4 w-4" />
-                              </button>
-                            </div>
+                        <div className="player-video-controls-overlay">
+                          <div className="player-video-controls-left">
+                            <button onClick={togglePlay} className="player-ctrl-btn">
+                              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                            </button>
+                            <button onClick={toggleMute} className="player-ctrl-btn">
+                              {isMuted ? <VolumeX className="h-4 w-4 text-rose-400" /> : <Volume2 className="h-4 w-4" />}
+                            </button>
+                            <span style={{ fontSize: "11px" }}>
+                              {formatTime(currentTime)} / {formatTime(videoDuration || 300)}
+                            </span>
                           </div>
-                        )}
+
+                          <div className="player-video-controls-left">
+                            <div style={{ display: "flex", gap: "0.25rem" }}>
+                              {[1, 1.25, 1.5, 2].map((s) => (
+                                <button
+                                  key={s}
+                                  onClick={() => handleSpeedChange(s)}
+                                  className="popover-header-badge"
+                                  style={{ padding: "0.125rem 0.25rem", cursor: "pointer", color: playbackSpeed === s ? "var(--cyan-accent)" : undefined }}
+                                >
+                                  {s}x
+                                </button>
+                              ))}
+                            </div>
+                            <button onClick={toggleFullscreen} className="player-ctrl-btn">
+                              <Maximize2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

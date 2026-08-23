@@ -308,11 +308,13 @@ export default function TutorialsView({ onBackToDashboard }) {
                 </div>
 
                 <a
-                  href={tut.url || "#"}
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#"
+                  onClick={function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   className="tutorial-card-read-btn"
-                  style={{ textDecoration: "none" }}
+                  style={{ textDecoration: "none", opacity: 0.5, cursor: "not-allowed" }}
                 >
                   Read Tutorial <ExternalLink className="h-3.5 w-3.5" />
                 </a>
