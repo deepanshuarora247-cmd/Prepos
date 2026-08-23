@@ -29,12 +29,12 @@ const PRESET_TEMPLATES = {
   fullstack: {
     title: "FAANG Senior Full Stack Engineer",
     role: "Full Stack Engineer",
-    fullName: "Arjun Sharma",
-    email: "arjun.sharma@example.com",
+    fullName: "Deepanshu Arora",
+    email: "deepanshu.arora@example.com",
     phone: "+1 (555) 234-5678",
     location: "San Francisco, CA",
-    github: "github.com/arjun-dev",
-    linkedin: "linkedin.com/in/arjun-sharma",
+    github: "github.com/deepanshu-dev",
+    linkedin: "linkedin.com/in/deepanshu-arora",
     summary: "Senior Full Stack Engineer with 5+ years of experience building high-throughput web applications, microservices, and reactive user interfaces. Specialist in React, TypeScript, Node.js, and distributed system architectures.",
     skills: {
       languages: "TypeScript, JavaScript (ES6+), Python, Go, SQL",

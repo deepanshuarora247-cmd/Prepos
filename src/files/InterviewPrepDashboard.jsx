@@ -625,13 +625,33 @@ export default function InterviewPrepDashboard() {
       <div className="dashboard-inner">
         {/* Top nav */}
         <div className="nav-header">
-          <div className="nav-logo" onClick={() => setActiveView("dashboard")}>
-            <svg viewBox="0 0 58 34">
-              <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(56,189,248,0.8))" }} />
-              <circle cx="29" cy="22" r="7.5" fill="none" stroke="#eab308" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(234,179,8,0.8))" }} />
-              <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(244,63,94,0.8))" }} />
-            </svg>
-            <span>PrepOS</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+            <div className="nav-logo" onClick={() => setActiveView("dashboard")}>
+              <svg viewBox="0 0 58 34">
+                <circle cx="11" cy="12" r="7.5" fill="none" stroke="#38bdf8" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(56,189,248,0.8))" }} />
+                <circle cx="29" cy="22" r="7.5" fill="none" stroke="#eab308" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(234,179,8,0.8))" }} />
+                <circle cx="47" cy="12" r="7.5" fill="none" stroke="#f43f5e" strokeWidth="2.8" style={{ filter: "drop-shadow(0 0 8px rgba(244,63,94,0.8))" }} />
+              </svg>
+              <span>PrepOS</span>
+            </div>
+
+            {/* Hover categories dropdown */}
+            <div className="nav-categories-dropdown">
+              <button type="button" className="dropdown-trigger-btn">
+                Explore Modules
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+              <ul className="dropdown-menu-list">
+                <li><button type="button" onClick={function() { setActiveView("dashboard"); }}>Overview</button></li>
+                <li><button type="button" onClick={function() { setActiveView("courses"); }}>Courses</button></li>
+                <li><button type="button" onClick={function() { setActiveView("tutorials"); }}>Tutorials</button></li>
+                <li><button type="button" onClick={function() { handleOpenDsa(null, "All"); }}>Practice (DSA)</button></li>
+                <li><button type="button" onClick={function() { setActiveView("aptitude"); }}>Aptitude</button></li>
+                <li><button type="button" onClick={function() { setActiveView("resume"); }}>Resume Review</button></li>
+                <li><button type="button" onClick={function() { setActiveView("leaderboard"); }}>Leaderboard</button></li>
+                <li><button type="button" onClick={function() { setActiveView("roadmap"); }}>Roadmap</button></li>
+              </ul>
+            </div>
           </div>
 
           <div className="search-bar">
@@ -735,7 +755,7 @@ export default function InterviewPrepDashboard() {
           <div className="hero-overlay" />
           <div className="hero-content">
             <p className="hero-tag">Good evening</p>
-            <h1 className="hero-title">Ready to sharpen up, Arjun?</h1>
+            <h1 className="hero-title">Ready to sharpen up, Deepanshu?</h1>
             <p className="hero-subtitle">
               You're 3 sessions from your best week yet. Your next mock interview starts in{" "}
               <span className="hero-subtitle-highlight">2h 14m</span>.

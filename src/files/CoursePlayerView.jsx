@@ -732,7 +732,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
             <div className="player-cert-body">
               <h2>Certificate of Completion</h2>
               <p style={{ fontSize: "12px", color: "var(--text-secondary)", marginTop: "0.5rem" }}>This certifies that</p>
-              <div className="player-cert-recipient">Arjun Sharma</div>
+              <div className="player-cert-recipient">Deepanshu Arora</div>
               <p style={{ fontSize: "12px", color: "var(--text-secondary)" }}>has successfully mastered the curriculum requirements for the course</p>
               <h3 style={{ fontSize: "1.25rem", color: "#fff", marginTop: "0.5rem", fontWeight: "bold" }}>{courseData.title}</h3>
             </div>
