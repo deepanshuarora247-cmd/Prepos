@@ -102,23 +102,23 @@ const APTITUDE_QUESTIONS = [
 ];
 
 export default function AptitudeView({ onBackToDashboard }) {
-  const [viewState, setViewState] = useState("dashboard"); // "dashboard" | "quiz" | "results"
+  const [viewState, setViewState] = useState("dashboard"); 
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [quizMode, setQuizMode] = useState("practice"); // "practice" | "test"
+  const [quizMode, setQuizMode] = useState("practice"); 
   
   const [userAnswers, setUserAnswers] = useState({});
   const [submittedAnswers, setSubmittedAnswers] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [flaggedQuestions, setFlaggedQuestions] = useState([]); // Array instead of Set
+  const [flaggedQuestions, setFlaggedQuestions] = useState([]); 
   
-  // Timer states
+  
   const [timeLeft, setTimeLeft] = useState(60);
   const [timeSpent, setTimeSpent] = useState(0);
   const [scratchpadOpen, setScratchpadOpen] = useState(false);
   const [scratchpadText, setScratchpadText] = useState("");
   const [overallAttempts, setOverallAttempts] = useState([]);
 
-  // Load overall attempts from localStorage
+  
   useEffect(() => {
     const saved = localStorage.getItem("prepos_aptitude_attempts");
     if (saved) {
@@ -128,7 +128,7 @@ export default function AptitudeView({ onBackToDashboard }) {
     }
   }, []);
 
-  // Filter questions (calculated on every render instead of useMemo)
+  
   const filteredQuestions = [];
   for (let i = 0; i < APTITUDE_QUESTIONS.length; i++) {
     const q = APTITUDE_QUESTIONS[i];
@@ -139,7 +139,7 @@ export default function AptitudeView({ onBackToDashboard }) {
 
   const activeQuestion = filteredQuestions[currentQuestionIndex] || null;
 
-  // Session timer handler
+  
   useEffect(() => {
     let interval = null;
     if (viewState === "quiz") {
@@ -154,7 +154,7 @@ export default function AptitudeView({ onBackToDashboard }) {
     };
   }, [viewState]);
 
-  // Question timer handler (60s countdown)
+  
   useEffect(() => {
     let interval = null;
     if (viewState === "quiz" && quizMode === "test") {
@@ -227,7 +227,7 @@ export default function AptitudeView({ onBackToDashboard }) {
   const handleFinishQuiz = function() {
     setViewState("results");
     
-    // Save attempts to local history
+    
     let score = 0;
     for (let i = 0; i < filteredQuestions.length; i++) {
       const q = filteredQuestions[i];
@@ -250,7 +250,7 @@ export default function AptitudeView({ onBackToDashboard }) {
     localStorage.setItem("prepos_aptitude_attempts", JSON.stringify(updatedAttempts));
   };
 
-  // Simple statistics calculations
+  
   let totalCorrect = 0;
   for (let i = 0; i < filteredQuestions.length; i++) {
     const q = filteredQuestions[i];
@@ -278,7 +278,7 @@ export default function AptitudeView({ onBackToDashboard }) {
     return mStr + ":" + sStr;
   };
 
-  // Calculate counts for categories UI
+  
   let totalQuestionsCount = APTITUDE_QUESTIONS.length;
   let quantQuestionsCount = 0;
   let logicalQuestionsCount = 0;
@@ -305,7 +305,7 @@ export default function AptitudeView({ onBackToDashboard }) {
 
   return (
     <div className="aptitude-container">
-      {/* Top Navbar */}
+      
       <header className="aptitude-header">
         <div className="aptitude-header-left">
           <button
@@ -352,12 +352,12 @@ export default function AptitudeView({ onBackToDashboard }) {
         )}
       </header>
 
-      {/* Main Body Layout */}
+      
       <main className="aptitude-main">
         <div className="aptitude-layout-split">
-          {/* Left Side: Active Core View */}
+          
           <div className="aptitude-layout-left">
-            {/* VIEW 1: DASHBOARD / SETTINGS */}
+            
             {viewState === "dashboard" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
                 <div className="aptitude-banner">
@@ -372,7 +372,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                   <div className="aptitude-card">
                     <h3 className="aptitude-card-header">Configure Assessment Plan</h3>
 
-                    {/* Topic Category Selection */}
+                    
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       <label className="resume-field-lbl">Select Topic Category</label>
                       <div className="sysdesign-nodes-grid" style={{ gap: "0.75rem" }}>
@@ -394,7 +394,7 @@ export default function AptitudeView({ onBackToDashboard }) {
                       </div>
                     </div>
 
-                    {/* Practice Mode Selector */}
+                    
                     <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                       <label className="resume-field-lbl">Select Practice Mode</label>
                       <div className="sysdesign-nodes-grid" style={{ gap: "0.75rem" }}>
@@ -434,7 +434,7 @@ export default function AptitudeView({ onBackToDashboard }) {
               </div>
             )}
 
-            {/* VIEW 2: ACTIVE QUIZ ARENA */}
+            
             {viewState === "quiz" && activeQuestion && (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div className="practice-streak-card" style={{ padding: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -547,7 +547,7 @@ export default function AptitudeView({ onBackToDashboard }) {
               </div>
             )}
 
-            {/* VIEW 3: RESULTS SUMMARY */}
+            
             {viewState === "results" && (
               <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div className="practice-streak-card" style={{ padding: "1.5rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -626,7 +626,7 @@ export default function AptitudeView({ onBackToDashboard }) {
             )}
           </div>
 
-          {/* Right Side Notepad Scratchpad */}
+          
           {viewState === "quiz" && scratchpadOpen && (
             <aside className="aptitude-layout-right">
               <div className="aptitude-notepad-card">

@@ -125,12 +125,12 @@ const PRESET_TEMPLATES = {
 };
 
 export default function ResumeGraderView({ onBackToDashboard }) {
-  const [activeTab, setActiveTab] = useState("builder"); // "builder" | "grader"
+  const [activeTab, setActiveTab] = useState("builder"); 
   const [templateKey, setTemplateKey] = useState("fullstack");
   const [resumeData, setResumeData] = useState(PRESET_TEMPLATES.fullstack);
   const [copied, setCopied] = useState(false);
 
-  // ATS Grader states
+  
   const [targetRole, setTargetRole] = useState("Full Stack Engineer");
   const [resumeText, setResumeText] = useState("");
   const [isScanning, setIsScanning] = useState(false);
@@ -207,7 +207,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
   };
 
   const handleScanCurrentTemplate = () => {
-    // Generate text from active builder template and scan
+    
     const expText = resumeData.experience.map((e) => e.bullets.join(" ")).join(" ");
     const fullText = `${resumeData.summary} ${resumeData.skills.languages} ${resumeData.skills.frameworks} ${resumeData.skills.cloud} ${resumeData.skills.databases} ${expText}`;
     setResumeText(fullText);
@@ -225,7 +225,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
 
     setTimeout(() => {
       setIsScanning(false);
-      // MOCK Score
+      
       setScanResult({
         overallScore: rawText.includes("Cassandra") || rawText.includes("Kubernetes") ? 92 : 78,
         matchedKeywords: ["React", "TypeScript", "Node.js", "Redis", "Distributed System", "QPS", "Microservices", "Docker"],
@@ -240,7 +240,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
 
   return (
     <div className="resume-container">
-      {/* Top Navbar */}
+      
       <header className="resume-header no-print">
         <div className="resume-header-left">
           <button onClick={onBackToDashboard} className="resume-back-btn">
@@ -274,12 +274,12 @@ export default function ResumeGraderView({ onBackToDashboard }) {
         </div>
       </header>
 
-      {/* Main Body */}
+      
       <main className="resume-main">
         {activeTab === "builder" ? (
-          /* Resume Builder Tab */
+          
           <div className="resume-sheet" style={{ border: "none", boxShadow: "none", padding: 0, backgroundColor: "transparent" }}>
-            {/* Banner & Template Selector */}
+            
             <div className="resume-banner-row no-print">
               <div className="resume-banner-title-box">
                 <span className="behavioral-banner-tag" style={{ color: "var(--amber-accent)", backgroundColor: "var(--amber-bg)", borderColor: "var(--amber-border)" }}>
@@ -329,9 +329,9 @@ export default function ResumeGraderView({ onBackToDashboard }) {
               </div>
             </div>
 
-            {/* Resume Editor Sheet */}
+            
             <div className="resume-sheet print-area">
-              {/* Header Info */}
+              
               <div className="resume-sheet-header">
                 <div className="resume-sheet-grid-2">
                   <div>
@@ -400,7 +400,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                 </div>
               </div>
 
-              {/* Summary */}
+              
               <div className="sysdesign-reqs-section">
                 <span className="resume-field-lbl" style={{ display: "flex", alignItems: "center", gap: "0.375rem", color: "var(--amber-accent)" }}>
                   <FileText className="h-3.5 w-3.5 no-print" /> Professional Summary
@@ -413,7 +413,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                 />
               </div>
 
-              {/* Technical Skills */}
+              
               <div className="sysdesign-reqs-section">
                 <span className="resume-field-lbl" style={{ display: "flex", alignItems: "center", gap: "0.375rem", color: "var(--amber-accent)" }}>
                   <Wrench className="h-3.5 w-3.5 no-print" /> Technical Skills
@@ -462,7 +462,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                 </div>
               </div>
 
-              {/* Work Experience */}
+              
               <div className="sysdesign-reqs-section">
                 <span className="resume-field-lbl" style={{ display: "flex", alignItems: "center", gap: "0.375rem", color: "var(--amber-accent)" }}>
                   <Briefcase className="h-3.5 w-3.5 no-print" /> Work Experience & High-Impact Bullets
@@ -515,7 +515,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                       />
                     </div>
 
-                    {/* Bullet Points */}
+                    
                     <div className="resume-exp-bullets-list">
                       {exp.bullets.map((b, bIdx) => (
                         <div key={bIdx} className="resume-exp-bullet-item">
@@ -549,7 +549,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
             </div>
           </div>
         ) : (
-          /* ATS Grader Tab */
+          
           <div className="resume-sheet" style={{ border: "none", boxShadow: "none", padding: 0, backgroundColor: "transparent" }}>
             <div className="sysdesign-nodes-grid" style={{ gridTemplateColumns: "1fr" }}>
               <div className="sysdesign-reqs-section">
@@ -590,7 +590,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
               </button>
             </div>
 
-            {/* Scan Results */}
+            
             {isScanning ? (
               <div className="popover-body" style={{ color: "var(--amber-accent)" }}>
                 <Loader2 className="search-loader" style={{ position: "static", margin: "1rem", color: "var(--amber-accent)" }} />
@@ -633,7 +633,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                   </div>
                 </div>
 
-                {/* Bullet Point Rewriter */}
+                
                 <div className="sysdesign-reqs-section">
                   <h4 style={{ fontSize: "11px", fontWeight: "bold", color: "#fff", textTransform: "uppercase" }}>AI Bullet Point Impact Optimizer</h4>
                   {scanResult.actionVerbSuggestions.map((item, i) => (

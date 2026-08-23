@@ -1,4 +1,4 @@
-/* RoadmapView.css - Premium Vanilla CSS Styles for PrepOS Roadmap */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
@@ -36,7 +36,7 @@
   box-sizing: border-box;
 }
 
-/* Background Glowing Blurs */
+
 .glow-blur-top {
   position: fixed;
   top: -10rem;
@@ -63,7 +63,7 @@
   z-index: 0;
 }
 
-/* Navbar Header */
+
 .roadmap-header {
   position: sticky;
   top: 0;
@@ -155,7 +155,7 @@
   border-radius: 0.25rem;
 }
 
-/* Main Grid Layout */
+
 .roadmap-main {
   max-w: 1152px;
   margin: 0 auto;
@@ -168,7 +168,7 @@
   box-sizing: border-box;
 }
 
-/* Intro Banner */
+
 .intro-banner {
   border-radius: 1.5rem;
   border: 1px solid var(--border-color);
@@ -284,7 +284,7 @@
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Category Tabs Selector */
+
 .tabs-container {
   display: flex;
   flex-wrap: wrap;
@@ -342,7 +342,7 @@
   font-weight: 800;
 }
 
-/* Timeline Layout */
+
 .content-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -370,7 +370,7 @@
   position: relative;
 }
 
-/* Node indicator dot */
+
 .milestone-node {
   position: absolute;
   left: -35px;
@@ -406,7 +406,7 @@
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
 }
 
-/* Milestone Card */
+
 .milestone-card {
   padding: 1.5rem;
   border-radius: 1rem;
@@ -506,7 +506,7 @@
   border-color: var(--emerald-border);
 }
 
-/* Resources subgrid */
+
 .resources-divider {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 0.75rem;
@@ -559,7 +559,7 @@
   overflow: hidden;
 }
 
-/* Sidebar Columns */
+
 .sidebar-column {
   display: flex;
   flex-direction: column;

@@ -1,4 +1,4 @@
-/* PrepPlanSchedulerModal.css - Premium Vanilla CSS Styles for PrepOS Plan Scheduler */
+
 
 .plan-modal-backdrop {
   position: fixed;
@@ -79,7 +79,7 @@
   gap: 1.5rem;
 }
 
-/* Modal slider & option buttons */
+
 .plan-intensity-btn-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

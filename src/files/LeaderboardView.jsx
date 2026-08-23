@@ -98,10 +98,10 @@ export default function LeaderboardView({ onBackToDashboard }) {
 
   return (
     <div className="leaderboard-container">
-      {/* Background blurs */}
+      
       <div className="glow-bg-1" style={{ backgroundColor: "rgba(245, 158, 11, 0.06)" }} />
 
-      {/* Top Navbar */}
+      
       <header className="leaderboard-header">
         <div className="leaderboard-header-left">
           <button onClick={onBackToDashboard} className="leaderboard-back-btn">
@@ -119,7 +119,7 @@ export default function LeaderboardView({ onBackToDashboard }) {
       </header>
 
       <main className="leaderboard-main">
-        {/* Search & List Table */}
+        
         <div className="ide-split-pane" style={{ border: "1px solid var(--panel-border)", borderRadius: "1rem", flexDirection: "column", height: "auto" }}>
           <div className="resume-banner-row no-print" style={{ padding: "0.75rem 1.25rem", border: "none", borderBottom: "1px solid var(--panel-border)", background: "rgba(255, 255, 255, 0.02)", flexDirection: "row", justifyContent: "space-between", borderRadius: "1rem 1rem 0 0" }}>
             <div className="search-input-wrapper">
@@ -187,7 +187,7 @@ export default function LeaderboardView({ onBackToDashboard }) {
         </div>
       </main>
 
-      {/* Pinned Bottom User Rank Bar */}
+      
       <div className="fixed-bottom-user-bar" style={{ borderColor: "var(--cyan-border)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span className="popover-header-badge" style={{ color: "var(--cyan-accent)", backgroundColor: "var(--cyan-bg)", borderColor: "var(--cyan-border)", margin: 0 }}>YOUR RANK</span>

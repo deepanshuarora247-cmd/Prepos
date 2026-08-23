@@ -202,12 +202,12 @@ export const localCourseApi = {
 export default function CoursesView({ onBackToDashboard }) {
   const [courses, setCourses] = useState([]);
   const [activeCourseId, setActiveCourseId] = useState(null);
-  const [activeTab, setActiveTab] = useState("catalogue"); // "catalogue" | "live-github" | "live-news"
+  const [activeTab, setActiveTab] = useState("catalogue"); 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // Live APIs states
+  
   const [liveRepos, setLiveRepos] = useState([]);
   const [isGithubLoading, setIsGithubLoading] = useState(false);
   const [liveNews, setLiveNews] = useState([]);
@@ -313,7 +313,7 @@ export default function CoursesView({ onBackToDashboard }) {
     );
   }
 
-  // Dashboard metrics
+  
   const enrolledCourses = courses.filter((c) => c.enrolled);
   const totalCompletedLessons = courses.reduce((acc, c) => acc + (c.completedCount || 0), 0);
   const totalLessons = courses.reduce((acc, c) => acc + (c.totalLessons || 0), 0);
@@ -321,10 +321,10 @@ export default function CoursesView({ onBackToDashboard }) {
 
   return (
     <div className="courses-container">
-      {/* Background blurs */}
+      
       <div className="glow-bg-1" style={{ backgroundColor: "rgba(34, 211, 238, 0.08)" }} />
 
-      {/* Top Navbar */}
+      
       <header className="courses-header">
         <div className="courses-header-left">
           <button onClick={onBackToDashboard} className="courses-back-btn">
@@ -341,9 +341,9 @@ export default function CoursesView({ onBackToDashboard }) {
         </div>
       </header>
 
-      {/* Main catalogue */}
+      
       <main className="courses-main">
-        {/* Banner with metrics */}
+        
         <div className="courses-banner">
           <div>
             <span className="courses-banner-tag">Developer Curriculum</span>
@@ -364,7 +364,7 @@ export default function CoursesView({ onBackToDashboard }) {
           </div>
         </div>
 
-        {/* Filters Bar with API Search */}
+        
         <div className="courses-filter-row">
           <div className="courses-tabs">
             <button
@@ -404,7 +404,7 @@ export default function CoursesView({ onBackToDashboard }) {
           )}
         </div>
 
-        {/* TAB 1: Catalogue Grid */}
+        
         {activeTab === "catalogue" && (
           <div className="courses-grid-3">
             {filteredCourses.map((c) => (
@@ -449,7 +449,7 @@ export default function CoursesView({ onBackToDashboard }) {
           </div>
         )}
 
-        {/* TAB 2: Live GitHub Repos */}
+        
         {activeTab === "live-github" && (
           <div className="space-y-4">
             <div className="p-4 rounded-2xl border border-white/10 bg-[#0c101d] flex items-center justify-between">
@@ -499,7 +499,7 @@ export default function CoursesView({ onBackToDashboard }) {
           </div>
         )}
 
-        {/* TAB 3: HN Live Feed */}
+        
         {activeTab === "live-news" && (
           <div className="space-y-4">
             <div className="p-4 rounded-2xl border border-white/10 bg-[#0c101d] flex items-center justify-between">

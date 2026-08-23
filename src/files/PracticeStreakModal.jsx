@@ -22,7 +22,7 @@ export const DAILY_PRACTICE_DATA = {
   today: {
     questionsCount: 6,
     goalQuestions: 5,
-    timeSpentMinutes: 105, // 1h 45m
+    timeSpentMinutes: 105, 
     timeGoalMinutes: 90,
     categories: [
       { name: "Algorithms (Sliding Window & DP)", count: 3, time: "55m" },
@@ -33,7 +33,7 @@ export const DAILY_PRACTICE_DATA = {
   },
   weekly: {
     totalQuestions: 38,
-    totalTimeMinutes: 680, // 11h 20m
+    totalTimeMinutes: 680, 
     avgTimePerQuestion: "17.8 min",
     days: [
       { day: "Mon", date: "Aug 12", questions: 5, time: "1h 20m", minutes: 80, completed: true },
@@ -53,7 +53,7 @@ export const DAILY_PRACTICE_DATA = {
 };
 
 export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }) {
-  const [activeTab, setActiveTab] = useState("overview"); // "overview" | "history"
+  const [activeTab, setActiveTab] = useState("overview"); 
 
   if (!isOpen) return null;
 
@@ -70,10 +70,10 @@ export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }
   return (
     <div className="streak-modal-backdrop" onClick={onClose}>
       <div className="streak-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Ambient Top Glow */}
+        
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-96 rounded-full bg-orange-600/20 blur-[100px]" />
 
-        {/* Header */}
+        
         <div className="streak-modal-header">
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <div className="q-solve-btn" style={{ padding: "0.5rem", borderRadius: "0.75rem", backgroundColor: "var(--orange-bg)", color: "var(--orange-accent)", borderColor: "var(--orange-border)" }}>
@@ -97,7 +97,7 @@ export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }
           </button>
         </div>
 
-        {/* Tab Switcher */}
+        
         <div className="categories-nav" style={{ gap: "0.75rem", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "0.5rem" }}>
           <button
             onClick={() => setActiveTab("overview")}
@@ -184,7 +184,7 @@ export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }
                 </div>
               </div>
 
-              {/* Weekly Difficulty Breakdown */}
+              
               <div className="practice-streak-card" style={{ padding: "1rem" }}>
                 <h3 className="behavioral-rewrite-header" style={{ color: "var(--emerald-accent)", marginBottom: "0.75rem" }}>
                   <Target className="h-4 w-4" /> Difficulty Distribution (This Week)
@@ -200,7 +200,7 @@ export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }
               </div>
             </div>
           ) : (
-            /* TAB 2: 7-Day activity log */
+            
             <div className="practice-streak-card" style={{ padding: "1rem" }}>
               <h3 className="behavioral-rewrite-header" style={{ color: "var(--cyan-accent)", marginBottom: "0.75rem" }}>
                 <Calendar className="h-4 w-4" /> Last 7 Days Time Log
@@ -244,7 +244,7 @@ export default function PracticeStreakModal({ isOpen, onClose, onStartPractice }
           )}
         </div>
 
-        {/* Footer Actions */}
+        
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--panel-border)", paddingTop: "1rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "11px", color: "var(--text-secondary)" }}>
             <Sparkles className="h-3.5 w-3.5 text-orange-400" />

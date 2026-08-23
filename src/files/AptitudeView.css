@@ -1,4 +1,4 @@
-/* AptitudeView.css - Premium Vanilla CSS Styles for PrepOS Aptitude Suite */
+
 
 .aptitude-container {
   min-height: 100vh;
@@ -10,7 +10,7 @@
   padding-bottom: 4rem;
 }
 
-/* Header Navbar */
+
 .aptitude-header {
   position: sticky;
   top: 0;
@@ -67,9 +67,9 @@
   color: #fff;
 }
 
-/* Main Layout Grid */
+
 .aptitude-main {
-  max-width: 80rem; /* 7xl */
+  max-width: 80rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -94,7 +94,7 @@
   }
 }
 
-/* Hero Banner */
+
 .aptitude-banner {
   margin-bottom: 1.5rem;
   border-radius: 1.5rem;
@@ -106,7 +106,7 @@
   overflow: hidden;
 }
 
-/* Settings Form elements */
+
 .aptitude-card {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -126,7 +126,7 @@
   color: #fff;
 }
 
-/* Option / Selector grid button */
+
 .aptitude-select-btn {
   width: 100%;
   text-align: left;
@@ -155,7 +155,7 @@
   box-shadow: 0 0 20px -5px rgba(99, 102, 241, 0.3);
 }
 
-/* Scratchpad Notepad design */
+
 .aptitude-notepad-card {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);

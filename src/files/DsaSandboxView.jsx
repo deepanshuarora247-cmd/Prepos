@@ -150,12 +150,12 @@ const LOCAL_DSA_QUESTIONS = [
   }
 ];
 
-// Helper to mock fetching/searching real questions from LeetCode API
+
 const searchDsaQuestionsApi = async (query) => {
   await new Promise((resolve) => setTimeout(resolve, 600));
   const lowerQuery = query.toLowerCase();
   
-  // Curated LeetCode API response search mock
+  
   const apiResults = [
     {
       id: "api-valid-parentheses",
@@ -225,7 +225,7 @@ const searchDsaQuestionsApi = async (query) => {
 export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, initialCategory }) {
   const [questions, setQuestions] = useState(LOCAL_DSA_QUESTIONS);
   const [selectedQuestionId, setSelectedQuestionId] = useState(initialQuestionId || null);
-  const [activeTab, setActiveTab] = useState("description"); // "description" | "hints"
+  const [activeTab, setActiveTab] = useState("description"); 
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
@@ -233,7 +233,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
   const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
 
-  // Editor and console runner states
+  
   const [userCodeMap, setUserCodeMap] = useState({});
   const [consoleOutput, setConsoleOutput] = useState("");
   const [isRunningCode, setIsRunningCode] = useState(false);
@@ -247,7 +247,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
 
     setTimeout(() => {
       setIsRunningCode(false);
-      // Simulate pass on test cases
+      
       const results = activeQuestion.testCases.map((tc) => ({
         input: tc.input,
         expected: tc.expected,
@@ -285,7 +285,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     }, 700);
   };
 
-  // Preferences / Editor Settings
+  
   const [editorSettings] = useState({
     editorFontSize: "13px",
     lineNumbers: true,
@@ -293,7 +293,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     autoCloseBrackets: true
   });
 
-  // Debounced API search effect (using simple local timer instead of useRef)
+  
   useEffect(() => {
     if (!searchQuery || searchQuery.trim() === "") {
       setQuestions(LOCAL_DSA_QUESTIONS);
@@ -355,11 +355,11 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
 
   return (
     <div className="sandbox-container">
-      {/* Background ambient lighting */}
+      
       <div className="glow-bg-1" />
       <div className="glow-bg-2" />
 
-      {/* Top Navbar */}
+      
       <header className="sandbox-header">
         <div className="sandbox-header-left">
           <button
@@ -380,7 +380,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
           </div>
         </div>
 
-        {/* Header Stats */}
+        
         <div className="sandbox-header-right">
           <div className="sandbox-header-stats-item">
             <span>Solved:</span>
@@ -396,11 +396,11 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
         </div>
       </header>
 
-      {/* Main Body */}
+      
       {!activeQuestion ? (
-        /* ================= LIST VIEW ================= */
+        
         <main className="list-view-main">
-          {/* Header Banner */}
+          
           <div className="list-view-banner">
             <div className="list-view-banner-content">
               <span className="list-view-banner-tag">
@@ -416,9 +416,9 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
             <Award className="list-view-banner-watermark" />
           </div>
 
-          {/* Filters Bar with API Search */}
+          
           <div className="list-view-filters-bar">
-            {/* Live API Search Input */}
+            
             <div className="search-input-wrapper">
               <Search className="search-input-icon" />
               <input
@@ -440,7 +440,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
               ) : null}
             </div>
 
-            {/* Difficulty Pills */}
+            
             <div className="difficulty-filters-group">
               {["All", "Easy", "Medium", "Hard"].map((diff) => (
                 <button
@@ -454,7 +454,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
             </div>
           </div>
 
-          {/* Category Tabs & API Status indicator */}
+          
           <div className="categories-bar-row">
             <div className="categories-scroll-container">
               {categories.map((cat) => (
@@ -476,7 +476,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
             )}
           </div>
 
-          {/* Questions Grid / Table */}
+          
           <div className="questions-list-panel">
             <div className="table-header-row">
               <div className="col-status">Status</div>
@@ -597,11 +597,11 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
           </div>
         </main>
       ) : (
-        /* ================= IDE / SOLVER VIEW ================= */
+        
         <main className="ide-layout">
-          {/* LEFT PANE: Problem Specs & Details */}
+          
           <div className="ide-left-pane">
-            {/* Spec Bar */}
+            
             <div className="ide-left-pane-header">
               <div>
                 <button
@@ -628,7 +628,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
               </div>
             </div>
 
-            {/* Spec Content */}
+            
             <div className="ide-left-pane-content">
               {activeTab === "description" ? (
                 <>
@@ -667,12 +667,12 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
 
                   <hr className="ide-section-divider" />
 
-                  {/* Problem Description */}
+                  
                   <div className="ide-desc-text">
                     {activeQuestion.description}
                   </div>
 
-                  {/* Examples */}
+                  
                   <div className="ide-examples-section">
                     <h3>Examples</h3>
                     {activeQuestion.examples.map((ex) => (
@@ -695,7 +695,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                     ))}
                   </div>
 
-                  {/* Constraints */}
+                  
                   <div className="ide-constraints-section">
                     <h3>Constraints</h3>
                     <ul className="ide-constraints-list">
@@ -706,7 +706,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   </div>
                 </>
               ) : (
-                /* Hints Tab */
+                
                 <div className="ide-examples-section">
                   <h3 className="ide-desc-title" style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     <Lightbulb className="h-4 w-4" style={{ color: "var(--amber-accent)" }} />
@@ -728,9 +728,9 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
             </div>
           </div>
 
-          {/* RIGHT PANE: Code Editor & Execution Panel */}
+          
           <div className="ide-right-pane">
-            {/* Editor Toolbar */}
+            
             <div className="ide-right-pane-header">
               <div className="ide-header-action-group">
                 <div className="ide-lang-selector-wrapper">
@@ -780,12 +780,12 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
               </div>
             </div>
 
-            {/* Code Textarea Area */}
+            
             <div
               className="ide-editor-container"
               style={{ fontSize: editorSettings.editorFontSize }}
             >
-              {/* Line Numbers */}
+              
               {editorSettings.lineNumbers && (
                 <div className="ide-line-numbers">
                   {currentCode.split("\n").map((_, i) => (
@@ -794,7 +794,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 </div>
               )}
 
-              {/* Textarea */}
+              
               <textarea
                 value={currentCode}
                 onChange={(e) => handleCodeChange(e.target.value)}
@@ -815,7 +815,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
               />
             </div>
 
-            {/* Bottom Testcases Panel */}
+            
             <div className="ide-console-panel">
               <div className="ide-console-header">
                 <div className="ide-console-title">

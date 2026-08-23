@@ -43,9 +43,9 @@ import DailyStreakMilestoneModal from "./DailyStreakMilestoneModal.jsx";
 import SettingsModal from "./SettingsModal.jsx";
 import "./InterviewPrepDashboard.css";
 
-// ---------------------------------------------------------------------------
-// Module Cards Data
-// ---------------------------------------------------------------------------
+
+
+
 
 const MODULES = [
   {
@@ -122,9 +122,9 @@ const INITIAL_AGENDA = [
   },
 ];
 
-// ---------------------------------------------------------------------------
-// Helper Components
-// ---------------------------------------------------------------------------
+
+
+
 
 function StreakRing({ value, goal }) {
   const radius = 36;
@@ -398,16 +398,16 @@ function QuestionTerminal({ onSolveNow }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main Dashboard
-// ---------------------------------------------------------------------------
+
+
+
 
 export default function InterviewPrepDashboard() {
-  const [activeView, setActiveView] = useState("dashboard"); // "dashboard" | "dsa" | "sysdesign" | "behavioral" | "resume" | "courses" | "tutorials" | "aptitude" | "leaderboard" | "roadmap"
+  const [activeView, setActiveView] = useState("dashboard"); 
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
 
-  // Modals state
+  
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isAddAgendaOpen, setIsAddAgendaOpen] = useState(false);
@@ -416,7 +416,7 @@ export default function InterviewPrepDashboard() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
-  // Agenda items state with persistence
+  
   const [agendaItems, setAgendaItems] = useState(() => {
     const saved = localStorage.getItem("prepos_agenda_items_v1");
     if (saved) {
@@ -427,7 +427,7 @@ export default function InterviewPrepDashboard() {
     return INITIAL_AGENDA;
   });
 
-  // Calendar custom events state with persistence
+  
   const [customCalendarEvents, setCustomCalendarEvents] = useState(() => {
     const saved = localStorage.getItem("prepos_custom_calendar_events_v1");
     if (saved) {
@@ -574,56 +574,56 @@ export default function InterviewPrepDashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Scheduler Modal */}
+      
       <PrepPlanSchedulerModal
         isOpen={isSchedulerOpen}
         onClose={() => setIsSchedulerOpen(false)}
         onStartPractice={() => handleOpenDsa(null, "All")}
       />
 
-      {/* Calendar Modal */}
+      
       <CalendarModal
         isOpen={isCalendarOpen}
         onClose={() => setIsCalendarOpen(false)}
         customEvents={customCalendarEvents}
       />
 
-      {/* Add Agenda Modal */}
+      
       <AddAgendaModal
         isOpen={isAddAgendaOpen}
         onClose={() => setIsAddAgendaOpen(false)}
         onAddEvent={handleAddAgendaEvent}
       />
 
-      {/* Practice Streak & Analytics Modal */}
+      
       <PracticeStreakModal
         isOpen={isStreakModalOpen}
         onClose={() => setIsStreakModalOpen(false)}
         onStartPractice={() => handleOpenDsa(null, "All")}
       />
 
-      {/* Daily Streak & Milestone Journey Modal */}
+      
       <DailyStreakMilestoneModal
         isOpen={isMilestoneModalOpen}
         onClose={() => setIsMilestoneModalOpen(false)}
         onStartPractice={() => handleOpenDsa(null, "All")}
       />
 
-      {/* Settings Modal */}
+      
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
       />
 
-      {/* signature accent hairline */}
+      
       <div className="dashboard-hairline" />
-      {/* ambient background glows */}
+      
       <div className="glow-bg-1" />
       <div className="glow-bg-2" />
       <div className="glow-bg-3" />
 
       <div className="dashboard-inner">
-        {/* Top nav */}
+        
         <div className="nav-header">
           <div className="nav-logo" onClick={() => setActiveView("dashboard")}>
             <svg viewBox="0 0 58 34">
@@ -640,7 +640,7 @@ export default function InterviewPrepDashboard() {
           </div>
 
           <div className="nav-right">
-            {/* Notification Button & Popover */}
+            
             <div className="notification-wrapper">
               <button
                 type="button"
@@ -652,7 +652,7 @@ export default function InterviewPrepDashboard() {
                 <span className="notification-badge" />
               </button>
 
-              {/* Notification Popover Dropdown */}
+              
               {isNotificationOpen && (
                 <>
                   <div
@@ -770,9 +770,9 @@ export default function InterviewPrepDashboard() {
           </button>
         </div>
 
-        {/* Main Grid */}
+        
         <div className="main-grid">
-          {/* Left Column */}
+          
           <div className="grid-col-left">
             <div className="modules-section">
               <div className="modules-header">
@@ -804,7 +804,7 @@ export default function InterviewPrepDashboard() {
             </div>
           </div>
 
-          {/* Right Column */}
+          
           <div className="grid-col-right">
             <div className="agenda-widget">
               <div className="agenda-header">
@@ -845,7 +845,7 @@ export default function InterviewPrepDashboard() {
               </div>
             </div>
 
-            {/* Practice Streak Box */}
+            
             <div className="practice-streak-widget">
               <div className="practice-streak-glow" />
               
@@ -886,7 +886,7 @@ export default function InterviewPrepDashboard() {
               </button>
             </div>
 
-            {/* Readiness score box */}
+            
             <div className="readiness-widget">
               <p className="readiness-title">Readiness score</p>
               <div className="readiness-score-row">
@@ -908,7 +908,7 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Footer Section */}
+        
         <footer className="dashboard-footer">
           <div className="footer-top">
             <div className="footer-brand">

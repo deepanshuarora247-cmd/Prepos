@@ -1,4 +1,4 @@
-/* CoursePlayerView.css - Premium Vanilla CSS Styles for PrepOS Course Player */
+
 
 .player-container {
   min-height: 100vh;
@@ -10,7 +10,7 @@
   flex-direction: column;
 }
 
-/* Header Navbar */
+
 .player-header {
   position: sticky;
   top: 0;
@@ -102,7 +102,7 @@
   height: 8px;
   width: 8px;
   border-radius: 50%;
-  background-color: #34d399; /* emerald-400 */
+  background-color: #34d399; 
   animation: pulse 2s infinite;
 }
 
@@ -132,7 +132,7 @@
   color: var(--cyan-accent);
 }
 
-/* Split-screen layout workspace */
+
 .player-workspace {
   flex: 1;
   display: flex;
@@ -146,7 +146,7 @@
   }
 }
 
-/* Syllabus Sidebar (Left Pane) */
+
 .player-sidebar {
   width: 100%;
   border-bottom: 1px solid var(--panel-border);
@@ -158,7 +158,7 @@
 
 @media (min-width: 1024px) {
   .player-sidebar {
-    width: 20rem; /* w-80 */
+    width: 20rem; 
     border-bottom: none;
     border-right: 1px solid var(--panel-border);
     height: 100%;
@@ -268,7 +268,7 @@
   margin-left: 0.5rem;
 }
 
-/* Video Viewer Area (Right Pane) */
+
 .player-viewer-panel {
   flex: 1;
   background-color: #0b0f1d;
@@ -277,7 +277,7 @@
 
 .player-viewer-inner {
   padding: 1.5rem;
-  max-width: 64rem; /* 5xl */
+  max-width: 64rem; 
   margin: 0 auto;
   width: 100%;
   display: flex;
@@ -305,7 +305,7 @@
   line-height: 1.5;
 }
 
-/* Video content box tab styling */
+
 .player-video-box-container {
   width: 100%;
   border-radius: 1.5rem;
@@ -323,14 +323,14 @@
   border: none;
 }
 
-/* HTML5 player styling */
+
 .player-html5-media {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* Video control overlay */
+
 .player-video-controls-overlay {
   position: absolute;
   bottom: 0;
@@ -370,7 +370,7 @@
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Tab contents styling (Notes, Quiz, AI Tutor) */
+
 .player-tab-body {
   display: flex;
   flex-direction: column;
@@ -410,7 +410,7 @@
   margin-bottom: 1rem;
 }
 
-/* Quiz styling */
+
 .player-quiz-card {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -475,7 +475,7 @@
   gap: 0.75rem;
 }
 
-/* AI Tutor Chat panel */
+
 .player-ai-chat-window {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -553,7 +553,7 @@
   background-color: #06b6d4;
 }
 
-/* Certificate overlay modal modal dialog */
+
 .player-cert-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -571,7 +571,7 @@
   width: 100%;
   max-width: 44rem;
   border-radius: 1.5rem;
-  border: 4px double #d97706; /* amber-600 gold border styling */
+  border: 4px double #d97706; 
   background-color: #0f172a;
   padding: 2.5rem;
   text-align: center;

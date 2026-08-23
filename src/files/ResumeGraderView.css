@@ -1,4 +1,4 @@
-/* ResumeGraderView.css - Premium Vanilla CSS Styles for PrepOS Resume Grader */
+
 
 .resume-container {
   min-height: 100vh;
@@ -9,7 +9,7 @@
   position: relative;
 }
 
-/* Header Navbar */
+
 .resume-header {
   position: sticky;
   top: 0;
@@ -66,9 +66,9 @@
   color: #fff;
 }
 
-/* Main Area Layout */
+
 .resume-main {
-  max-width: 80rem; /* 7xl */
+  max-width: 80rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -112,7 +112,7 @@
   flex-wrap: wrap;
 }
 
-/* Resume PDF sheet design */
+
 .resume-sheet {
   border-radius: 1.5rem;
   border: 1px solid var(--panel-border);
@@ -184,7 +184,7 @@
   border-color: var(--amber-accent);
 }
 
-/* Experience block styles */
+
 .resume-experience-item {
   position: relative;
   background-color: rgba(255, 255, 255, 0.02);
@@ -257,7 +257,7 @@
   color: var(--rose-accent);
 }
 
-/* Grader score block */
+
 .resume-grader-scorecard {
   border-radius: 1rem;
   border: 1px solid var(--amber-border);
@@ -280,7 +280,7 @@
   color: var(--amber-accent);
 }
 
-/* Print Overrides */
+
 @media print {
   .no-print {
     display: none !important;

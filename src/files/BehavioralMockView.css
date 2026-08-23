@@ -1,4 +1,4 @@
-/* BehavioralMockView.css - Premium Vanilla CSS Styles for PrepOS Behavioral Mock AI */
+
 
 .behavioral-container {
   min-height: 100vh;
@@ -9,7 +9,7 @@
   position: relative;
 }
 
-/* Header Navbar */
+
 .behavioral-header {
   position: sticky;
   top: 0;
@@ -66,9 +66,9 @@
   color: #fff;
 }
 
-/* Scenario list grid view */
+
 .behavioral-main {
-  max-width: 80rem; /* 7xl */
+  max-width: 80rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -97,7 +97,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #34d399; /* emerald-400 */
+  color: #34d399; 
   background-color: var(--emerald-bg);
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -206,9 +206,9 @@
   background-color: #059669;
 }
 
-/* Active Mock Session View */
+
 .behavioral-active-layout {
-  max-width: 64rem; /* 5xl */
+  max-width: 64rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -255,7 +255,7 @@
 .behavioral-prompt-title {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6ee7b7; /* emerald-300 */
+  color: #6ee7b7; 
 }
 
 .behavioral-prompt-text {
@@ -266,7 +266,7 @@
   line-height: 1.625;
 }
 
-/* User response editor pane */
+
 .behavioral-editor-card {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -327,7 +327,7 @@
   font-family: var(--font-mono);
 }
 
-/* Evaluator scorecard styles */
+
 .behavioral-eval-card {
   border-radius: 1rem;
   border: 1px solid var(--emerald-border);

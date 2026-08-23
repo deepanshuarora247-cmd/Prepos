@@ -240,18 +240,18 @@ export default function RoadmapView({ onBackToDashboard }) {
 
   const currentTrack = ROADMAP_TRACKS.find(t => t.id === activeTrack);
 
-  // Stats calculation
+  
   const totalMilestones = ROADMAP_TRACKS.reduce((acc, t) => acc + t.milestones.length, 0);
   const completedCount = Object.values(completedMilestones).filter(Boolean).length;
   const overallProgress = totalMilestones > 0 ? Math.round((completedCount / totalMilestones) * 100) : 0;
 
   return (
     <div className="roadmap-container">
-      {/* Glow backgrounds */}
+      
       <div className="glow-blur-top" />
       <div className="glow-blur-bottom" />
 
-      {/* Top Navbar */}
+      
       <header className="roadmap-header">
         <div className="header-left">
           <button onClick={onBackToDashboard} className="back-button">
@@ -277,7 +277,7 @@ export default function RoadmapView({ onBackToDashboard }) {
 
       <main className="roadmap-main">
         
-        {/* Banner */}
+        
         <div className="intro-banner">
           <div className="intro-content">
             <div className="banner-badges">
@@ -304,7 +304,7 @@ export default function RoadmapView({ onBackToDashboard }) {
           </div>
         </div>
 
-        {/* Track Selector Tabs */}
+        
         <div className="tabs-container">
           {ROADMAP_TRACKS.map(track => {
             const isActive = activeTrack === track.id;
@@ -326,16 +326,16 @@ export default function RoadmapView({ onBackToDashboard }) {
           })}
         </div>
 
-        {/* Timeline milestones */}
+        
         <div className="content-grid">
           
-          {/* Main timeline line */}
+          
           <div className="timeline-column">
             {currentTrack.milestones.map((milestone, idx) => {
               const isCompleted = !!completedMilestones[milestone.id];
               return (
                 <div key={milestone.id} className="milestone-item">
-                  {/* Node Icon indicator on the line */}
+                  
                   <button
                     onClick={() => toggleMilestone(milestone.id)}
                     className={`milestone-node ${isCompleted ? "node-active" : "node-inactive"}`}
@@ -343,7 +343,7 @@ export default function RoadmapView({ onBackToDashboard }) {
                     {isCompleted ? <CheckCircle2 className="h-4 w-4 stroke-[3]" /> : <Circle className="h-3 w-3" />}
                   </button>
 
-                  {/* Card container */}
+                  
                   <div className={`milestone-card ${isCompleted ? "milestone-card-active" : ""}`}>
                     <div className="card-top">
                       <div>
@@ -372,7 +372,7 @@ export default function RoadmapView({ onBackToDashboard }) {
                       </button>
                     </div>
 
-                    {/* Milestone resources / sub-tracks */}
+                    
                     <div className="resources-divider">
                       <h4 className="resources-heading">Key Study Areas:</h4>
                       <div className="resources-grid">
@@ -390,7 +390,7 @@ export default function RoadmapView({ onBackToDashboard }) {
             })}
           </div>
 
-          {/* Right sidebar info */}
+          
           <div className="sidebar-column">
             <div className="sidebar-box">
               <h3 className="sidebar-box-heading">

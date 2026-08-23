@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import "./CalendarModal.css";
 
-// Generate events for upcoming dates
+
 const generateCalendarEvents = () => {
   const today = new Date();
   const events = {};
@@ -66,12 +66,12 @@ const generateCalendarEvents = () => {
     },
   ];
 
-  // Generate events for the next 120 days
+  
   for (let i = 0; i < 120; i++) {
     const eventDate = new Date(today);
     eventDate.setDate(eventDate.getDate() + i);
 
-    // Randomly place events on some days
+    
     if (Math.random() > 0.7) {
       const dateKey = eventDate.toISOString().split("T")[0];
       const numEvents = Math.random() > 0.8 ? 2 : 1;
@@ -97,7 +97,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   const [currentDate, setCurrentDate] = useState(today);
   const [selectedDate, setSelectedDate] = useState(today.toISOString().split("T")[0]);
 
-  // Merge custom events with generated events (calculated directly on render)
+  
   const baseEvents = CALENDAR_EVENTS;
   const mergedEvents = { ...baseEvents };
   const customKeys = Object.keys(customEvents);
@@ -148,12 +148,12 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   const firstDayOfMonth = getFirstDayOfMonth(currentDate);
   const days = [];
 
-  // Empty cells for days before month starts
+  
   for (let i = 0; i < firstDayOfMonth; i++) {
     days.push(null);
   }
 
-  // Days of the month
+  
   for (let i = 1; i <= daysInMonth; i++) {
     days.push(i);
   }
@@ -176,7 +176,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
   return (
     <div className="cal-modal-backdrop" onClick={onClose}>
       <div className="cal-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Close button */}
+        
         <button
           onClick={onClose}
           className="cal-modal-close-btn"
@@ -193,9 +193,9 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
           </div>
 
           <div className="cal-modal-grid-12">
-            {/* Calendar Grid */}
+            
             <div style={{ gridColumn: "span 7" }}>
-              {/* Month & Year Navigation */}
+              
               <div className="cal-nav-bar">
                 <button
                   onClick={previousMonth}
@@ -239,7 +239,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
                 </button>
               </div>
 
-              {/* Day names */}
+              
               <div className="cal-grid-7" style={{ marginBottom: "0.5rem" }}>
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                   <div
@@ -251,7 +251,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
                 ))}
               </div>
 
-              {/* Calendar Days */}
+              
               <div className="cal-grid-7">
                 {days.map((day, idx) => {
                   const dateKey =
@@ -292,7 +292,7 @@ export default function CalendarModal({ isOpen, onClose, customEvents = {} }) {
               </div>
             </div>
 
-            {/* Right Sidebar - Selected Date Events */}
+            
             <div style={{ gridColumn: "span 5" }}>
               <div className="cal-sidebar-card">
                 <div className="cal-sidebar-card-header">

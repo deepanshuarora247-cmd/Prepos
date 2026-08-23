@@ -1,4 +1,4 @@
-/* InterviewPrepDashboard.css - Premium Vanilla CSS Styles for PrepOS Dashboard */
+
 
 .dashboard-container {
   min-height: 100vh;
@@ -10,7 +10,7 @@
   overflow: hidden;
 }
 
-/* Hairline accent line */
+
 .dashboard-hairline {
   height: 2px;
   width: 100%;
@@ -18,7 +18,7 @@
   opacity: 0.7;
 }
 
-/* Background Glowing Blurs */
+
 .glow-bg-1 {
   position: absolute;
   top: -10rem;
@@ -26,7 +26,7 @@
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.1); /* indigo-600/10 */
+  background: rgba(99, 102, 241, 0.1); 
   filter: blur(140px);
   pointer-events: none;
   z-index: 0;
@@ -39,7 +39,7 @@
   width: 420px;
   height: 420px;
   border-radius: 50%;
-  background: rgba(168, 85, 247, 0.1); /* purple-600/10 */
+  background: rgba(168, 85, 247, 0.1); 
   filter: blur(140px);
   pointer-events: none;
   z-index: 0;
@@ -52,17 +52,17 @@
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  background: rgba(16, 185, 129, 0.05); /* emerald-600/5 */
+  background: rgba(16, 185, 129, 0.05); 
   filter: blur(140px);
   pointer-events: none;
   z-index: 0;
 }
 
-/* Main Dashboard Wrapper */
+
 .dashboard-inner {
   position: relative;
   z-index: 10;
-  max-width: 80rem; /* 7xl */
+  max-width: 80rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
@@ -74,7 +74,7 @@
   }
 }
 
-/* Navigation Header */
+
 .nav-header {
   display: flex;
   align-items: center;
@@ -171,7 +171,7 @@
   box-shadow: 0 0 6px 1px rgba(34, 211, 238, 0.9);
 }
 
-/* Notification Popover Dropdown */
+
 .notification-popover {
   position: absolute;
   right: 0;
@@ -308,7 +308,7 @@
   border: 2px solid rgba(34, 211, 238, 0.4);
 }
 
-/* Categories Nav Bar */
+
 .categories-nav {
   display: flex;
   align-items: center;
@@ -317,11 +317,11 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   overflow-x: auto;
   position: relative;
-  scrollbar-width: none; /* Hide standard Firefox scrollbars */
+  scrollbar-width: none; 
 }
 
 .categories-nav::-webkit-scrollbar {
-  display: none; /* Hide Chrome/Safari scrollbar */
+  display: none; 
 }
 
 .category-tab {
@@ -354,7 +354,7 @@
   box-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
 }
 
-/* Hero Card Banner */
+
 .hero-section {
   display: flex;
   flex-direction: column;
@@ -393,7 +393,7 @@
 .hero-tag {
   font-size: 0.75rem;
   font-weight: 500;
-  color: #a5b4fc; /* indigo-300 */
+  color: #a5b4fc; 
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
@@ -445,7 +445,7 @@
   background-color: #4f46e5;
 }
 
-/* Hero Streak Widget */
+
 .streak-widget {
   position: relative;
   display: flex;
@@ -488,7 +488,7 @@
 }
 
 .streak-widget:hover .streak-title {
-  color: #fdba74; /* orange-300 */
+  color: #fdba74; 
 }
 
 .streak-badge {
@@ -525,7 +525,7 @@
   box-shadow: 0 0 6px 1px rgba(249, 115, 22, 0.8);
 }
 
-/* Dashboard Core Grid Layout */
+
 .main-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -556,7 +556,7 @@
   gap: 1.5rem;
 }
 
-/* Module Section container */
+
 .modules-section {
   display: flex;
   flex-direction: column;
@@ -602,7 +602,7 @@
   }
 }
 
-/* Question of the Day Section */
+
 .question-of-the-day-section {
   display: flex;
   flex-direction: column;
@@ -627,7 +627,7 @@
   color: var(--text-muted);
 }
 
-/* Streak Ring Component Styles */
+
 .streak-ring-container {
   position: relative;
   display: flex;
@@ -680,13 +680,13 @@
   margin-top: 0.25rem;
 }
 
-/* Module Card Component Styles */
+
 .module-card {
   position: relative;
   text-align: left;
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
-  background-color: rgba(15, 23, 42, 0.5); /* bg-slate-900/50 */
+  background-color: rgba(15, 23, 42, 0.5); 
   backdrop-filter: blur(12px);
   padding: 1.25rem;
   overflow: hidden;
@@ -699,7 +699,7 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Custom glow highlights per card hover */
+
 .module-card.glow-indigo:hover {
   box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.5);
 }
@@ -775,7 +775,7 @@
   border: 1px solid;
 }
 
-/* Card titles */
+
 .module-card-title {
   position: relative;
   margin-top: 1rem;
@@ -836,7 +836,7 @@
   transform: translate(2px, -2px);
 }
 
-/* Question of the Day Terminal Component */
+
 .question-terminal-box {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -897,7 +897,7 @@
 }
 
 .terminal-line-num {
-  color: #4b5563; /* neutral-600 */
+  color: #4b5563; 
   width: 1.5rem;
   text-align: right;
   margin-right: 1rem;
@@ -905,18 +905,18 @@
 }
 
 .terminal-code-comment {
-  color: #737373; /* neutral-500 */
+  color: #737373; 
 }
 
 .terminal-code-indent-1 { margin-left: 1rem; }
 .terminal-code-indent-2 { margin-left: 2rem; }
 
-.terminal-code-keyword { color: #c084fc; /* purple-400 */ }
-.terminal-code-function { color: #818cf8; /* indigo-300 */ }
-.terminal-code-variable { color: #fdba74; /* orange-300 */ }
+.terminal-code-keyword { color: #c084fc;  }
+.terminal-code-function { color: #818cf8;  }
+.terminal-code-variable { color: #fdba74;  }
 .terminal-code-type { color: #737373; }
 .terminal-code-symbol { color: #d4d4d4; }
-.terminal-code-string { color: #38bdf8; /* sky-300 */ }
+.terminal-code-string { color: #38bdf8;  }
 
 .terminal-cursor-prompt {
   display: flex;
@@ -984,7 +984,7 @@
   background-color: #4f46e5;
 }
 
-/* Upcoming Agenda Widget Component */
+
 .agenda-widget {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -1074,7 +1074,7 @@
   background-color: rgba(99, 102, 241, 0.05);
 }
 
-/* Agenda Item inner component styling */
+
 .agenda-item {
   position: relative;
   display: flex;
@@ -1108,7 +1108,7 @@
   font-size: 11px;
   font-weight: 600;
   color: #fff;
-  outline: 4px solid #0a0e1a; /* rings to match dashboard backplate color */
+  outline: 4px solid #0a0e1a; 
 }
 
 .agenda-item-body {
@@ -1174,7 +1174,7 @@
   border: 1px solid;
 }
 
-/* Practice Streak Widget (Right Column) */
+
 .practice-streak-widget {
   border-radius: 1rem;
   border: 1px solid rgba(249, 115, 22, 0.2);
@@ -1322,7 +1322,7 @@
   border-color: rgba(249, 115, 22, 0.5);
 }
 
-/* Readiness Score Box (Right Column) */
+
 .readiness-widget {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);
@@ -1389,7 +1389,7 @@
   border-radius: 2px;
 }
 
-/* Animations */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1400,7 +1400,7 @@
   50% { opacity: .5; }
 }
 
-/* Footer Styles */
+
 .dashboard-footer {
   margin-top: 4rem;
   border-top: 1px solid var(--panel-border);

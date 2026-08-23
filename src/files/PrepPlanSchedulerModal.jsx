@@ -5,7 +5,7 @@ import "./PrepPlanSchedulerModal.css";
 export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractice }) {
   const [targetCompany, setTargetCompany] = useState("Meta");
   const [targetRole, setTargetRole] = useState("Senior Fullstack Engineer");
-  const [intensity, setIntensity] = useState("Balanced"); // Casual | Balanced | Intensive
+  const [intensity, setIntensity] = useState("Balanced"); 
   const [dailyGoalHours, setDailyGoalHours] = useState(2.5);
   const [prepTimeSlot, setPrepTimeSlot] = useState("Evening (7:00 PM - 9:30 PM)");
   const [calendarSynced, setCalendarSynced] = useState(false);
@@ -23,10 +23,10 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
   return (
     <div className="plan-modal-backdrop">
       <div className="plan-modal-card">
-        {/* Ambient Top Glow */}
+        
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-96 rounded-full bg-indigo-600/20 blur-[100px]" />
 
-        {/* Header */}
+        
         <div className="plan-modal-header">
           <div className="plan-modal-header-left">
             <div className="q-solve-btn" style={{ padding: "0.25rem 0.5rem", borderRadius: "0.375rem", backgroundColor: "var(--indigo-bg)", color: "var(--indigo-accent)", borderColor: "var(--indigo-border)" }}>
@@ -46,9 +46,9 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
           </button>
         </div>
 
-        {/* Content Body */}
+        
         <div className="plan-modal-scroll-body">
-          {/* Target Company & Role Selection */}
+          
           <div className="sysdesign-nodes-grid" style={{ gap: "1rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
               <label className="resume-field-lbl">Target Tech Company</label>
@@ -81,7 +81,7 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
             </div>
           </div>
 
-          {/* Intensity & Daily Hours Slider */}
+          
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <label className="resume-field-lbl">Daily Prep Intensity</label>
@@ -109,7 +109,7 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
             </div>
           </div>
 
-          {/* Preferred Time Slot */}
+          
           <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
             <label className="resume-field-lbl">Preferred Daily Practice Slot</label>
             <select
@@ -123,7 +123,7 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
             </select>
           </div>
 
-          {/* 3-Week Milestone Timeline Preview */}
+          
           <div className="practice-streak-card" style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <span className="behavioral-rewrite-header" style={{ color: "var(--indigo-accent)" }}>
               <Target className="h-3.5 w-3.5" /> Scheduled 3-Week Milestone Roadmap
@@ -145,7 +145,7 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
             </div>
           </div>
 
-          {/* Calendar Sync Toggle */}
+          
           <div className="practice-streak-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem" }}>
             <div style={{ display: "flex", itemsCenter: "center", gap: "0.5rem", fontSize: "11px", color: "var(--text-secondary)" }}>
               <Bell className="h-4 w-4 text-indigo-400" />
@@ -160,7 +160,7 @@ export default function PrepPlanSchedulerModal({ isOpen, onClose, onStartPractic
           </div>
         </div>
 
-        {/* Footer Actions */}
+        
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--panel-border)", paddingTop: "1rem", marginTop: "1rem" }}>
           {calendarSynced ? (
             <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "11px", fontWeight: "bold", color: "var(--emerald-accent)" }}>

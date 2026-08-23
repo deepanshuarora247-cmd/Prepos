@@ -1,4 +1,4 @@
-/* LeaderboardView.css - Premium Vanilla CSS Styles for PrepOS Leaderboard */
+
 
 .leaderboard-container {
   min-height: 100vh;
@@ -9,7 +9,7 @@
   position: relative;
 }
 
-/* Header Navbar */
+
 .leaderboard-header {
   position: sticky;
   top: 0;
@@ -66,9 +66,9 @@
   color: #fff;
 }
 
-/* Main Podium / Rankings grid */
+
 .leaderboard-main {
-  max-width: 72rem; /* 6xl */
+  max-width: 72rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -84,7 +84,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   align-items: end;
-  max-width: 48rem; /* 3xl */
+  max-width: 48rem; 
   margin: 0 auto;
   padding-top: 1rem;
   width: 100%;
@@ -240,7 +240,7 @@
   display: block;
 }
 
-/* User rank list table item overrides */
+
 .leaderboard-user-row {
   background-color: var(--amber-bg);
   border-color: var(--amber-border);

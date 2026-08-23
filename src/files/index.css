@@ -1,16 +1,16 @@
-/* Global index.css for PrepOS - Pure Vanilla CSS */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  --bg-color: #020617; /* slate-950 */
-  --text-primary: #f8fafc; /* slate-100 */
-  --text-secondary: #94a3b8; /* slate-400 */
-  --text-muted: #64748b; /* slate-500 */
+  --bg-color: #020617; 
+  --text-primary: #f8fafc; 
+  --text-secondary: #94a3b8; 
+  --text-muted: #64748b; 
   
-  --panel-bg: rgba(15, 23, 42, 0.6); /* slate-900 with transparency */
+  --panel-bg: rgba(15, 23, 42, 0.6); 
   --panel-border: rgba(255, 255, 255, 0.08);
   
-  /* Accents */
+  
   --cyan-accent: #22d3ee;
   --cyan-bg: rgba(34, 211, 238, 0.1);
   --cyan-border: rgba(34, 211, 238, 0.25);
@@ -71,7 +71,7 @@ a {
   text-decoration: none;
 }
 
-/* Scrollbar styles */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

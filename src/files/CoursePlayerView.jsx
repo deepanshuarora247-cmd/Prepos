@@ -154,35 +154,35 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const [courseData, setCourseData] = useState(null);
   const [activeLessonId, setActiveLessonId] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
-  const [activeTab, setActiveTab] = useState("video"); // "video" | "notes" | "quiz" | "ai"
+  const [activeTab, setActiveTab] = useState("video"); 
 
-  // Video states
+  
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [videoSourceMode, setVideoSourceMode] = useState("html5"); // "html5" | "iframe"
+  const [videoSourceMode, setVideoSourceMode] = useState("html5"); 
 
-  // Quiz states
+  
   const [selectedOption, setSelectedOption] = useState(null);
   const [quizResult, setQuizResult] = useState(null);
 
-  // AI states
+  
   const [chatMessages, setChatMessages] = useState([
     { role: "assistant", content: "Hi! I am your AI Masterclass Tutor. Ask me any conceptual or clarification questions about this lesson!" }
   ]);
   const [aiMessage, setAiMessage] = useState("");
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  // Certificate Modal State
+  
   const [showCertificateModal, setShowCertificateModal] = useState(false);
 
   const videoRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
-    // Load course progress and data
+    
     const course = FALLBACK_COURSES.find((c) => c.id === courseId) || FALLBACK_COURSES[0];
     setCourseData(course);
 
@@ -198,14 +198,14 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   }, [courseId]);
 
   useEffect(() => {
-    // Sync completed lessons to local storage
+    
     if (!courseId || completedLessons.length === 0) return;
     const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
     enrolledMap[courseId] = completedLessons;
     localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify(enrolledMap));
   }, [completedLessons, courseId]);
 
-  // Active lesson content details (calculated directly on render)
+  
   let lessonContent = null;
   if (courseData && activeLessonId) {
     for (let i = 0; i < courseData.modules.length; i++) {
@@ -227,7 +227,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     }
   }
 
-  // Active lesson progress calculations (calculated directly on render)
+  
   let progressPercent = 0;
   if (courseData) {
     let totalLessonsCount = 0;
@@ -239,7 +239,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     }
   }
 
-  // Video Handlers
+  
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -301,7 +301,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Reset quiz state when active lesson changes
+  
   useEffect(() => {
     setSelectedOption(null);
     setQuizResult(null);
@@ -348,7 +348,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
 
   return (
     <div className="player-container">
-      {/* Navbar Header */}
+      
       <header className="player-header">
         <div className="player-header-left">
           <button onClick={onBackToCourses} className="player-back-btn">
@@ -391,9 +391,9 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
         </div>
       </header>
 
-      {/* Workspace */}
+      
       <div className="player-workspace">
-        {/* Syllabus Sidebar */}
+        
         <aside className="player-sidebar">
           <div className="player-sidebar-header">
             <span className="courses-banner-tag" style={{ fontSize: "9px" }}>Course Syllabus</span>
@@ -437,7 +437,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
           </div>
         </aside>
 
-        {/* Lesson Viewer & Tabs */}
+        
         <main className="player-viewer-panel">
           {lessonContent && lessonContent.lesson ? (
             <div className="player-viewer-inner">
@@ -449,7 +449,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                 <p className="player-viewer-desc">{lessonContent.lesson.summary}</p>
               </div>
 
-              {/* Tab Selector */}
+              
               <div className="categories-nav" style={{ gap: "0.75rem", borderBottom: "1px solid rgba(255, 255, 255, 0.1)", paddingBottom: "0.5rem" }}>
                 {[
                   { id: "video", label: "Interactive Video Lecture", icon: Play },
@@ -472,7 +472,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                 })}
               </div>
 
-              {/* Tab 1: Video Player */}
+              
               {activeTab === "video" && (
                 <div className="player-tab-body">
                   <div className="resume-banner-row no-print" style={{ padding: "0.50rem 1rem", border: "1px solid var(--panel-border)", background: "rgba(255, 255, 255, 0.02)", flexDirection: "row", justifyContent: "space-between", borderRadius: "0.75rem" }}>
@@ -590,7 +590,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                 </div>
               )}
 
-              {/* Tab 2: Notes & Code */}
+              
               {activeTab === "notes" && (
                 <div className="player-tab-body">
                   <div className="player-notes-sheet">
@@ -599,7 +599,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                 </div>
               )}
 
-              {/* Tab 3: Quiz */}
+              
               {activeTab === "quiz" && (
                 <div className="player-tab-body">
                   <div className="player-quiz-card">
@@ -624,7 +624,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                             optionClass = "wrong";
                           }
                         } else if (isSelected) {
-                          optionClass = "correct"; // uses same accent highlighting before validation
+                          optionClass = "correct"; 
                         }
 
                         return (
@@ -667,7 +667,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
                 </div>
               )}
 
-              {/* Tab 4: AI Tutor */}
+              
               {activeTab === "ai" && (
                 <div className="player-tab-body">
                   <div className="player-ai-chat-window">
@@ -710,7 +710,7 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
         </main>
       </div>
 
-      {/* Certificate Modal */}
+      
       {showCertificateModal && (
         <div className="player-cert-modal-backdrop" onClick={() => setShowCertificateModal(false)}>
           <div className="player-cert-card" onClick={(e) => e.stopPropagation()}>

@@ -93,7 +93,7 @@ export default function TutorialsView({ onBackToDashboard }) {
   const [loading, setLoading] = useState(false);
   const [apiSource, setApiSource] = useState("Local Cache");
 
-  // Load tutorials from API on mount
+  
   const loadTutorials = async (keyToUse = apiKey, query = searchQuery) => {
     setLoading(true);
     try {
@@ -142,7 +142,7 @@ export default function TutorialsView({ onBackToDashboard }) {
 
   return (
     <div className="tutorials-container">
-      {/* Top Navbar */}
+      
       <header className="tutorials-header">
         <div className="tutorials-header-left">
           <button onClick={onBackToDashboard} className="tutorials-back-btn">
@@ -170,9 +170,9 @@ export default function TutorialsView({ onBackToDashboard }) {
         </div>
       </header>
 
-      {/* Main catalogue */}
+      
       <main className="tutorials-main">
-        {/* API Settings card */}
+        
         {showApiKeyInput && (
           <div className="tutorials-api-card">
             <div className="tutorials-api-card-header">
@@ -224,7 +224,7 @@ export default function TutorialsView({ onBackToDashboard }) {
           </div>
         )}
 
-        {/* Search & Title header row */}
+        
         <div className="tutorials-content-header-row">
           <div>
             <div className="tutorials-content-title-area">
@@ -262,7 +262,7 @@ export default function TutorialsView({ onBackToDashboard }) {
           </div>
         </div>
 
-        {/* Tutorials list grid */}
+        
         {loading ? (
           <div className="popover-body" style={{ color: "var(--indigo-accent)" }}>
             <Loader2 className="search-loader" style={{ position: "static", margin: "1rem" }} />

@@ -1,4 +1,4 @@
-/* TutorialsView.css - Premium Vanilla CSS Styles for PrepOS Tutorials */
+
 
 .tutorials-container {
   min-height: 100vh;
@@ -10,7 +10,7 @@
   padding-bottom: 3rem;
 }
 
-/* Header Navbar */
+
 .tutorials-header {
   position: sticky;
   top: 0;
@@ -67,9 +67,9 @@
   color: #fff;
 }
 
-/* Main Area Layout */
+
 .tutorials-main {
-  max-width: 80rem; /* 7xl */
+  max-width: 80rem; 
   margin: 0 auto;
   padding: 2rem 1.5rem;
   position: relative;
@@ -79,7 +79,7 @@
   gap: 1.5rem;
 }
 
-/* API Config Card styling */
+
 .tutorials-api-card {
   border-radius: 1.5rem;
   border: 1px solid var(--panel-border);
@@ -157,7 +157,7 @@
   cursor: pointer;
 }
 
-/* Tutorials category header */
+
 .tutorials-content-header-row {
   display: flex;
   flex-direction: column;
@@ -204,7 +204,7 @@
   }
 }
 
-/* Tutorials card grid */
+
 .tutorials-grid-3 {
   display: grid;
   grid-template-columns: 1fr;

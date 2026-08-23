@@ -86,10 +86,10 @@ export default function BehavioralMockView({ onBackToDashboard }) {
 
   return (
     <div className="behavioral-container">
-      {/* Background blurs */}
+      
       <div className="glow-bg-1" style={{ backgroundColor: "rgba(16, 185, 129, 0.08)" }} />
 
-      {/* Top Navbar */}
+      
       <header className="behavioral-header">
         <div className="behavioral-header-left">
           <button onClick={onBackToDashboard} className="behavioral-back-btn">
@@ -107,7 +107,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
       </header>
 
       {!activeScenario ? (
-        /* Scenario Selection List */
+        
         <main className="behavioral-main">
           <div className="behavioral-banner">
             <div className="behavioral-banner-content">
@@ -157,7 +157,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
           </div>
         </main>
       ) : (
-        /* Active Behavioral Practice View */
+        
         <main className="behavioral-active-layout">
           <div className="behavioral-active-actions-row">
             <button
@@ -169,7 +169,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
             <span className="behavioral-active-category-label">{activeScenario.category}</span>
           </div>
 
-          {/* AI Question Prompt Card */}
+          
           <div className="behavioral-prompt-card">
             <div className="behavioral-prompt-avatar">
               <Bot className="h-5 w-5" />
@@ -182,7 +182,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
             </div>
           </div>
 
-          {/* Response Textarea */}
+          
           <div className="behavioral-editor-card">
             <div className="behavioral-editor-header">
               <span className="behavioral-editor-label">
@@ -215,7 +215,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
             </div>
           </div>
 
-          {/* AI Analysis Feedback Card */}
+          
           {isAnalyzing ? (
             <div className="popover-body" style={{ color: "var(--emerald-accent)" }}>
               <Loader2 className="search-loader" style={{ position: "static", margin: "1rem", color: "var(--emerald-accent)" }} />

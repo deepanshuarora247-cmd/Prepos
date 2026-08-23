@@ -1,4 +1,4 @@
-/* CalendarModal.css - Premium Vanilla CSS Styles for PrepOS Calendar Modal */
+
 
 .cal-modal-backdrop {
   position: fixed;
@@ -14,7 +14,7 @@
 
 .cal-modal-card {
   width: 100%;
-  max-width: 58rem; /* 5xl */
+  max-width: 58rem; 
   border-radius: 1.5rem;
   border: 1px solid var(--panel-border);
   background-color: #0c101d;
@@ -136,7 +136,7 @@
   animation: pulse 2s infinite;
 }
 
-/* Sidebar lists */
+
 .cal-sidebar-card {
   border-radius: 1rem;
   border: 1px solid var(--panel-border);

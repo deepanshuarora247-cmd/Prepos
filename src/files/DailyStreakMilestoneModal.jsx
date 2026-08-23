@@ -112,7 +112,7 @@ export const BADGES_DATA = [
 ];
 
 export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPractice }) {
-  const [activeTab, setActiveTab] = useState("milestones"); // "milestones" | "badges"
+  const [activeTab, setActiveTab] = useState("milestones"); 
   const [hasShield, setHasShield] = useState(true);
 
   if (!isOpen) return null;
@@ -125,10 +125,10 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
   return (
     <div className="milestone-modal-backdrop" onClick={onClose}>
       <div className="milestone-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Ambient Top Glow */}
+        
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-96 rounded-full bg-orange-600/25 blur-[100px]" />
 
-        {/* Header */}
+        
         <div className="milestone-modal-header">
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <div className="q-solve-btn" style={{ padding: "0.5rem", borderRadius: "0.75rem", backgroundColor: "var(--orange-bg)", color: "var(--orange-accent)", borderColor: "var(--orange-border)" }}>
@@ -152,7 +152,7 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
           </button>
         </div>
 
-        {/* Tab Switcher */}
+        
         <div className="categories-nav" style={{ gap: "0.75rem", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "0.5rem" }}>
           <button
             onClick={() => setActiveTab("milestones")}
@@ -172,11 +172,11 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
           </button>
         </div>
 
-        {/* Modal Body */}
+        
         <div className="milestone-scroll-body">
           {activeTab === "milestones" ? (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {/* Active Milestone Card */}
+              
               <div className="practice-streak-card" style={{ padding: "1.25rem" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -199,9 +199,9 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
                 </div>
               </div>
 
-              {/* Today's Streak Quest & Freeze Shield Grid */}
+              
               <div className="sysdesign-nodes-grid" style={{ gap: "1rem" }}>
-                {/* Daily Quest */}
+                
                 <div className="practice-streak-card" style={{ padding: "1rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
                     <span className="behavioral-rewrite-header" style={{ color: "var(--cyan-accent)", justifyContent: "space-between" }}>
@@ -226,7 +226,7 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
                   </button>
                 </div>
 
-                {/* Streak Shield / Freeze */}
+                
                 <div className="practice-streak-card" style={{ padding: "1rem", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                   <div>
                     <span className="behavioral-rewrite-header" style={{ color: "var(--emerald-accent)", justifyContent: "space-between" }}>
@@ -247,7 +247,7 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
                 </div>
               </div>
 
-              {/* Milestone Roadmap */}
+              
               <div className="practice-streak-card" style={{ padding: "1rem" }}>
                 <h3 className="behavioral-rewrite-header" style={{ color: "var(--indigo-accent)", marginBottom: "0.75rem" }}>
                   Milestone Progression Path
@@ -295,7 +295,7 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
               </div>
             </div>
           ) : (
-            /* TAB 2: Achievements & Badges */
+            
             <div className="sysdesign-nodes-grid" style={{ gap: "1rem" }}>
               {BADGES_DATA.map((b) => {
                 const Icon = b.icon;
@@ -330,7 +330,7 @@ export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPrac
           )}
         </div>
 
-        {/* Footer */}
+        
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--panel-border)", paddingTop: "1rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "11px", color: "var(--text-secondary)" }}>
             <Flame className="h-4 w-4 text-orange-400" />

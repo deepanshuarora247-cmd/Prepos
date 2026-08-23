@@ -87,7 +87,7 @@ export default function AddAgendaModal({ isOpen, onClose, onAddEvent }) {
   return (
     <div className="agenda-modal-backdrop" onClick={onClose}>
       <div className="agenda-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Ambient Glows */}
+        
         <div className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-44 w-80 rounded-full bg-indigo-600/25 blur-[90px]" />
 
         <div className="agenda-modal-header">

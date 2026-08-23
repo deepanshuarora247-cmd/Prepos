@@ -21,9 +21,9 @@ import {
 import "./SettingsModal.css";
 
 export default function SettingsModal({ isOpen, onClose }) {
-  const [activeTab, setActiveTab] = useState("editor"); // "editor" | "goals" | "notifications" | "data"
+  const [activeTab, setActiveTab] = useState("editor"); 
   
-  // Settings states with persistence in localStorage
+  
   const [settings, setSettings] = useState(() => {
     const saved = localStorage.getItem("prepos_user_settings_v1");
     if (saved) {
@@ -101,10 +101,10 @@ export default function SettingsModal({ isOpen, onClose }) {
   return (
     <div className="settings-modal-backdrop" onClick={onClose}>
       <div className="settings-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Ambient Glow */}
+        
         <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-96 rounded-full bg-cyan-600/15 blur-[100px]" />
 
-        {/* Header */}
+        
         <div className="settings-modal-header">
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <div className="q-solve-btn" style={{ padding: "0.5rem", borderRadius: "0.75rem", backgroundColor: "var(--cyan-bg)", color: "var(--cyan-accent)", borderColor: "var(--cyan-border)" }}>
@@ -128,7 +128,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Tab Switcher */}
+        
         <div className="categories-nav" style={{ gap: "0.75rem", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "0.5rem" }}>
           {[
             { id: "editor", label: "IDE & Editor", icon: Code2 },
@@ -151,9 +151,9 @@ export default function SettingsModal({ isOpen, onClose }) {
           })}
         </div>
 
-        {/* Modal Body */}
+        
         <div className="settings-scroll-body">
-          {/* TAB 1: IDE & Editor */}
+          
           {activeTab === "editor" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div className="sysdesign-nodes-grid" style={{ gap: "1rem" }}>
@@ -230,7 +230,7 @@ export default function SettingsModal({ isOpen, onClose }) {
                 />
               </div>
 
-              {/* Live Preview Box */}
+              
               <div className="practice-streak-card" style={{ padding: "1rem" }}>
                 <span className="behavioral-rewrite-header" style={{ color: "var(--cyan-accent)", marginBottom: "0.5rem" }}>Live Editor Preview ({settings.editorFontSize})</span>
                 <pre style={{
@@ -249,7 +249,7 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
           )}
 
-          {/* TAB 2: Prep Targets */}
+          
           {activeTab === "goals" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div className="sysdesign-nodes-grid" style={{ gap: "1rem" }}>
@@ -317,7 +317,7 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
           )}
 
-          {/* TAB 3: Audio & Alerts */}
+          
           {activeTab === "notifications" && (
             <div className="practice-streak-card" style={{ padding: "1.25rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -348,7 +348,7 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
           )}
 
-          {/* TAB 4: Data & Storage */}
+          
           {activeTab === "data" && (
             <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               <div className="practice-streak-card" style={{ padding: "1rem" }}>
@@ -382,7 +382,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           )}
         </div>
 
-        {/* Footer */}
+        
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--panel-border)", paddingTop: "1rem" }}>
           <div>
             {toastMessage ? (

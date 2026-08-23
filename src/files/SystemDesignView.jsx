@@ -144,7 +144,7 @@ export default function SystemDesignView({ onBackToDashboard }) {
     setIsEvaluating(true);
     setTimeout(() => {
       setIsEvaluating(false);
-      // MOCK Review
+      
       setReviewResult({
         score: addedComponents.length > 5 ? 88 : addedComponents.length >= 3 ? 74 : 45,
         tier: addedComponents.length > 5 ? "Production Resilient (High Availability)" : "Minimal Viable (SLA Gaps)",
@@ -165,7 +165,7 @@ export default function SystemDesignView({ onBackToDashboard }) {
 
   return (
     <div className="sysdesign-container">
-      {/* Top Navbar */}
+      
       <header className="sysdesign-header">
         <div className="sysdesign-header-left">
           <button onClick={onBackToDashboard} className="sysdesign-back-btn">
@@ -182,9 +182,9 @@ export default function SystemDesignView({ onBackToDashboard }) {
         </div>
       </header>
 
-      {/* Main Body */}
+      
       <main className="sysdesign-layout">
-        {/* LEFT PANE: Design Topic Specs */}
+        
         <div className="sysdesign-left-pane">
           <div className="sysdesign-left-pane-header">
             <div className="sysdesign-topic-selector-wrapper">
@@ -226,12 +226,12 @@ export default function SystemDesignView({ onBackToDashboard }) {
 
             <hr className="sysdesign-section-divider" />
 
-            {/* Description */}
+            
             <div className="ide-desc-text">
               {activeTopic.description}
             </div>
 
-            {/* Functional Requirements */}
+            
             <div className="sysdesign-reqs-section">
               <h3 className="sysdesign-reqs-title functional">
                 <CheckCircle2 className="h-3.5 w-3.5" /> Functional Requirements
@@ -246,7 +246,7 @@ export default function SystemDesignView({ onBackToDashboard }) {
               </ul>
             </div>
 
-            {/* Non-Functional Requirements */}
+            
             <div className="sysdesign-reqs-section">
               <h3 className="sysdesign-reqs-title nonfunctional">
                 <Zap className="h-3.5 w-3.5" /> Non-Functional & SLA Requirements
@@ -263,9 +263,9 @@ export default function SystemDesignView({ onBackToDashboard }) {
           </div>
         </div>
 
-        {/* RIGHT PANE: Architecture Canvas & Evaluator */}
+        
         <div className="sysdesign-right-pane">
-          {/* Canvas Control Bar */}
+          
           <div className="sysdesign-canvas-header">
             <div className="sysdesign-add-nodes-group">
               <span className="sysdesign-add-nodes-label">Add Component:</span>
@@ -299,7 +299,7 @@ export default function SystemDesignView({ onBackToDashboard }) {
             </button>
           </div>
 
-          {/* Component Canvas */}
+          
           <div className="sysdesign-canvas-body">
             <h3 className="sysdesign-canvas-title">
               Active Architecture Nodes ({addedComponents.length})
@@ -335,7 +335,7 @@ export default function SystemDesignView({ onBackToDashboard }) {
               })}
             </div>
 
-            {/* AI Architecture Review Section */}
+            
             {isEvaluating ? (
               <div className="popover-body" style={{ color: "var(--purple-accent)" }}>
                 <Loader2 className="search-loader" style={{ position: "static", margin: "1rem", color: "var(--purple-accent)" }} />
