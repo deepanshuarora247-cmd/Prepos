@@ -745,7 +745,7 @@ export default function InterviewPrepDashboard() {
               className="hero-btn"
             >
               <Calendar className="h-4 w-4" />
-              Resume prep plan & schedule
+              Schedule Scheduler Plan
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
