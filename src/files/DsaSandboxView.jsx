@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Code2,
   Search,
@@ -13,12 +13,12 @@ import {
   BookOpen,
   Building2,
   Lightbulb,
-  Check,
   Flame,
   Award,
   Globe,
   Loader2,
-  ChevronDown
+  ChevronDown,
+  AlertTriangle
 } from "lucide-react";
 import "./DsaSandboxView.css";
 
@@ -31,7 +31,6 @@ const LOCAL_DSA_QUESTIONS = [
     companies: ["Meta", "Amazon", "Google", "Microsoft", "Apple"],
     acceptance: "34.2%",
     solved: false,
-    isApiResult: false,
     description: `Given a string s, find the length of the longest substring without repeating characters.`,
     examples: [
       {
@@ -82,7 +81,6 @@ const LOCAL_DSA_QUESTIONS = [
     companies: ["Meta", "Google", "Amazon", "Apple"],
     acceptance: "52.4%",
     solved: true,
-    isApiResult: false,
     description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.`,
     examples: [{ id: 1, input: "nums = [2,7,11,15], target = 9", output: "[0,1]" }],
     constraints: ["2 <= nums.length <= 10^4"],
@@ -107,7 +105,6 @@ const LOCAL_DSA_QUESTIONS = [
     companies: ["Amazon", "Google", "Microsoft"],
     acceptance: "41.8%",
     solved: false,
-    isApiResult: false,
     description: `You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.`,
     examples: [{ id: 1, input: "l1 = [2,4,3], l2 = [5,6,4]", output: "[7,0,8]", explanation: "342 + 465 = 807." }],
     constraints: ["The number of nodes in each linked list is in the range [1, 100]."],
@@ -132,14 +129,13 @@ const LOCAL_DSA_QUESTIONS = [
     companies: ["Google", "Meta", "Amazon", "ByteDance"],
     acceptance: "51.2%",
     solved: false,
-    isApiResult: false,
     description: `You are given an array of k linked-lists lists, each linked-list is sorted in ascending order. Merge all the linked-lists into one sorted linked-list and return it.`,
     examples: [{ id: 1, input: "lists = [[1,4,5],[1,3,4],[2,6]]", output: "[1,1,2,3,4,4,5,6]" }],
     constraints: ["lists.length >= 0", "lists[i] is sorted in ascending order."],
     hints: ["Use a Min-Priority Queue to keep track of the smallest node values across lists."],
     starterCode: {
       javascript: `function mergeKLists(lists) {\n    // Priority Queue or Divide & Conquer approach\n}`,
-      python: `class Solution:\n    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:\n        # Use Min Heap / Priority Queue`,
+      python: `class Solution:\n    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:\n        // Use Min Heap / Priority Queue`,
       cpp: `class Solution { public: ListNode* mergeKLists(vector<ListNode*>& lists) { // Min Heap } };`,
       java: `class Solution { public ListNode mergeKLists(ListNode[] lists) { // Min-Priority Queue } }`
     },
@@ -147,80 +143,62 @@ const LOCAL_DSA_QUESTIONS = [
       { input: "lists = [[1,4,5],[1,3,4],[2,6]]", expected: "[1,1,2,3,4,4,5,6]" },
       { input: "lists = []", expected: "[]" }
     ]
+  },
+  {
+    id: "valid-parentheses",
+    title: "Valid Parentheses",
+    difficulty: "Easy",
+    category: "Stack",
+    companies: ["Meta", "Google", "Amazon", "Microsoft"],
+    acceptance: "40.9%",
+    solved: false,
+    description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.`,
+    examples: [{ id: 1, input: 's = "()[]{}"', output: "true" }],
+    constraints: ["1 <= s.length <= 10^4"],
+    hints: ["Use a stack to match brackets as you scan the string."],
+    starterCode: {
+      javascript: `function isValid(s) {\n    const stack = [];\n    const pairs = { ')': '(', '}': '{', ']': '[' };\n    for (let c of s) {\n        if (pairs[c]) {\n            if (stack.pop() !== pairs[c]) return false;\n        } else stack.push(c);\n    }\n    return stack.length === 0;\n}`,
+      python: `class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        pairs = {")": "(", "}": "{", "]": "["}\n        for c in s:\n            if c in pairs:\n                if not stack or stack.pop() != pairs[c]: return False\n            else: stack.append(c)\n        return not stack`
+    },
+    testCases: [{ input: 's = "()[]{}"', expected: "true" }]
+  },
+  {
+    id: "binary-tree-inorder",
+    title: "Binary Tree Inorder Traversal",
+    difficulty: "Easy",
+    category: "Tree",
+    companies: ["Amazon", "Google"],
+    acceptance: "74.8%",
+    solved: false,
+    description: `Given the root of a binary tree, return the inorder traversal of its nodes' values.`,
+    examples: [{ id: 1, input: "root = [1,null,2,3]", output: "[1,3,2]" }],
+    constraints: ["The number of nodes in the tree is in the range [0, 100]."],
+    hints: ["Inorder traversal traverses: Left subtree -> Root node -> Right subtree."],
+    starterCode: {
+      javascript: `function inorderTraversal(root) {\n    const res = [];\n    function traverse(node) {\n        if(!node) return;\n        traverse(node.left);\n        res.push(node.val);\n        traverse(node.right);\n    }\n    traverse(root);\n    return res;\n}`,
+      python: `class Solution:\n    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        res = []\n        def dfs(node):\n            if not node: return\n            dfs(node.left)\n            res.append(node.val)\n            dfs(node.right)\n        dfs(root)\n        return res`
+    },
+    testCases: [{ input: "root = [1,null,2,3]", expected: "[1,3,2]" }]
+  },
+  {
+    id: "kth-largest",
+    title: "Kth Largest Element in an Array",
+    difficulty: "Medium",
+    category: "Heap",
+    companies: ["Facebook", "Amazon", "Spotify"],
+    acceptance: "66.5%",
+    solved: false,
+    description: `Given an integer array nums and an integer k, return the kth largest element in the array. Note that it is the kth largest element in the sorted order, not the kth distinct element.`,
+    examples: [{ id: 1, input: "nums = [3,2,1,5,6,4], k = 2", output: "5" }],
+    constraints: ["1 <= k <= nums.length <= 10^5"],
+    hints: ["You can sort the array, or use a min heap of size k to scan through it."],
+    starterCode: {
+      javascript: `function findKthLargest(nums, k) {\n    // Sort or Heap\n}`,
+      python: `class Solution:\n    def findKthLargest(self, nums: List[int], k: int) -> int:\n        import heapq\n        return heapq.nlargest(k, nums)[-1]`
+    },
+    testCases: [{ input: "nums = [3,2,1,5,6,4], k = 2", expected: "5" }]
   }
 ];
-
-
-const searchDsaQuestionsApi = async (query) => {
-  await new Promise((resolve) => setTimeout(resolve, 600));
-  const lowerQuery = query.toLowerCase();
-  
-  
-  const apiResults = [
-    {
-      id: "api-valid-parentheses",
-      title: "Valid Parentheses",
-      difficulty: "Easy",
-      category: "Stack",
-      companies: ["Meta", "Google", "Amazon", "Microsoft"],
-      acceptance: "40.9%",
-      solved: false,
-      isApiResult: true,
-      description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.`,
-      examples: [{ id: 1, input: 's = "()[]{}"', output: "true" }],
-      constraints: ["1 <= s.length <= 10^4"],
-      hints: ["Use a stack to match brackets as you scan the string."],
-      starterCode: {
-        javascript: `function isValid(s) {\n    const stack = [];\n    const pairs = { ')': '(', '}': '{', ']': '[' };\n    for (let c of s) {\n        if (pairs[c]) {\n            if (stack.pop() !== pairs[c]) return false;\n        } else stack.push(c);\n    }\n    return stack.length === 0;\n}`,
-        python: `class Solution:\n    def isValid(self, s: str) -> bool:\n        stack = []\n        pairs = {")": "(", "}": "{", "]": "["}\n        for c in s:\n            if c in pairs:\n                if not stack or stack.pop() != pairs[c]: return False\n            else: stack.append(c)\n        return not stack`
-      },
-      testCases: [{ input: 's = "()[]{}"', expected: "true" }]
-    },
-    {
-      id: "api-binary-tree-inorder",
-      title: "Binary Tree Inorder Traversal",
-      difficulty: "Easy",
-      category: "Tree",
-      companies: ["Amazon", "Google"],
-      acceptance: "74.8%",
-      solved: false,
-      isApiResult: true,
-      description: `Given the root of a binary tree, return the inorder traversal of its nodes' values.`,
-      examples: [{ id: 1, input: "root = [1,null,2,3]", output: "[1,3,2]" }],
-      constraints: ["The number of nodes in the tree is in the range [0, 100]."],
-      hints: ["Inorder traversal traverses: Left subtree -> Root node -> Right subtree."],
-      starterCode: {
-        javascript: `function inorderTraversal(root) {\n    const res = [];\n    function traverse(node) {\n        if(!node) return;\n        traverse(node.left);\n        res.push(node.val);\n        traverse(node.right);\n    }\n    traverse(root);\n    return res;\n}`,
-        python: `class Solution:\n    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        res = []\n        def dfs(node):\n            if not node: return\n            dfs(node.left)\n            res.append(node.val)\n            dfs(node.right)\n        dfs(root)\n        return res`
-      },
-      testCases: [{ input: "root = [1,null,2,3]", expected: "[1,3,2]" }]
-    },
-    {
-      id: "api-kth-largest",
-      title: "Kth Largest Element in an Array",
-      difficulty: "Medium",
-      category: "Heap",
-      companies: ["Facebook", "Amazon", "Spotify"],
-      acceptance: "66.5%",
-      solved: false,
-      isApiResult: true,
-      description: `Given an integer array nums and an integer k, return the kth largest element in the array. Note that it is the kth largest element in the sorted order, not the kth distinct element.`,
-      examples: [{ id: 1, input: "nums = [3,2,1,5,6,4], k = 2", output: "5" }],
-      constraints: ["1 <= k <= nums.length <= 10^5"],
-      hints: ["You can sort the array, or use a min heap of size k to scan through it."],
-      starterCode: {
-        javascript: `function findKthLargest(nums, k) {\n    // Sort or Heap\n}`,
-        python: `class Solution:\n    def findKthLargest(self, nums: List[int], k: int) -> int:\n        import heapq\n        return heapq.nlargest(k, nums)[-1]`
-      },
-      testCases: [{ input: "nums = [3,2,1,5,6,4], k = 2", expected: "5" }]
-    }
-  ];
-
-  return apiResults.filter((q) =>
-    q.title.toLowerCase().includes(lowerQuery) ||
-    q.category.toLowerCase().includes(lowerQuery)
-  );
-};
 
 export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, initialCategory }) {
   const [questions, setQuestions] = useState(LOCAL_DSA_QUESTIONS);
@@ -230,15 +208,14 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
   const [searchQuery, setSearchQuery] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState(initialCategory || "All");
-  const [isSearchingApi, setIsSearchingApi] = useState(false);
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
 
-  
   const [userCodeMap, setUserCodeMap] = useState({});
-  const [consoleOutput, setConsoleOutput] = useState("");
   const [isRunningCode, setIsRunningCode] = useState(false);
   const [runResults, setRunResults] = useState(null);
   const [activeResultTab, setActiveResultTab] = useState(0);
+
+  const activeQuestion = questions.find((q) => q.id === selectedQuestionId) || null;
 
   const handleRunCode = () => {
     if (!activeQuestion) return;
@@ -260,32 +237,14 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
         cases: results
       });
       setActiveResultTab(0);
+
+      // Mark question as solved in local state
+      setQuestions((prev) => 
+        prev.map((q) => q.id === activeQuestion.id ? { ...q, solved: true } : q)
+      );
     }, 600);
   };
 
-  const handleSubmitCode = () => {
-    if (!activeQuestion) return;
-    setIsRunningCode(true);
-    setRunResults(null);
-
-    setTimeout(() => {
-      setIsRunningCode(false);
-      const results = activeQuestion.testCases.map((tc) => ({
-        input: tc.input,
-        expected: tc.expected,
-        received: tc.expected,
-        passed: true
-      }));
-
-      setRunResults({
-        status: "success",
-        cases: results
-      });
-      setActiveResultTab(0);
-    }, 700);
-  };
-
-  
   const [editorSettings] = useState({
     editorFontSize: "13px",
     lineNumbers: true,
@@ -293,41 +252,17 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
     autoCloseBrackets: true
   });
 
-  
-  useEffect(() => {
-    if (!searchQuery || searchQuery.trim() === "") {
-      setQuestions(LOCAL_DSA_QUESTIONS);
-      setIsSearchingApi(false);
-      return;
-    }
-
-    setIsSearchingApi(true);
-    const timer = setTimeout(async () => {
-      try {
-        const apiResults = await searchDsaQuestionsApi(searchQuery);
-        setQuestions(apiResults);
-      } catch (e) {
-        console.error("API search failed:", e);
-      } finally {
-        setIsSearchingApi(false);
-      }
-    }, 350);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [searchQuery]);
-
-  const activeQuestion = questions.find((q) => q.id === selectedQuestionId) || null;
-
   const filteredQuestions = questions.filter((q) => {
+    const matchesSearch = !searchQuery || 
+      q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      q.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDifficulty = difficultyFilter === "All" || q.difficulty === difficultyFilter;
     const matchesCategory = categoryFilter === "All" || q.category === categoryFilter;
-    return matchesDifficulty && matchesCategory;
+    return matchesSearch && matchesDifficulty && matchesCategory;
   });
 
   const currentCode =
-    activeQuestion ? (userCodeMap[activeQuestion.id]?.[selectedLanguage] ?? activeQuestion.starterCode[selectedLanguage]) : "";
+    activeQuestion ? (userCodeMap[activeQuestion.id]?.[selectedLanguage] ?? activeQuestion.starterCode[selectedLanguage] ?? "") : "";
 
   const handleCodeChange = (newCode) => {
     if (!activeQuestion) return;
@@ -362,10 +297,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
       
       <header className="sandbox-header">
         <div className="sandbox-header-left">
-          <button
-            onClick={onBackToDashboard}
-            className="sandbox-back-btn"
-          >
+          <button onClick={onBackToDashboard} className="sandbox-back-btn">
             <ArrowLeft className="h-3.5 w-3.5" />
             Dashboard
           </button>
@@ -410,7 +342,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 Master Data Structures & Algorithms
               </h2>
               <p className="list-view-banner-desc">
-                Search and fetch real LeetCode questions via live API or solve curated FAANG interview drills with our interactive code runner.
+                Solve curated FAANG interview drills with our interactive code runner.
               </p>
             </div>
             <Award className="list-view-banner-watermark" />
@@ -428,9 +360,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 placeholder="Search Questions"
                 className="search-input-field"
               />
-              {isSearchingApi ? (
-                <Loader2 className="search-loader" />
-              ) : searchQuery ? (
+              {searchQuery ? (
                 <button
                   onClick={() => setSearchQuery("")}
                   className="search-input-clear-btn"
@@ -467,13 +397,6 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 </button>
               ))}
             </div>
-
-            {searchQuery && (
-              <div className="api-status-badge">
-                <Globe className="h-3.5 w-3.5" />
-                Live API Search Active
-              </div>
-            )}
           </div>
 
           
@@ -481,18 +404,13 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
             <div className="table-header-row">
               <div className="col-status">Status</div>
               <div className="col-title">Title</div>
-              <div className="col-category">Category / Source</div>
+              <div className="col-category">Category</div>
               <div className="col-difficulty">Difficulty</div>
               <div className="col-action">Action</div>
             </div>
 
             <div className="table-body-rows">
-              {isSearchingApi ? (
-                <div className="popover-body" style={{ color: "var(--text-secondary)" }}>
-                  <Loader2 className="search-loader" style={{ position: "static", margin: "1rem" }} />
-                  Searching LeetCode API for "{searchQuery}"...
-                </div>
-              ) : filteredQuestions.length > 0 ? (
+              {filteredQuestions.length > 0 ? (
                 filteredQuestions.map((q) => {
                   const getDifficultyStyles = () => {
                     switch (q.difficulty) {
@@ -520,10 +438,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   const diffTheme = getDifficultyStyles();
 
                   return (
-                    <div
-                      key={q.id}
-                      className="table-row-item"
-                    >
+                    <div key={q.id} className="table-row-item">
                       <div className="col-status">
                         {q.solved ? (
                           <CheckCircle2 className="h-4 w-4" style={{ color: "var(--emerald-accent)" }} />
@@ -540,16 +455,10 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                           >
                             {q.title}
                           </button>
-                          {q.isApiResult && (
-                            <span className="q-api-badge">API</span>
-                          )}
                         </div>
                         <div className="q-companies-row">
-                          {q.companies.slice(0, 3).map((comp) => (
-                            <span
-                              key={comp}
-                              className="q-company-tag"
-                            >
+                          {q.companies && q.companies.slice(0, 3).map((comp) => (
+                            <span key={comp} className="q-company-tag">
                               {comp}
                             </span>
                           ))}
@@ -558,7 +467,6 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
 
                       <div className="col-category">
                         <span className="q-category-tag">
-                          {q.isApiResult && <Globe className="h-3 w-3" style={{ color: "var(--indigo-accent)" }} />}
                           {q.category}
                         </span>
                       </div>
@@ -619,12 +527,14 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 >
                   Description
                 </button>
-                <button
-                  onClick={() => setActiveTab("hints")}
-                  className={`ide-tab-btn ${activeTab === "hints" ? "active" : ""}`}
-                >
-                  Hints ({activeQuestion.hints.length})
-                </button>
+                {activeQuestion.hints && activeQuestion.hints.length > 0 && (
+                  <button
+                    onClick={() => setActiveTab("hints")}
+                    className={`ide-tab-btn ${activeTab === "hints" ? "active" : ""}`}
+                  >
+                    Hints ({activeQuestion.hints.length})
+                  </button>
+                )}
               </div>
             </div>
 
@@ -653,16 +563,18 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                       <span>Acceptance: <strong>{activeQuestion.acceptance}</strong></span>
                     </div>
 
-                    <div className="ide-desc-companies">
-                      <span className="ide-desc-companies-label">
-                        <Building2 className="h-3 w-3" /> Companies:
-                      </span>
-                      {activeQuestion.companies.map((c) => (
-                        <span key={c} className="ide-desc-company-tag">
-                          {c}
+                    {activeQuestion.companies && activeQuestion.companies.length > 0 && (
+                      <div className="ide-desc-companies">
+                        <span className="ide-desc-companies-label">
+                          <Building2 className="h-3 w-3" /> Companies:
                         </span>
-                      ))}
-                    </div>
+                        {activeQuestion.companies.map((c) => (
+                          <span key={c} className="ide-desc-company-tag">
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <hr className="ide-section-divider" />
@@ -673,37 +585,41 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   </div>
 
                   
-                  <div className="ide-examples-section">
-                    <h3>Examples</h3>
-                    {activeQuestion.examples.map((ex) => (
-                      <div key={ex.id} className="ide-example-card">
-                        <div>
-                          <span className="ide-example-label">Input: </span>
-                          <span className="input-val">{ex.input}</span>
-                        </div>
-                        <div>
-                          <span className="ide-example-label">Output: </span>
-                          <span className="output-val">{ex.output}</span>
-                        </div>
-                        {ex.explanation && (
-                          <div className="ide-example-explanation">
-                            <span className="ide-example-label" style={{ fontFamily: "var(--font-mono)" }}>Explanation: </span>
-                            {ex.explanation}
+                  {activeQuestion.examples && activeQuestion.examples.length > 0 && (
+                    <div className="ide-examples-section">
+                      <h3>Examples</h3>
+                      {activeQuestion.examples.map((ex) => (
+                        <div key={ex.id} className="ide-example-card">
+                          <div>
+                            <span className="ide-example-label">Input: </span>
+                            <span className="input-val">{ex.input}</span>
                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                          <div>
+                            <span className="ide-example-label">Output: </span>
+                            <span className="output-val">{ex.output}</span>
+                          </div>
+                          {ex.explanation && (
+                            <div className="ide-example-explanation">
+                              <span className="ide-example-label" style={{ fontFamily: "var(--font-mono)" }}>Explanation: </span>
+                              {ex.explanation}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   
-                  <div className="ide-constraints-section">
-                    <h3>Constraints</h3>
-                    <ul className="ide-constraints-list">
-                      {activeQuestion.constraints.map((c, i) => (
-                        <li key={i}>{c}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  {activeQuestion.constraints && activeQuestion.constraints.length > 0 && (
+                    <div className="ide-constraints-section">
+                      <h3>Constraints</h3>
+                      <ul className="ide-constraints-list">
+                        {activeQuestion.constraints.map((c, i) => (
+                          <li key={i}>{c}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </>
               ) : (
                 
@@ -712,7 +628,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                     <Lightbulb className="h-4 w-4" style={{ color: "var(--amber-accent)" }} />
                     Problem Hints & Approach
                   </h3>
-                  {activeQuestion.hints.map((hint, i) => (
+                  {activeQuestion.hints && activeQuestion.hints.map((hint, i) => (
                     <div key={i} className="ide-hint-card">
                       <div className="ide-hint-icon-box">
                         <Lightbulb className="h-4 w-4" />
@@ -731,7 +647,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
           
           <div className="ide-right-pane">
             
-            <div className="ide-right-pane-header">
+            <div className="ide-right-pane-header" style={{ justifyContent: "space-between" }}>
               <div className="ide-header-action-group">
                 <div className="ide-lang-selector-wrapper">
                   <button
@@ -768,7 +684,20 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                 </div>
               </div>
 
-              <div className="ide-header-action-group">
+              <div className="ide-header-action-group" style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                <button
+                  onClick={handleRunCode}
+                  className="sysdesign-audit-btn"
+                  style={{ display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.25rem 0.75rem", borderRadius: "0.375rem" }}
+                  disabled={isRunningCode}
+                >
+                  {isRunningCode ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Play className="h-3 w-3" fill="currentColor" />
+                  )}
+                  Run Code
+                </button>
                 <button
                   onClick={handleResetCode}
                   className="ide-reset-btn"
@@ -822,7 +751,6 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   <Terminal className="h-4 w-4" style={{ color: "var(--indigo-accent)" }} />
                   <span>Console & Test Cases</span>
                 </div>
-
               </div>
 
               <div className="ide-console-body">
