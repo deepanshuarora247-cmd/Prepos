@@ -686,19 +686,6 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
 
               <div className="ide-header-action-group" style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
                 <button
-                  onClick={handleRunCode}
-                  className="sysdesign-audit-btn"
-                  style={{ display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.25rem 0.75rem", borderRadius: "0.375rem" }}
-                  disabled={isRunningCode}
-                >
-                  {isRunningCode ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Play className="h-3 w-3" fill="currentColor" />
-                  )}
-                  Run Code
-                </button>
-                <button
                   onClick={handleResetCode}
                   className="ide-reset-btn"
                   title="Reset code to starter template"
@@ -808,7 +795,7 @@ export default function DsaSandboxView({ onBackToDashboard, initialQuestionId, i
                   </div>
                 ) : (
                   <div className="ide-console-placeholder">
-                    Click "Run Code" to compile and evaluate your code against the standard sample inputs.
+                    Press Ctrl + Enter (or Cmd + Enter) to compile and evaluate your code against the standard sample inputs.
                   </div>
                 )}
               </div>
