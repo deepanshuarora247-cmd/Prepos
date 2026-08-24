@@ -148,6 +148,7 @@ export default function BehavioralMockView({ onBackToDashboard }) {
                     setStarAnalysis(null);
                   }}
                   className="behavioral-start-btn"
+                  disabled
                 >
                   <Bot className="h-4 w-4" />
                   Start AI Mock Session
