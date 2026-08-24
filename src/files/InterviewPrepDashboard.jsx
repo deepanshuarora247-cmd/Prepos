@@ -754,6 +754,7 @@ export default function InterviewPrepDashboard() {
             type="button"
             onClick={() => setIsMilestoneModalOpen(true)}
             className="streak-widget"
+            disabled
           >
             <StreakRing value={12} goal={30} />
             <div className="streak-details">
