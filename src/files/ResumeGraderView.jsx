@@ -304,6 +304,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                 <button
                   onClick={handleCopyFormattedText}
                   className="sandbox-back-btn"
+                  disabled
                 >
                   {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
                   {copied ? "Copied!" : "Copy Text"}
@@ -313,6 +314,7 @@ export default function ResumeGraderView({ onBackToDashboard }) {
                   onClick={handlePrintPdf}
                   className="q-solve-btn"
                   style={{ display: "inline-flex", gap: "0.5rem" }}
+                  disabled
                 >
                   <Printer className="h-3.5 w-3.5" />
                   Print / Export PDF
