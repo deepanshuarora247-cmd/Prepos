@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   ArrowLeft, Map, CheckCircle2, Circle, Clock, Sparkles, 
-  Compass, Terminal, Shield
+  Compass, Terminal, Shield, X, BookOpen, Layers, Check
 } from "lucide-react";
 import "./RoadmapView.css";
 
@@ -227,9 +227,31 @@ export default function RoadmapView({ onBackToDashboard }) {
     }
   });
 
+  // Modal States
+  const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const [guidanceOpen, setGuidanceOpen] = useState(false);
+  const [trackModal, setTrackModal] = useState(null);
+  const [openBlueprint, setOpenBlueprint] = useState(false);
+  const [openTimeline, setOpenTimeline] = useState(false);
+
   useEffect(() => {
     localStorage.setItem("prepos_completed_roadmap_milestones", JSON.stringify(completedMilestones));
   }, [completedMilestones]);
+
+  // Close modals on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setSelectedMilestone(null);
+        setGuidanceOpen(false);
+        setTrackModal(null);
+        setOpenBlueprint(false);
+        setOpenTimeline(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const toggleMilestone = (id) => {
     setCompletedMilestones(prev => ({
@@ -239,19 +261,16 @@ export default function RoadmapView({ onBackToDashboard }) {
   };
 
   const currentTrack = ROADMAP_TRACKS.find(t => t.id === activeTrack);
-
-  
   const totalMilestones = ROADMAP_TRACKS.reduce((acc, t) => acc + t.milestones.length, 0);
   const completedCount = Object.values(completedMilestones).filter(Boolean).length;
   const overallProgress = totalMilestones > 0 ? Math.round((completedCount / totalMilestones) * 100) : 0;
 
   return (
     <div className="roadmap-container">
-      
       <div className="glow-blur-top" />
       <div className="glow-blur-bottom" />
 
-      
+      {/* Header */}
       <header className="roadmap-header">
         <div className="header-left">
           <button onClick={onBackToDashboard} className="back-button">
@@ -276,13 +295,34 @@ export default function RoadmapView({ onBackToDashboard }) {
       </header>
 
       <main className="roadmap-main">
-        
-        
+        {/* Intro Banner */}
         <div className="intro-banner">
           <div className="intro-content">
             <div className="banner-badges">
-              <span className="banner-badge-cyan">Preparation Blueprint</span>
-              <span className="banner-badge-indigo">Interactive Timeline</span>
+              <button
+                type="button"
+                onClick={() => setOpenBlueprint(true)}
+                className="banner-badge-cyan clickable-banner-badge"
+                title="Click to open Preparation Blueprint Modal"
+              >
+                Preparation Blueprint
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpenTimeline(true)}
+                className="banner-badge-indigo clickable-banner-badge"
+                title="Click to open Interactive Timeline Modal"
+              >
+                Interactive Timeline
+              </button>
+              <button 
+                type="button"
+                onClick={() => setGuidanceOpen(true)}
+                className="banner-modal-trigger-btn"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Open Strategy Modal
+              </button>
             </div>
             <h2 className="banner-heading">Your Career Prep Roadmap</h2>
             <p className="banner-description">
@@ -304,7 +344,7 @@ export default function RoadmapView({ onBackToDashboard }) {
           </div>
         </div>
 
-        
+        {/* Tracks Tabs */}
         <div className="tabs-container">
           {ROADMAP_TRACKS.map(track => {
             const isActive = activeTrack === track.id;
@@ -326,24 +366,22 @@ export default function RoadmapView({ onBackToDashboard }) {
           })}
         </div>
 
-        
+        {/* Content Grid */}
         <div className="content-grid">
-          
-          
+          {/* Timeline Column */}
           <div className="timeline-column">
             {currentTrack.milestones.map((milestone, idx) => {
               const isCompleted = !!completedMilestones[milestone.id];
               return (
                 <div key={milestone.id} className="milestone-item">
-                  
                   <button
                     onClick={() => toggleMilestone(milestone.id)}
                     className={`milestone-node ${isCompleted ? "node-active" : "node-inactive"}`}
+                    title={isCompleted ? "Mark as Incomplete" : "Mark as Achieved"}
                   >
                     {isCompleted ? <CheckCircle2 className="h-4 w-4 stroke-[3]" /> : <Circle className="h-3 w-3" />}
                   </button>
 
-                  
                   <div className={`milestone-card ${isCompleted ? "milestone-card-active" : ""}`}>
                     <div className="card-top">
                       <div>
@@ -364,15 +402,26 @@ export default function RoadmapView({ onBackToDashboard }) {
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => toggleMilestone(milestone.id)}
-                        className={`milestone-action-btn ${isCompleted ? "action-btn-complete" : "action-btn-incomplete"}`}
-                      >
-                        {isCompleted ? "Done" : "Mark Achieved"}
-                      </button>
+                      <div className="milestone-action-group">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedMilestone(milestone)}
+                          className="milestone-modal-btn"
+                        >
+                          <BookOpen className="h-3.5 w-3.5" />
+                          Open Modal
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => toggleMilestone(milestone.id)}
+                          className={`milestone-action-btn ${isCompleted ? "action-btn-complete" : "action-btn-incomplete"}`}
+                        >
+                          {isCompleted ? "Done" : "Mark Achieved"}
+                        </button>
+                      </div>
                     </div>
 
-                    
                     <div className="resources-divider">
                       <h4 className="resources-heading">Key Study Areas:</h4>
                       <div className="resources-grid">
@@ -390,13 +439,22 @@ export default function RoadmapView({ onBackToDashboard }) {
             })}
           </div>
 
-          
+          {/* Sidebar Column */}
           <div className="sidebar-column">
             <div className="sidebar-box">
-              <h3 className="sidebar-box-heading">
-                <Compass className="h-4 w-4 icon-cyan" />
-                Prep Guidance
-              </h3>
+              <div className="sidebar-box-header-row">
+                <h3 className="sidebar-box-heading">
+                  <Compass className="h-4 w-4 icon-cyan" />
+                  Prep Guidance
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setGuidanceOpen(true)}
+                  className="sidebar-open-modal-link"
+                >
+                  Open Modal
+                </button>
+              </div>
               <p className="sidebar-box-desc">
                 Consistency beats cramming. Dedicate 2-3 hours daily. Complete all modules step-by-step, starting with algorithms, moving to distributed database design, and finishing with mock storytelling templates.
               </p>
@@ -411,29 +469,388 @@ export default function RoadmapView({ onBackToDashboard }) {
             </div>
 
             <div className="sidebar-box">
-              <h3 className="sidebar-box-heading">
-                <Shield className="h-4 w-4 icon-indigo" />
-                Roadmap Overview
-              </h3>
+              <div className="sidebar-box-header-row">
+                <h3 className="sidebar-box-heading">
+                  <Shield className="h-4 w-4 icon-indigo" />
+                  Roadmap Overview
+                </h3>
+              </div>
               <div className="sidebar-list">
                 {ROADMAP_TRACKS.map(t => {
                   const completed = t.milestones.filter(m => completedMilestones[m.id]).length;
                   return (
-                    <div key={t.id} className="sidebar-list-row">
+                    <div 
+                      key={t.id} 
+                      className="sidebar-list-row clickable-track-row"
+                      onClick={() => setTrackModal(t)}
+                    >
                       <span className="sidebar-list-label">{t.title}</span>
-                      <span className="sidebar-list-badge">
-                        {completed} / {t.milestones.length}
-                      </span>
+                      <div className="sidebar-list-right-group">
+                        <span className="sidebar-list-badge">
+                          {completed} / {t.milestones.length}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setTrackModal(t);
+                          }}
+                          className="track-row-modal-btn"
+                        >
+                          Open Modal
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
               </div>
             </div>
           </div>
-
         </div>
+
+        {/* 1. Milestone Detail Simple Modal */}
+        {selectedMilestone && (
+          <div className="roadmap-modal-overlay" onClick={() => setSelectedMilestone(null)}>
+            <div className="modal roadmap-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-top-bar">
+                <div className="modal-badge-group">
+                  <span className="modal-badge-pill cyan">
+                    {currentTrack.title}
+                  </span>
+                  <span className="modal-badge-pill time">
+                    <Clock className="h-3 w-3" />
+                    {selectedMilestone.duration}
+                  </span>
+                  {completedMilestones[selectedMilestone.id] ? (
+                    <span className="modal-badge-pill complete">
+                      <Check className="h-3 w-3" /> Achieved
+                    </span>
+                  ) : (
+                    <span className="modal-badge-pill inprogress">In Progress</span>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMilestone(null)}
+                  className="modal-icon-close"
+                  title="Close Modal"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <h2>{selectedMilestone.title}</h2>
+              <p className="modal-subtitle">{selectedMilestone.desc}</p>
+
+              <div className="modal-content-section">
+                <h4>Core Study Syllabus & Cheatsheets</h4>
+                <div className="modal-resources-cards">
+                  {selectedMilestone.resources.map((item, idx) => (
+                    <div key={idx} className="modal-resource-card">
+                      <Terminal className="h-4 w-4 icon-cyan" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="modal-content-section">
+                <h4>Mastery Action Items</h4>
+                <ul className="modal-checklist">
+                  <li>Review key syntax concepts and underlying time & space complexity.</li>
+                  <li>Implement the core algorithmic pattern without looking at boilerplate code.</li>
+                  <li>Verify edge cases (empty states, boundary overflows, concurrency locks).</li>
+                </ul>
+              </div>
+
+              <div className="modal-actions-footer">
+                <button
+                  type="button"
+                  onClick={() => toggleMilestone(selectedMilestone.id)}
+                  className={`modal-action-btn ${completedMilestones[selectedMilestone.id] ? "complete" : "incomplete"}`}
+                >
+                  {completedMilestones[selectedMilestone.id] ? "Mark as Incomplete" : "Mark as Achieved"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMilestone(null)}
+                  className="modal-close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 2. Strategy & Prep Blueprint Modal */}
+        {guidanceOpen && (
+          <div className="roadmap-modal-overlay" onClick={() => setGuidanceOpen(false)}>
+            <div className="modal roadmap-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-top-bar">
+                <div className="modal-badge-group">
+                  <span className="modal-badge-pill cyan">Strategy Blueprint</span>
+                  <span className="modal-badge-pill indigo">PrepOS Guide</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setGuidanceOpen(false)}
+                  className="modal-icon-close"
+                  title="Close Modal"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <h2>Prep Strategy & Masterclass Blueprint</h2>
+              <p className="modal-subtitle">
+                A structured, battle-tested framework to conquer high-bar technical interviews.
+              </p>
+
+              <div className="modal-grid-strategies">
+                <div className="strategy-card">
+                  <h4>Phase 1: Pattern Recognition</h4>
+                  <p>DSA is not about memorizing 500 questions. Focus on the 14 core patterns (Sliding Window, Two Pointers, Monotonic Stack, Backtracking, Tree BFS/DFS).</p>
+                </div>
+                <div className="strategy-card">
+                  <h4>Phase 2: Scalable Architecture</h4>
+                  <p>Practice end-to-end design: compute requirements, choose SQL vs NoSQL, structure caching rings, and evaluate failover strategies.</p>
+                </div>
+                <div className="strategy-card">
+                  <h4>Phase 3: Behavioral Storytelling</h4>
+                  <p>Structure experiences using the STAR method. Focus on ownership, difficult stakeholder negotiations, and post-mortem incident learnings.</p>
+                </div>
+              </div>
+
+              <div className="modal-actions-footer">
+                <button
+                  type="button"
+                  onClick={() => setGuidanceOpen(false)}
+                  className="modal-close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 3. Track Overview Modal */}
+        {trackModal && (
+          <div className="roadmap-modal-overlay" onClick={() => setTrackModal(null)}>
+            <div className="modal roadmap-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-top-bar">
+                <div className="modal-badge-group">
+                  <span className="modal-badge-pill cyan">Track Overview</span>
+                  <span className="modal-badge-pill time">
+                    <Clock className="h-3 w-3" />
+                    {trackModal.duration}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTrackModal(null)}
+                  className="modal-icon-close"
+                  title="Close Modal"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <h2>{trackModal.title}</h2>
+              <p className="modal-subtitle">{trackModal.description}</p>
+
+              <div className="modal-content-section">
+                <h4>All Milestones in this Track ({trackModal.milestones.length})</h4>
+                <div className="track-modal-milestones-list">
+                  {trackModal.milestones.map((m, mIdx) => {
+                    const isMCompleted = !!completedMilestones[m.id];
+                    return (
+                      <div key={m.id} className="track-modal-milestone-item">
+                        <div className="track-modal-item-left">
+                          <span className="track-modal-num">0{mIdx + 1}</span>
+                          <div>
+                            <div className="track-modal-item-title">{m.title}</div>
+                            <div className="track-modal-item-desc">{m.duration}</div>
+                          </div>
+                        </div>
+                        <span className={`track-modal-status-badge ${isMCompleted ? "completed" : "pending"}`}>
+                          {isMCompleted ? "Achieved" : "Pending"}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="modal-actions-footer">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTrack(trackModal.id);
+                    setTrackModal(null);
+                  }}
+                  className="modal-action-btn complete"
+                >
+                  Switch to this Track
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTrackModal(null)}
+                  className="modal-close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 4. Preparation Blueprint Simple Modal */}
+        {openBlueprint && (
+          <div className="roadmap-modal-overlay" onClick={() => setOpenBlueprint(false)}>
+            <div className="modal roadmap-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-top-bar">
+                <div className="modal-badge-group">
+                  <span className="modal-badge-pill cyan">Preparation Blueprint</span>
+                  <span className="modal-badge-pill indigo">4-Phase Framework</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpenBlueprint(false)}
+                  className="modal-icon-close"
+                  title="Close Modal"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <h2>Preparation Blueprint</h2>
+              <p className="modal-subtitle">
+                A structured, battle-tested curriculum designed to take you from foundational concepts to Tier-1 interview readiness.
+              </p>
+
+              <div className="modal-content-section">
+                <h4>Mastery Curriculum Pillars</h4>
+                <div className="modal-grid-strategies">
+                  <div className="strategy-card">
+                    <h4>Pillar 1: Data Structures & Algorithms</h4>
+                    <p>Master pattern recognition across 14 high-frequency categories: Sliding Window, Two Pointers, Monotonic Stacks, and Dynamic Programming.</p>
+                  </div>
+                  <div className="strategy-card">
+                    <h4>Pillar 2: Distributed System Design</h4>
+                    <p>Architect resilient systems with horizontal scaling, CAP theorem trade-offs, consistent hashing rings, and asynchronous message queues.</p>
+                  </div>
+                  <div className="strategy-card">
+                    <h4>Pillar 3: Low-Level Object Oriented Design</h4>
+                    <p>Clean code architecture, SOLID principles, design patterns (Factory, Observer, Strategy), and multi-threaded synchronization.</p>
+                  </div>
+                  <div className="strategy-card">
+                    <h4>Pillar 4: Behavioral & Culture Alignment</h4>
+                    <p>Draft 5 structured STAR-format stories highlighting conflict resolution, difficult trade-offs, and technical leadership.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-actions-footer">
+                <button
+                  type="button"
+                  onClick={() => setOpenBlueprint(false)}
+                  className="modal-close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 5. Interactive Timeline Simple Modal */}
+        {openTimeline && (
+          <div className="roadmap-modal-overlay" onClick={() => setOpenTimeline(false)}>
+            <div className="modal roadmap-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-top-bar">
+                <div className="modal-badge-group">
+                  <span className="modal-badge-pill cyan">Interactive Timeline</span>
+                  <span className="modal-badge-pill time">
+                    <Clock className="h-3 w-3" />
+                    {currentTrack.duration}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpenTimeline(false)}
+                  className="modal-icon-close"
+                  title="Close Modal"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <h2>Interactive Timeline — {currentTrack.title}</h2>
+              <p className="modal-subtitle">
+                Step-by-step chronological roadmap. Click any milestone to toggle achievement status directly in this modal.
+              </p>
+
+              <div className="modal-content-section">
+                <h4>Chronological Milestone Journey</h4>
+                <div className="timeline-modal-list">
+                  {currentTrack.milestones.map((m, idx) => {
+                    const isDone = !!completedMilestones[m.id];
+                    return (
+                      <div key={m.id} className="timeline-modal-row">
+                        <div className="timeline-modal-left">
+                          <button
+                            type="button"
+                            onClick={() => toggleMilestone(m.id)}
+                            className={`timeline-modal-step-btn ${isDone ? "done" : ""}`}
+                            title="Toggle Milestone Completion"
+                          >
+                            {isDone ? <Check className="h-3.5 w-3.5" /> : `0${idx + 1}`}
+                          </button>
+                          <div>
+                            <div className={`timeline-modal-title ${isDone ? "achieved" : ""}`}>
+                              {m.title}
+                            </div>
+                            <div className="timeline-modal-duration">
+                              <Clock className="h-3 w-3" />
+                              {m.duration}
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => toggleMilestone(m.id)}
+                          className={`modal-action-btn ${isDone ? "complete" : "incomplete"}`}
+                          style={{ padding: "0.3rem 0.75rem", fontSize: "0.75rem" }}
+                        >
+                          {isDone ? "Done" : "Mark Achieved"}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="modal-actions-footer">
+                <button
+                  type="button"
+                  onClick={() => setOpenTimeline(false)}
+                  className="modal-close-btn"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>
   );
 }
+
+
