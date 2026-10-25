@@ -569,6 +569,7 @@ export default function InterviewPrepDashboard() {
   const [activeView, setActiveView] = useState("dashboard"); 
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
+  const [tutorialSearch, setTutorialSearch] = useState("");
 
   
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
@@ -745,7 +746,15 @@ export default function InterviewPrepDashboard() {
   }
 
   if (activeView === "tutorials") {
-    return <TutorialsView onBackToDashboard={() => setActiveView("dashboard")} />;
+    return (
+      <TutorialsView
+        onBackToDashboard={() => {
+          setActiveView("dashboard");
+          setTutorialSearch("");
+        }}
+        initialSearch={tutorialSearch}
+      />
+    );
   }
 
   if (activeView === "aptitude") {
@@ -1095,12 +1104,18 @@ export default function InterviewPrepDashboard() {
               isActive={activeView === cat.id}
               onSelectCategory={(id) => {
                 if (id === "dsa") handleOpenDsa(null, "All");
-                else setActiveView(id);
+                else {
+                  if (id === "tutorials") setTutorialSearch("");
+                  setActiveView(id);
+                }
               }}
               onSelectItem={(sub) => {
                 if (sub.action === "dsa") {
                   handleOpenDsa(null, sub.category || "All");
                 } else {
+                  if (sub.action === "tutorials") {
+                    setTutorialSearch(sub.label === "All Guides & Cheatsheets" ? "" : sub.label);
+                  }
                   setActiveView(sub.action);
                 }
               }}
