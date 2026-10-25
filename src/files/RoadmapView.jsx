@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { 
   ArrowLeft, Map, CheckCircle2, Circle, Clock, Sparkles, 
-  Compass, Terminal, Shield, X, BookOpen, Layers, Check
+  Compass, Terminal, Shield, X, BookOpen, Layers, Check, Search
 } from "lucide-react";
 import "./RoadmapView.css";
 
@@ -261,6 +261,13 @@ export default function RoadmapView({ onBackToDashboard }) {
   };
 
   const currentTrack = ROADMAP_TRACKS.find(t => t.id === activeTrack);
+  const [search, setSearch] = useState("");
+
+  const filteredMilestones = currentTrack.milestones.filter((milestone) =>
+    milestone.title.toLowerCase().includes(search.toLowerCase()) ||
+    milestone.desc.toLowerCase().includes(search.toLowerCase())
+  );
+
   const totalMilestones = ROADMAP_TRACKS.reduce((acc, t) => acc + t.milestones.length, 0);
   const completedCount = Object.values(completedMilestones).filter(Boolean).length;
   const overallProgress = totalMilestones > 0 ? Math.round((completedCount / totalMilestones) * 100) : 0;
@@ -370,73 +377,108 @@ export default function RoadmapView({ onBackToDashboard }) {
         <div className="content-grid">
           {/* Timeline Column */}
           <div className="timeline-column">
-            {currentTrack.milestones.map((milestone, idx) => {
-              const isCompleted = !!completedMilestones[milestone.id];
-              return (
-                <div key={milestone.id} className="milestone-item">
-                  <button
-                    onClick={() => toggleMilestone(milestone.id)}
-                    className={`milestone-node ${isCompleted ? "node-active" : "node-inactive"}`}
-                    title={isCompleted ? "Mark as Incomplete" : "Mark as Achieved"}
-                  >
-                    {isCompleted ? <CheckCircle2 className="h-4 w-4 stroke-[3]" /> : <Circle className="h-3 w-3" />}
-                  </button>
+            {/* Search Input using simple filter algorithm */}
+            <div className="roadmap-search-wrapper">
+              <Search className="h-4 w-4 icon-cyan" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={`Search ${currentTrack.title} milestones...`}
+                className="roadmap-search-input"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="roadmap-search-clear"
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
 
-                  <div className={`milestone-card ${isCompleted ? "milestone-card-active" : ""}`}>
-                    <div className="card-top">
-                      <div>
-                        <div className="milestone-tag-row">
-                          <span className="milestone-badge-number">
-                            Milestone 0{idx + 1}
-                          </span>
-                          <span className="duration-tag">
-                            <Clock className="h-3 w-3" />
-                            {milestone.duration}
-                          </span>
-                        </div>
-                        <h3 className={`milestone-title ${isCompleted ? "title-line-through" : ""}`}>
-                          {milestone.title}
-                        </h3>
-                        <p className="milestone-desc">
-                          {milestone.desc}
-                        </p>
-                      </div>
+            {filteredMilestones.length > 0 ? (
+              filteredMilestones.map((milestone, idx) => {
+                const isCompleted = !!completedMilestones[milestone.id];
+                return (
+                  <div key={milestone.id} className="milestone-item">
+                    <button
+                      onClick={() => toggleMilestone(milestone.id)}
+                      className={`milestone-node ${isCompleted ? "node-active" : "node-inactive"}`}
+                      title={isCompleted ? "Mark as Incomplete" : "Mark as Achieved"}
+                    >
+                      {isCompleted ? <CheckCircle2 className="h-4 w-4 stroke-[3]" /> : <Circle className="h-3 w-3" />}
+                    </button>
 
-                      <div className="milestone-action-group">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedMilestone(milestone)}
-                          className="milestone-modal-btn"
-                        >
-                          <BookOpen className="h-3.5 w-3.5" />
-                          Open Modal
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => toggleMilestone(milestone.id)}
-                          className={`milestone-action-btn ${isCompleted ? "action-btn-complete" : "action-btn-incomplete"}`}
-                        >
-                          {isCompleted ? "Done" : "Mark Achieved"}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="resources-divider">
-                      <h4 className="resources-heading">Key Study Areas:</h4>
-                      <div className="resources-grid">
-                        {milestone.resources.map((res, rIdx) => (
-                          <div key={rIdx} className="resource-item">
-                            <Terminal className="h-3.5 w-3.5 resource-icon" />
-                            <span className="resource-text">{res}</span>
+                    <div className={`milestone-card ${isCompleted ? "milestone-card-active" : ""}`}>
+                      <div className="card-top">
+                        <div>
+                          <div className="milestone-tag-row">
+                            <span className="milestone-badge-number">
+                              Milestone 0{idx + 1}
+                            </span>
+                            <span className="duration-tag">
+                              <Clock className="h-3 w-3" />
+                              {milestone.duration}
+                            </span>
                           </div>
-                        ))}
+                          <h3 className={`milestone-title ${isCompleted ? "title-line-through" : ""}`}>
+                            {milestone.title}
+                          </h3>
+                          <p className="milestone-desc">
+                            {milestone.desc}
+                          </p>
+                        </div>
+
+                        <div className="milestone-action-group">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedMilestone(milestone)}
+                            className="milestone-modal-btn"
+                          >
+                            <BookOpen className="h-3.5 w-3.5" />
+                            Open Modal
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => toggleMilestone(milestone.id)}
+                            className={`milestone-action-btn ${isCompleted ? "action-btn-complete" : "action-btn-incomplete"}`}
+                          >
+                            {isCompleted ? "Done" : "Mark Achieved"}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="resources-divider">
+                        <h4 className="resources-heading">Key Study Areas:</h4>
+                        <div className="resources-grid">
+                          {milestone.resources.map((res, rIdx) => (
+                            <div key={rIdx} className="resource-item">
+                              <Terminal className="h-3.5 w-3.5 resource-icon" />
+                              <span className="resource-text">{res}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div className="roadmap-no-milestones">
+                <p>No milestones match "<strong>{search}</strong>"</p>
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="modal-action-btn incomplete"
+                >
+                  Clear Search
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Sidebar Column */}

@@ -208,7 +208,78 @@ function NavCategoryDropdownItem({ cat, isActive, onSelectCategory, onSelectItem
   );
 }
 
+function WebsiteSearch({ onNavigate }) {
+  const [search, setSearch] = useState("");
 
+  const searchableItems = [
+    { name: "Frontend Engineering Roadmap", category: "Roadmap", view: "roadmap" },
+    { name: "Backend Systems Architecture", category: "Roadmap", view: "roadmap" },
+    { name: "Full Stack Engineering Roadmap", category: "Roadmap", view: "roadmap" },
+    { name: "AI & Machine Learning Track", category: "Roadmap", view: "roadmap" },
+    { name: "Algorithms & Practice (DSA)", category: "Practice", view: "dsa" },
+    { name: "Arrays & Sliding Window Patterns", category: "Practice", view: "dsa" },
+    { name: "Binary Trees & Traversal", category: "Practice", view: "dsa" },
+    { name: "Dynamic Programming Recipes", category: "Tutorials", view: "tutorials" },
+    { name: "System Design Patterns", category: "Courses", view: "courses" },
+    { name: "Quantitative Aptitude Drills", category: "Aptitude", view: "aptitude" },
+    { name: "ATS Resume Analyzer & Grader", category: "Career", view: "resume" },
+    { name: "Global Peer Leaderboard", category: "Rankings", view: "leaderboard" },
+  ];
+
+  const filteredItems = searchableItems.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.category.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="search-bar-wrapper">
+      <div className="search-bar">
+        <Search className="h-3.5 w-3.5 search-icon" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search courses, practice, roadmap..."
+          className="search-nav-input"
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+            className="search-clear-btn"
+            title="Clear search"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {search.trim() !== "" && (
+        <div className="search-results-popover">
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="search-result-row"
+                onClick={() => {
+                  onNavigate(item.view);
+                  setSearch("");
+                }}
+              >
+                <span className="search-result-name">{item.name}</span>
+                <span className="search-result-tag">{item.category}</span>
+              </div>
+            ))
+          ) : (
+            <div className="search-result-empty">
+              No results found for "{search}"
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const MODULES = [
   {
@@ -830,10 +901,12 @@ export default function InterviewPrepDashboard() {
             <span>PrepOS</span>
           </div>
 
-          <div className="search-bar">
-            <Search className="h-3.5 w-3.5" />
-            <span>Search courses, practice, roadmap...</span>
-          </div>
+          <WebsiteSearch
+            onNavigate={(view) => {
+              if (view === "dsa") handleOpenDsa(null, "All");
+              else setActiveView(view);
+            }}
+          />
 
           <div className="nav-right">
             <BranchDropdown />
