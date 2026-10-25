@@ -46,7 +46,167 @@ import SettingsModal from "./SettingsModal.jsx";
 import ProfileModal, { DEFAULT_PROFILE } from "./ProfileModal.jsx";
 import "./InterviewPrepDashboard.css";
 
+function BranchDropdown() {
+  const [branch, setBranch] = useState("CSE");
+  const [isOpen, setIsOpen] = useState(false);
 
+  const branches = ["CSE", "AI", "IT"];
+
+  return (
+    <div
+      className="branch-dropdown-wrapper"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <div className="branch-dropdown-trigger">
+        <span>{branch}</span>
+        <ChevronDown className={`branch-chevron ${isOpen ? "open" : ""}`} />
+      </div>
+
+      <p className="branch-dropdown-text">Selected: {branch}</p>
+
+      {isOpen && (
+        <div className="branch-dropdown-menu">
+          {branches.map((b) => (
+            <div
+              key={b}
+              className={`branch-dropdown-item ${branch === b ? "active" : ""}`}
+              onClick={() => {
+                setBranch(b);
+                setIsOpen(false);
+              }}
+            >
+              <span>{b}</span>
+              {branch === b && <span className="branch-check">✓</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const NAV_CATEGORIES = [
+  {
+    id: "dashboard",
+    label: "Overview",
+    items: [
+      { label: "Dashboard Command Center", action: "dashboard" },
+      { label: "Readiness Score (76%)", action: "dashboard" },
+      { label: "Daily Streak & Milestones", action: "dashboard" },
+      { label: "Upcoming Study Agenda", action: "dashboard" },
+    ],
+  },
+  {
+    id: "courses",
+    label: "Courses",
+    items: [
+      { label: "All Engineering Tracks", action: "courses" },
+      { label: "DSA Deep Dive Masterclass", action: "courses" },
+      { label: "System Design Patterns", action: "courses" },
+      { label: "Behavioral Mastery Track", action: "courses" },
+    ],
+  },
+  {
+    id: "tutorials",
+    label: "Tutorials",
+    items: [
+      { label: "All Guides & Cheatsheets", action: "tutorials" },
+      { label: "5-Step Sliding Window Pattern", action: "tutorials" },
+      { label: "Dynamic Programming Recipes", action: "tutorials" },
+      { label: "Latency & Estimation Numbers", action: "tutorials" },
+    ],
+  },
+  {
+    id: "dsa",
+    label: "Practice",
+    items: [
+      { label: "All Practice Problems", action: "dsa", category: "All" },
+      { label: "Arrays & Two Pointers", action: "dsa", category: "DSA" },
+      { label: "Stack & Valid Parentheses", action: "dsa", category: "Stack" },
+      { label: "Binary Trees & Traversal", action: "dsa", category: "Tree" },
+      { label: "Heap & Priority Queues", action: "dsa", category: "Heap" },
+    ],
+  },
+  {
+    id: "aptitude",
+    label: "Aptitude",
+    items: [
+      { label: "All Aptitude Modules", action: "aptitude" },
+      { label: "Quantitative Ability Drills", action: "aptitude" },
+      { label: "Logical Reasoning Tests", action: "aptitude" },
+      { label: "Speed & Accuracy Quiz", action: "aptitude" },
+    ],
+  },
+  {
+    id: "resume",
+    label: "Resume Review",
+    items: [
+      { label: "ATS Score Analyzer", action: "resume" },
+      { label: "FAANG Senior Templates", action: "resume" },
+      { label: "Action Verb Suggestions", action: "resume" },
+      { label: "Keyword Matching Tool", action: "resume" },
+    ],
+  },
+  {
+    id: "leaderboard",
+    label: "Leaderboard",
+    items: [
+      { label: "Global Peer Ranking", action: "leaderboard" },
+      { label: "Weekly XP Champions", action: "leaderboard" },
+      { label: "Grandmaster Badges", action: "leaderboard" },
+    ],
+  },
+  {
+    id: "roadmap",
+    label: "Roadmap",
+    items: [
+      { label: "All Engineering Tracks", action: "roadmap" },
+      { label: "Frontend Engineer Path", action: "roadmap" },
+      { label: "Backend Systems Path", action: "roadmap" },
+      { label: "Fullstack Architecture", action: "roadmap" },
+    ],
+  },
+];
+
+function NavCategoryDropdownItem({ cat, isActive, onSelectCategory, onSelectItem }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div
+      className="nav-category-dropdown"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <button
+        type="button"
+        className={`category-tab ${isActive ? "active" : ""}`}
+        onClick={() => onSelectCategory(cat.id)}
+      >
+        <span>{cat.label}</span>
+        <ChevronDown className={`category-chevron ${isOpen ? "open" : ""}`} />
+        {isActive && <div className="category-indicator" />}
+      </button>
+
+      <div className={`nav-dropdown-menu ${isOpen ? "show" : ""}`}>
+        <div className="nav-dropdown-header">{cat.label}</div>
+        {cat.items.map((sub, idx) => (
+          <div
+            key={idx}
+            className="nav-dropdown-item"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectItem(sub);
+              setIsOpen(false);
+            }}
+          >
+            <span>{sub.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 
 
@@ -676,6 +836,7 @@ export default function InterviewPrepDashboard() {
           </div>
 
           <div className="nav-right">
+            <BranchDropdown />
             
             <div className="notification-wrapper">
               <button
@@ -925,30 +1086,32 @@ export default function InterviewPrepDashboard() {
           </div>
         </div>
 
-        {/* Categories Nav */}
+        {/* Categories Nav with Hover Dropdowns on ALL items */}
         <nav className="categories-nav">
-          {[
-            { id: "dashboard", label: "Overview", action: () => setActiveView("dashboard") },
-            { id: "courses", label: "Courses", action: () => setActiveView("courses") },
-            { id: "tutorials", label: "Tutorials", action: () => setActiveView("tutorials") },
-            { id: "dsa", label: "Practice", action: () => handleOpenDsa(null, "All") },
-            { id: "aptitude", label: "Aptitude", action: () => setActiveView("aptitude") },
-            { id: "resume", label: "Resume Review", action: () => setActiveView("resume") },
-            { id: "leaderboard", label: "Leaderboard", action: () => setActiveView("leaderboard") },
-            { id: "roadmap", label: "Roadmap", action: () => setActiveView("roadmap") },
-          ].map((cat) => (
-            <button
+          {NAV_CATEGORIES.map((cat) => (
+            <NavCategoryDropdownItem
               key={cat.id}
-              onClick={cat.action}
-              className={`category-tab ${activeView === cat.id ? "active" : ""}`}
-            >
-              {cat.label}
-              {activeView === cat.id && (
-                <div className="category-indicator" />
-              )}
-            </button>
+              cat={cat}
+              isActive={activeView === cat.id}
+              onSelectCategory={(id) => {
+                if (id === "dsa") handleOpenDsa(null, "All");
+                else setActiveView(id);
+              }}
+              onSelectItem={(sub) => {
+                if (sub.action === "dsa") {
+                  handleOpenDsa(null, sub.category || "All");
+                } else {
+                  setActiveView(sub.action);
+                }
+              }}
+            />
           ))}
+
+          <div className="categories-branch-slot">
+            <BranchDropdown />
+          </div>
         </nav>
+
 
         {/* Hero */}
         <div className="hero-section">
