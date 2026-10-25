@@ -1,0 +1,138 @@
+[
+  {
+    "id": "dsa-deep-dive",
+    "title": "Data Structures & Algorithms Deep Dive",
+    "instructor": "Ex-Google Staff Engineer",
+    "instructorRole": "Former Lead Tech Interviewer @ Google",
+    "level": "Intermediate to Advanced",
+    "duration": "24 hours • 82 lessons",
+    "rating": 4.9,
+    "enrolled": "14.2k students",
+    "category": "Algorithms",
+    "description": "Master all core patterns required for Tier-1 coding interviews: Two Pointers, Sliding Window, Dynamic Programming, and Graph Traversals.",
+    "topics": ["Arrays & HashMaps", "Trees & Graphs", "Dynamic Programming", "Bit Manipulation"],
+    "modules": [
+      {
+        "id": "mod-1",
+        "title": "Module 1: Sliding Window & Two Pointers",
+        "lessons": [
+          {
+            "id": "les-1-1",
+            "title": "Fixed vs Dynamic Window Patterns",
+            "duration": "18 min",
+            "type": "video",
+            "summary": "Learn when to shrink or expand windows, handling subarray constraints with O(N) complexity.",
+            "videoUrl": "https://www.youtube.com/embed/GcT7V3L4DG4",
+            "sampleMp4": "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "transcript": "In this lesson, we breakdown the fundamental difference between fixed length sliding windows and dynamic sliding windows.",
+            "theory": "### Sliding Window Strategy\nThe Sliding Window pattern is used to perform required operations on a specific window size.\n\n#### Key Principles:\n1. **Right Pointer**: Expands the window by incorporating new elements.\n2. **Left Pointer**: Shrinks the window when constraints are violated."
+          },
+          {
+            "id": "les-1-2",
+            "title": "Fruit Into Baskets & At Most K Distinct",
+            "duration": "24 min",
+            "type": "video",
+            "summary": "Detailed walkthrough of two-pointer state contraction using hash maps.",
+            "videoUrl": "https://www.youtube.com/embed/EXzl7bLzCis",
+            "sampleMp4": "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            "transcript": "We analyze how to maintain at most K unique keys in a Map while moving the right pointer forward.",
+            "theory": "### At Most K Distinct Pattern\nUse a Map to track key frequencies."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "system-design-master",
+    "title": "System Design & Distributed Architectures",
+    "instructor": "Principal Architect @ AWS",
+    "instructorRole": "Systems Architecture Designer",
+    "level": "Advanced",
+    "duration": "18 hours • 54 lessons",
+    "rating": 4.8,
+    "enrolled": "9.8k students",
+    "category": "System Design",
+    "description": "Design massive systems with 99.999% uptime. Master load balancers, database scaling, consistent hashing, and Kafka queue pipelines.",
+    "topics": ["Scalability & SLAs", "Caches & Load Balancers", "NoSQL vs RDBMS Sharding", "Eventual Consistency"],
+    "modules": [
+      {
+        "id": "mod-2",
+        "title": "Module 1: Load Balancers & Caching Layer",
+        "lessons": [
+          {
+            "id": "les-2-1",
+            "title": "Nginx Load Balancing Algorithms",
+            "duration": "22 min",
+            "type": "video",
+            "summary": "Study Round Robin, Least Connections, and IP Hash algorithms under real traffic profiles.",
+            "videoUrl": "https://www.youtube.com/embed/aKMLgFVxZYk",
+            "sampleMp4": "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            "theory": "### Load Balancer Algorithms\n- Round Robin\n- Least Connections\n- IP Hash"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "frontend-architecture",
+    "title": "Frontend System Design & Performance",
+    "instructor": "Senior Staff UI Engineer @ Meta",
+    "instructorRole": "Core Web Platform Lead",
+    "level": "Intermediate",
+    "duration": "16 hours • 48 lessons",
+    "rating": 4.9,
+    "enrolled": "11.5k students",
+    "category": "Frontend",
+    "description": "Architect high-performance web applications. Deep dive into Virtual DOM internals, micro-frontends, bundle optimization, and hydration patterns.",
+    "topics": ["Virtual DOM Internals", "Core Web Vitals", "State Synchronization", "Micro-Frontends"],
+    "modules": [
+      {
+        "id": "mod-3",
+        "title": "Module 1: Rendering Strategies & Bundle Optimization",
+        "lessons": [
+          {
+            "id": "les-3-1",
+            "title": "SSR vs SSG vs Streaming Hydration",
+            "duration": "20 min",
+            "type": "video",
+            "summary": "Comparing modern rendering paradigms and their impact on First Contentful Paint and INP.",
+            "videoUrl": "https://www.youtube.com/embed/GcT7V3L4DG4",
+            "sampleMp4": "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "theory": "### Rendering Pipelines\n- Static Site Generation (SSG)\n- Server Side Rendering (SSR)\n- React Server Components (RSC)"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "behavioral-mastery",
+    "title": "Behavioral Interviews & Leadership Principles",
+    "instructor": "Former Director of Engineering @ Netflix",
+    "instructorRole": "Hiring Committee Chair",
+    "level": "All Levels",
+    "duration": "10 hours • 30 lessons",
+    "rating": 4.9,
+    "enrolled": "16.1k students",
+    "category": "Behavioral",
+    "description": "Ace the culture fit and leadership rounds using the STAR method. Structure compelling narratives for conflict resolution, ownership, and failure postmortems.",
+    "topics": ["STAR Framework", "Amazon 16 Principles", "Conflict Resolution", "System Tradeoffs"],
+    "modules": [
+      {
+        "id": "mod-4",
+        "title": "Module 1: The STAR Framework for Senior Roles",
+        "lessons": [
+          {
+            "id": "les-4-1",
+            "title": "Structuring High-Impact Answers",
+            "duration": "15 min",
+            "type": "video",
+            "summary": "How to calibrate Situation, Task, Action, and Result with quantifiable business metrics.",
+            "videoUrl": "https://www.youtube.com/embed/EXzl7bLzCis",
+            "sampleMp4": "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            "theory": "### STAR Method Breakdown\n- Situation: Context and problem scale\n- Task: Your specific responsibility\n- Action: Decisions, code, and leadership\n- Result: Metrics, business ROI, and learnings"
+          }
+        ]
+      }
+    ]
+  }
+]

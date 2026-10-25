@@ -111,10 +111,13 @@ const NAV_CATEGORIES = [
     id: "tutorials",
     label: "Tutorials",
     items: [
-      { label: "All Guides & Cheatsheets", action: "tutorials" },
-      { label: "5-Step Sliding Window Pattern", action: "tutorials" },
-      { label: "Dynamic Programming Recipes", action: "tutorials" },
-      { label: "Latency & Estimation Numbers", action: "tutorials" },
+      { label: "All Guides & Cheatsheets", action: "tutorials", tutorialId: null },
+      { label: "5-Step Sliding Window Pattern", action: "tutorials", tutorialId: "sliding-window-pattern" },
+      { label: "Dynamic Programming Recipes", action: "tutorials", tutorialId: "dp-patterns-guide" },
+      { label: "Latency & Estimation Numbers", action: "tutorials", tutorialId: "system-design-back-of-envelope" },
+      { label: "STAR Behavioral Masterclass", action: "tutorials", tutorialId: "star-method-behavioral" },
+      { label: "Scaling TinyURL Service", action: "tutorials", tutorialId: "url-shortener-design" },
+      { label: "Concurrency & Deadlocks", action: "tutorials", tutorialId: "concurrency-cheatsheet" },
     ],
   },
   {
@@ -219,7 +222,12 @@ function WebsiteSearch({ onNavigate }) {
     { name: "Algorithms & Practice (DSA)", category: "Practice", view: "dsa" },
     { name: "Arrays & Sliding Window Patterns", category: "Practice", view: "dsa" },
     { name: "Binary Trees & Traversal", category: "Practice", view: "dsa" },
-    { name: "Dynamic Programming Recipes", category: "Tutorials", view: "tutorials" },
+    { name: "Dynamic Programming Recipes", category: "Tutorials", view: "tutorials", tutorialId: "dp-patterns-guide" },
+    { name: "5-Step Sliding Window Pattern", category: "Tutorials", view: "tutorials", tutorialId: "sliding-window-pattern" },
+    { name: "Latency & Estimation Numbers", category: "Tutorials", view: "tutorials", tutorialId: "system-design-back-of-envelope" },
+    { name: "STAR Method Behavioral Guide", category: "Tutorials", view: "tutorials", tutorialId: "star-method-behavioral" },
+    { name: "TinyURL Architecture Blueprint", category: "Tutorials", view: "tutorials", tutorialId: "url-shortener-design" },
+    { name: "Concurrency & Deadlocks Guide", category: "Tutorials", view: "tutorials", tutorialId: "concurrency-cheatsheet" },
     { name: "System Design Patterns", category: "Courses", view: "courses" },
     { name: "Quantitative Aptitude Drills", category: "Aptitude", view: "aptitude" },
     { name: "ATS Resume Analyzer & Grader", category: "Career", view: "resume" },
@@ -262,7 +270,7 @@ function WebsiteSearch({ onNavigate }) {
                 key={idx}
                 className="search-result-row"
                 onClick={() => {
-                  onNavigate(item.view);
+                  onNavigate(item.view, item.tutorialId);
                   setSearch("");
                 }}
               >
@@ -640,6 +648,7 @@ export default function InterviewPrepDashboard() {
   const [activeView, setActiveView] = useState("dashboard"); 
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
+  const [initialTutorialId, setInitialTutorialId] = useState(null);
 
   
   const [isSchedulerOpen, setIsSchedulerOpen] = useState(false);
@@ -789,6 +798,11 @@ export default function InterviewPrepDashboard() {
     setActiveView("dsa");
   };
 
+  const handleOpenTutorial = (tutId = null) => {
+    setInitialTutorialId(tutId);
+    setActiveView("tutorials");
+  };
+
   if (activeView === "dsa") {
     return (
       <DsaSandboxView
@@ -816,7 +830,15 @@ export default function InterviewPrepDashboard() {
   }
 
   if (activeView === "tutorials") {
-    return <TutorialsView onBackToDashboard={() => setActiveView("dashboard")} />;
+    return (
+      <TutorialsView
+        onBackToDashboard={() => setActiveView("dashboard")}
+        initialTutorialId={initialTutorialId}
+        onNavigateToDsa={(qId, cat) => handleOpenDsa(qId, cat)}
+        onNavigateToSysDesign={() => setActiveView("sysdesign")}
+        onNavigateToBehavioral={() => setActiveView("behavioral")}
+      />
+    );
   }
 
   if (activeView === "aptitude") {
@@ -902,8 +924,9 @@ export default function InterviewPrepDashboard() {
           </div>
 
           <WebsiteSearch
-            onNavigate={(view) => {
+            onNavigate={(view, tutorialId) => {
               if (view === "dsa") handleOpenDsa(null, "All");
+              else if (view === "tutorials") handleOpenTutorial(tutorialId || null);
               else setActiveView(view);
             }}
           />
@@ -1168,11 +1191,14 @@ export default function InterviewPrepDashboard() {
               isActive={activeView === cat.id}
               onSelectCategory={(id) => {
                 if (id === "dsa") handleOpenDsa(null, "All");
+                else if (id === "tutorials") handleOpenTutorial(null);
                 else setActiveView(id);
               }}
               onSelectItem={(sub) => {
                 if (sub.action === "dsa") {
                   handleOpenDsa(null, sub.category || "All");
+                } else if (sub.action === "tutorials") {
+                  handleOpenTutorial(sub.tutorialId || null);
                 } else {
                   setActiveView(sub.action);
                 }
@@ -1402,7 +1428,7 @@ export default function InterviewPrepDashboard() {
               <h4>Resources</h4>
               <ul>
                 <li><button onClick={() => setActiveView("courses")} style={{ cursor: "pointer" }}>Masterclass Courses</button></li>
-                <li><button onClick={() => setActiveView("tutorials")} style={{ cursor: "pointer" }}>Cheat Sheets</button></li>
+                <li><button onClick={() => handleOpenTutorial(null)} style={{ cursor: "pointer" }}>Cheat Sheets</button></li>
                 <li><button onClick={() => setActiveView("roadmap")} style={{ cursor: "pointer" }}>Prep Roadmap</button></li>
                 <li><button onClick={() => setActiveView("leaderboard")} style={{ cursor: "pointer" }}>Peer Leaderboard</button></li>
               </ul>

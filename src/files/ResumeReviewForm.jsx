@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
+  ArrowLeft,
   FileText,
   Upload,
   CheckCircle2,
@@ -944,6 +945,17 @@ export default function ResumeReviewForm({ onNavigateBack }) {
           </div>
 
           <div className="rr-banner-actions">
+            {onNavigateBack && (
+              <button
+                type="button"
+                onClick={onNavigateBack}
+                className="rr-btn-secondary"
+                title="Return to Dashboard"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Dashboard
+              </button>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -1201,6 +1213,17 @@ export default function ResumeReviewForm({ onNavigateBack }) {
         </div>
 
         <div className="rr-banner-actions">
+          {onNavigateBack && (
+            <button
+              type="button"
+              onClick={onNavigateBack}
+              className="rr-btn-secondary"
+              title="Return to Dashboard"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Dashboard
+            </button>
+          )}
           <button
             type="button"
             onClick={handleLoadSampleData}

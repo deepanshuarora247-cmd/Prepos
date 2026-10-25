@@ -8,7 +8,6 @@ import {
   Search,
   TrendingUp,
   Sparkles,
-  ArrowUpDown,
   ArrowUp,
   ArrowDown,
   Filter,
@@ -100,10 +99,10 @@ const LEADERBOARD_USERS = [
     handle: "@elena_r",
     company: "Google",
     category: "Google",
-    points: 2850,
-    solved: 260,
-    streak: 45,
-    badge: "Master"
+    points: 2190,
+    solved: 185,
+    streak: 20,
+    badge: "Candidate Master"
   },
   {
     rank: 9,
@@ -111,9 +110,9 @@ const LEADERBOARD_USERS = [
     handle: "@mvance",
     company: "Meta",
     category: "Meta",
-    points: 2620,
-    solved: 238,
-    streak: 34,
+    points: 2120,
+    solved: 174,
+    streak: 18,
     badge: "Expert"
   },
   {
@@ -122,9 +121,9 @@ const LEADERBOARD_USERS = [
     handle: "@akhan",
     company: "Amazon",
     category: "Amazon",
-    points: 2490,
-    solved: 222,
-    streak: 29,
+    points: 2050,
+    solved: 162,
+    streak: 15,
     badge: "Candidate Master"
   },
   {
@@ -144,8 +143,7 @@ const LEADERBOARD_USERS = [
 export default function LeaderboardView({ onBackToDashboard }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
-  const [sortOrder, setSortOrder] = useState("high"); // "high" (descending) or "low" (ascending)
-  const [sortBy, setSortBy] = useState("points"); // "points" | "rank" | "solved" | "streak" | "name"
+  const [sortOrder, setSortOrder] = useState("high"); // "high" (High to Low) or "low" (Low to High)
 
   // Dynamically extract categories from leaderboard users
   const categories = [
@@ -154,10 +152,7 @@ export default function LeaderboardView({ onBackToDashboard }) {
   ];
 
   // Sorting and filtering algorithm:
-  // 1. Copy array
-  // 2. Filter by search string
-  // 3. Filter by category
-  // 4. Sort based on sortOrder ("low" ascending or "high" descending)
+  // Allow ONLY sorting High to Low or Low to High (by points)
   const result = [...LEADERBOARD_USERS]
     .filter((p) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -168,73 +163,22 @@ export default function LeaderboardView({ onBackToDashboard }) {
       category === "All" || p.category === category
     )
     .sort((a, b) => {
-      if (sortBy === "points") {
-        return sortOrder === "low"
-          ? a.points - b.points
-          : b.points - a.points;
-      }
-      if (sortBy === "solved") {
-        return sortOrder === "low"
-          ? a.solved - b.solved
-          : b.solved - a.solved;
-      }
-      if (sortBy === "rank") {
-        return sortOrder === "low"
-          ? a.rank - b.rank
-          : b.rank - a.rank;
-      }
-      if (sortBy === "streak") {
-        return sortOrder === "low"
-          ? a.streak - b.streak
-          : b.streak - a.streak;
-      }
-      if (sortBy === "name") {
-        return sortOrder === "low"
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
-      }
-      if (sortBy === "company") {
-        return sortOrder === "low"
-          ? a.company.localeCompare(b.company)
-          : b.company.localeCompare(a.company);
-      }
-      // Default: sort by points
       return sortOrder === "low"
         ? a.points - b.points
         : b.points - a.points;
     });
 
-  const handleSortColumn = (field) => {
-    if (sortBy === field) {
-      setSortOrder((prev) => (prev === "low" ? "high" : "low"));
-    } else {
-      setSortBy(field);
-      // for rank or name, ascending (low) is standard first; for points/solved, descending (high)
-      setSortOrder(field === "rank" || field === "name" || field === "company" ? "low" : "high");
-    }
-  };
-
   const handleReset = () => {
     setSearch("");
     setCategory("All");
-    setSortBy("points");
     setSortOrder("high");
   };
 
-  const renderSortIcon = (field) => {
-    if (sortBy !== field) {
-      return <ArrowUpDown className="leaderboard-sort-icon" />;
-    }
-    return sortOrder === "low" ? (
-      <ArrowUp className="leaderboard-sort-icon text-amber-400" />
-    ) : (
-      <ArrowDown className="leaderboard-sort-icon text-amber-400" />
-    );
-  };
-
-  // Top 3 for Podium
-  const topRankers = result.slice(0, 3);
-  const showPodium = result.length >= 3 && category === "All" && !search;
+  // Top 3 for Podium: Always the true top 3 champions
+  const topRankers = [...LEADERBOARD_USERS]
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 3);
+  const showPodium = category === "All" && !search;
 
   return (
     <div className="leaderboard-container">
@@ -379,29 +323,17 @@ export default function LeaderboardView({ onBackToDashboard }) {
                 </select>
               </div>
 
-              {/* Sort selector */}
+              {/* Sort selector: Only High to Low or Low to High */}
               <div className="leaderboard-filter-group">
                 <TrendingUp className="h-3.5 w-3.5 text-amber-400" />
                 <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>Sort:</span>
                 <select
-                  value={`${sortBy}-${sortOrder}`}
-                  onChange={(e) => {
-                    const [newBy, newOrder] = e.target.value.split("-");
-                    setSortBy(newBy);
-                    setSortOrder(newOrder);
-                  }}
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
                   className="leaderboard-select"
                 >
-                  <option value="points-high">Points: High → Low</option>
-                  <option value="points-low">Points: Low → High</option>
-                  <option value="solved-high">Solved: Most → Least</option>
-                  <option value="solved-low">Solved: Least → Most</option>
-                  <option value="rank-low">Rank: #1 First</option>
-                  <option value="rank-high">Rank: Lowest First</option>
-                  <option value="streak-high">Streak: Longest First</option>
-                  <option value="streak-low">Streak: Shortest First</option>
-                  <option value="name-low">Name: A → Z</option>
-                  <option value="name-high">Name: Z → A</option>
+                  <option value="high">High to Low</option>
+                  <option value="low">Low to High</option>
                 </select>
               </div>
             </div>
@@ -409,16 +341,21 @@ export default function LeaderboardView({ onBackToDashboard }) {
             <div className="leaderboard-toolbar-right">
               {/* Sort Order Toggle */}
               <button
+                type="button"
                 onClick={() => setSortOrder((prev) => (prev === "low" ? "high" : "low"))}
                 className="leaderboard-sort-toggle-btn"
-                title={`Order is ${sortOrder === "low" ? "Low (Ascending)" : "High (Descending)"}. Click to toggle.`}
+                title={`Currently sorted ${sortOrder === "high" ? "High to Low" : "Low to High"}. Click to toggle.`}
               >
-                <ArrowUpDown className="h-3.5 w-3.5" />
-                <span>{sortOrder === "low" ? "Order: Low" : "Order: High"}</span>
+                {sortOrder === "high" ? (
+                  <ArrowDown className="h-3.5 w-3.5" />
+                ) : (
+                  <ArrowUp className="h-3.5 w-3.5" />
+                )}
+                <span>{sortOrder === "high" ? "High to Low" : "Low to High"}</span>
               </button>
 
               {/* Reset button */}
-              {(search || category !== "All" || sortBy !== "points" || sortOrder !== "high") && (
+              {(search || category !== "All" || sortOrder !== "high") && (
                 <button onClick={handleReset} className="leaderboard-reset-btn" title="Reset all filters">
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Reset</span>
@@ -431,56 +368,39 @@ export default function LeaderboardView({ onBackToDashboard }) {
             </div>
           </div>
 
-          {/* Table Column Headers (Clickable to Sort) */}
+          {/* Table Column Headers */}
           <div className="table-header-cols" style={{ padding: "0.75rem 1.5rem" }}>
             <div style={{ gridColumn: "span 2" }}>
               <button
                 type="button"
-                onClick={() => handleSortColumn("rank")}
-                className={`leaderboard-sortable-th ${sortBy === "rank" ? "active-sort" : ""}`}
+                onClick={() => setSortOrder((prev) => (prev === "low" ? "high" : "low"))}
+                className="leaderboard-sortable-th"
+                title={`Sort: ${sortOrder === "high" ? "High to Low" : "Low to High"}. Click to toggle.`}
               >
                 <span>Rank</span>
-                {renderSortIcon("rank")}
+                {sortOrder === "low" ? (
+                  <ArrowUp className="leaderboard-sort-icon text-amber-400" />
+                ) : (
+                  <ArrowDown className="leaderboard-sort-icon text-amber-400" />
+                )}
               </button>
             </div>
-            <div style={{ gridColumn: "span 4" }}>
-              <button
-                type="button"
-                onClick={() => handleSortColumn("name")}
-                className={`leaderboard-sortable-th ${sortBy === "name" ? "active-sort" : ""}`}
-              >
-                <span>Engineer</span>
-                {renderSortIcon("name")}
-              </button>
-            </div>
-            <div style={{ gridColumn: "span 2" }}>
-              <button
-                type="button"
-                onClick={() => handleSortColumn("company")}
-                className={`leaderboard-sortable-th ${sortBy === "company" ? "active-sort" : ""}`}
-              >
-                <span>Company</span>
-                {renderSortIcon("company")}
-              </button>
-            </div>
-            <div style={{ gridColumn: "span 2" }}>
-              <button
-                type="button"
-                onClick={() => handleSortColumn("solved")}
-                className={`leaderboard-sortable-th ${sortBy === "solved" ? "active-sort" : ""}`}
-              >
-                <span>Solved</span>
-                {renderSortIcon("solved")}
-              </button>
-            </div>
+            <div style={{ gridColumn: "span 4" }}>Engineer</div>
+            <div style={{ gridColumn: "span 2" }}>Company</div>
+            <div style={{ gridColumn: "span 2" }}>Solved</div>
             <div style={{ gridColumn: "span 2", textAlign: "right", display: "flex", justifyContent: "flex-end" }}>
               <button
                 type="button"
-                onClick={() => handleSortColumn("points")}
-                className={`leaderboard-sortable-th ${sortBy === "points" ? "active-sort" : ""}`}
+                onClick={() => setSortOrder((prev) => (prev === "low" ? "high" : "low"))}
+                className="leaderboard-sortable-th active-sort"
+                title={`Sort: ${sortOrder === "high" ? "High to Low" : "Low to High"}. Click to toggle.`}
               >
                 <span>Points</span>
-                {renderSortIcon("points")}
+                {sortOrder === "low" ? (
+                  <ArrowUp className="leaderboard-sort-icon text-amber-400" />
+                ) : (
+                  <ArrowDown className="leaderboard-sort-icon text-amber-400" />
+                )}
               </button>
             </div>
           </div>

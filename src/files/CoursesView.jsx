@@ -173,24 +173,45 @@ function maxSubarraySum(arr, k) {
 ];
 
 export const localCourseApi = {
+  // Basic REST API GET request for courses
   getCourses: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
-    return FALLBACK_COURSES.map((course) => {
-      const isEnrolled = !!enrolledMap[course.id];
-      const completedIds = Array.isArray(enrolledMap[course.id]) ? enrolledMap[course.id] : [];
-      const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-      return {
-        ...course,
-        enrolled: isEnrolled,
-        completedCount: completedIds.length,
-        totalLessons
-      };
-    });
+    try {
+      const response = await fetch("/api/courses.json");
+      if (!response.ok) {
+        throw new Error(`REST API HTTP ${response.status}`);
+      }
+      const data = await response.json();
+      const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
+      return data.map((course) => {
+        const isEnrolled = !!enrolledMap[course.id];
+        const completedIds = Array.isArray(enrolledMap[course.id]) ? enrolledMap[course.id] : [];
+        const totalLessons = course.modules?.reduce((acc, m) => acc + (m.lessons?.length || 0), 0) || 0;
+        return {
+          ...course,
+          enrolled: isEnrolled,
+          completedCount: completedIds.length,
+          totalLessons
+        };
+      });
+    } catch (err) {
+      console.warn("REST API unavailable, falling back to local dataset:", err);
+      const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
+      return FALLBACK_COURSES.map((course) => {
+        const isEnrolled = !!enrolledMap[course.id];
+        const completedIds = Array.isArray(enrolledMap[course.id]) ? enrolledMap[course.id] : [];
+        const totalLessons = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
+        return {
+          ...course,
+          enrolled: isEnrolled,
+          completedCount: completedIds.length,
+          totalLessons
+        };
+      });
+    }
   },
 
   enrollCourse: async (courseId) => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 150));
     const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
     if (!enrolledMap[courseId]) {
       enrolledMap[courseId] = [];
@@ -216,13 +237,38 @@ export default function CoursesView({ onBackToDashboard }) {
     loadCourses();
   }, []);
 
+  // Basic REST API function to fetch courses using fetch()
   const loadCourses = async () => {
     setIsLoading(true);
     try {
-      const data = await localCourseApi.getCourses();
-      setCourses(data);
+      // 1. Send HTTP GET request to REST API endpoint
+      const response = await fetch("/api/courses.json");
+      if (!response.ok) {
+        throw new Error(`REST API HTTP ${response.status}`);
+      }
+
+      // 2. Parse JSON response
+      const data = await response.json();
+
+      // 3. Sync with local enrollment progress
+      const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
+      const mapped = data.map((course) => {
+        const isEnrolled = !!enrolledMap[course.id];
+        const completedIds = Array.isArray(enrolledMap[course.id]) ? enrolledMap[course.id] : [];
+        const totalLessons = course.modules?.reduce((acc, m) => acc + (m.lessons?.length || 0), 0) || 0;
+        return {
+          ...course,
+          enrolled: isEnrolled,
+          completedCount: completedIds.length,
+          totalLessons
+        };
+      });
+
+      setCourses(mapped);
     } catch (e) {
-      console.error(e);
+      console.error("REST API call error, falling back:", e);
+      const fallbackData = await localCourseApi.getCourses();
+      setCourses(fallbackData);
     } finally {
       setIsLoading(false);
     }
@@ -279,6 +325,11 @@ export default function CoursesView({ onBackToDashboard }) {
       console.error("HN API failed:", e);
     }
   };
+
+  const categories = [
+    "All",
+    ...Array.from(new Set(courses.map((c) => c.category).filter(Boolean)))
+  ];
 
   const filteredCourses = courses.filter((c) => {
     const matchesCat = selectedCategory === "All" || c.category === selectedCategory;
@@ -404,49 +455,112 @@ export default function CoursesView({ onBackToDashboard }) {
           )}
         </div>
 
-        
+        {/* Category Filter Pills & REST API Status Bar */}
         {activeTab === "catalogue" && (
-          <div className="courses-grid-3">
-            {filteredCourses.map((c) => (
-              <div key={c.id} className="course-card">
-                <div className="course-card-top">
-                  <span className="category-filter-badge active" style={{ width: "fit-content" }}>{c.category}</span>
-                  <h3 className="course-card-title">{c.title}</h3>
-                  <p className="course-card-desc">{c.description}</p>
-                </div>
+          <div className="courses-category-bar">
+            <div className="courses-category-pills">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`courses-cat-btn ${selectedCategory === cat ? "active" : ""}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
 
-                <div>
-                  <p className="course-card-instructor">
-                    <GraduationCap className="h-4 w-4" /> By {c.instructor}
-                  </p>
-                  <div className="course-card-meta">
-                    <span>{c.duration}</span>
-                    <span>•</span>
-                    <span style={{ color: "var(--cyan-accent)", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-                      <Star className="h-3 w-3 fill-cyan-400" /> {c.rating}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => handleEnrollOrContinue(c.id)}
-                    className={`course-card-enroll-btn ${c.enrolled ? "enrolled" : ""}`}
-                  >
-                    {c.enrolled ? (
-                      <>
-                        <Play className="h-3.5 w-3.5" fill="currentColor" />
-                        Continue Learning
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="h-3.5 w-3.5" />
-                        Enroll Now
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            ))}
+            <div className="courses-api-bar">
+              <span className="courses-api-badge">
+                <Globe className="h-3 w-3" />
+                REST API: /api/courses.json
+              </span>
+              <button
+                onClick={loadCourses}
+                className="courses-api-refresh-btn"
+                title="Fetch latest from REST API"
+              >
+                <RefreshCw className={`h-3 w-3 ${isLoading ? "animate-spin" : ""}`} />
+                Fetch API
+              </button>
+            </div>
           </div>
+        )}
+
+        {/* Course Catalogue Grid / Loading / Empty States */}
+        {activeTab === "catalogue" && (
+          <>
+            {isLoading ? (
+              <div className="courses-loading-container">
+                <Loader2 className="h-8 w-8 animate-spin" />
+                <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>
+                  Calling REST API <code>GET /api/courses.json</code>...
+                </p>
+              </div>
+            ) : filteredCourses.length === 0 ? (
+              <div className="courses-empty-container">
+                <BookOpen className="h-10 w-10 text-neutral-600" />
+                <h4 style={{ color: "#fff", fontSize: "15px" }}>No courses found</h4>
+                <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                  No courses match your search "{searchQuery}" in {selectedCategory}.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("All");
+                  }}
+                  className="courses-cat-btn active"
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            ) : (
+              <div className="courses-grid-3">
+                {filteredCourses.map((c) => (
+                  <div key={c.id} className="course-card">
+                    <div className="course-card-top">
+                      <span className="category-filter-badge active" style={{ width: "fit-content" }}>
+                        {c.category}
+                      </span>
+                      <h3 className="course-card-title">{c.title}</h3>
+                      <p className="course-card-desc">{c.description}</p>
+                    </div>
+
+                    <div>
+                      <p className="course-card-instructor">
+                        <GraduationCap className="h-4 w-4" /> By {c.instructor}
+                      </p>
+                      <div className="course-card-meta">
+                        <span>{c.duration}</span>
+                        <span>•</span>
+                        <span style={{ color: "var(--cyan-accent)", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                          <Star className="h-3 w-3 fill-cyan-400" /> {c.rating}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => handleEnrollOrContinue(c.id)}
+                        className={`course-card-enroll-btn ${c.enrolled ? "enrolled" : ""}`}
+                      >
+                        {c.enrolled ? (
+                          <>
+                            <Play className="h-3.5 w-3.5" fill="currentColor" />
+                            Continue Learning
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="h-3.5 w-3.5" />
+                            Enroll Now
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
 
         

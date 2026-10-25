@@ -23,6 +23,7 @@ import {
   Printer,
   Loader2
 } from "lucide-react";
+import ResumeReviewForm from "./ResumeReviewForm.jsx";
 import "./ResumeGraderView.css";
 
 const PRESET_TEMPLATES = {
@@ -125,7 +126,7 @@ const PRESET_TEMPLATES = {
 };
 
 export default function ResumeGraderView({ onBackToDashboard }) {
-  const [activeTab, setActiveTab] = useState("builder"); 
+  const [activeTab, setActiveTab] = useState("form"); 
   const [templateKey, setTemplateKey] = useState("fullstack");
   const [resumeData, setResumeData] = useState(PRESET_TEMPLATES.fullstack);
   const [copied, setCopied] = useState(false);
@@ -258,6 +259,13 @@ export default function ResumeGraderView({ onBackToDashboard }) {
 
         <div className="ide-tab-group">
           <button
+            onClick={() => setActiveTab("form")}
+            className={`ide-tab-btn ${activeTab === "form" ? "active" : ""}`}
+            style={{ backgroundColor: activeTab === "form" ? "var(--amber-accent)" : undefined }}
+          >
+            Review Form
+          </button>
+          <button
             onClick={() => setActiveTab("builder")}
             className={`ide-tab-btn ${activeTab === "builder" ? "active" : ""}`}
             style={{ backgroundColor: activeTab === "builder" ? "var(--amber-accent)" : undefined }}
@@ -276,7 +284,11 @@ export default function ResumeGraderView({ onBackToDashboard }) {
 
       
       <main className="resume-main">
-        {activeTab === "builder" ? (
+        {activeTab === "form" && (
+          <ResumeReviewForm onNavigateBack={onBackToDashboard} />
+        )}
+
+        {activeTab === "builder" && (
           
           <div className="resume-sheet" style={{ border: "none", boxShadow: "none", padding: 0, backgroundColor: "transparent" }}>
             
@@ -550,8 +562,9 @@ export default function ResumeGraderView({ onBackToDashboard }) {
               </div>
             </div>
           </div>
-        ) : (
-          
+        )}
+
+        {activeTab === "grader" && (
           <div className="resume-sheet" style={{ border: "none", boxShadow: "none", padding: 0, backgroundColor: "transparent" }}>
             <div className="sysdesign-nodes-grid" style={{ gridTemplateColumns: "1fr" }}>
               <div className="sysdesign-reqs-section">
