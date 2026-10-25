@@ -24,7 +24,9 @@ import {
   Trophy,
   Medal,
   Calendar,
-  Plus
+  Plus,
+  User,
+  Target
 } from "lucide-react";
 import DsaSandboxView from "./DsaSandboxView.jsx";
 import SystemDesignView from "./SystemDesignView.jsx";
@@ -41,6 +43,7 @@ import CalendarModal from "./CalendarModal.jsx";
 import PracticeStreakModal, { DAILY_PRACTICE_DATA } from "./PracticeStreakModal.jsx";
 import DailyStreakMilestoneModal from "./DailyStreakMilestoneModal.jsx";
 import SettingsModal from "./SettingsModal.jsx";
+import ProfileModal, { DEFAULT_PROFILE } from "./ProfileModal.jsx";
 import "./InterviewPrepDashboard.css";
 
 
@@ -415,6 +418,31 @@ export default function InterviewPrepDashboard() {
   const [isMilestoneModalOpen, setIsMilestoneModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const [profile, setProfile] = useState(() => {
+    const saved = localStorage.getItem("prepos_user_profile_v1");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return { ...DEFAULT_PROFILE, ...parsed };
+      } catch (e) {}
+    }
+    return DEFAULT_PROFILE;
+  });
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  const handleUpdateProfile = (newProfile) => {
+    setProfile(newProfile);
+    localStorage.setItem("prepos_user_profile_v1", JSON.stringify(newProfile));
+  };
 
   
   const [agendaItems, setAgendaItems] = useState(() => {
@@ -607,12 +635,20 @@ export default function InterviewPrepDashboard() {
         isOpen={isMilestoneModalOpen}
         onClose={() => setIsMilestoneModalOpen(false)}
         onStartPractice={() => handleOpenDsa(null, "All")}
+        streak={profile.streakDays || 12}
       />
 
       
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        profile={profile}
+        onUpdateProfile={handleUpdateProfile}
       />
 
       
@@ -701,7 +737,191 @@ export default function InterviewPrepDashboard() {
             >
               <Settings className="h-4 w-4" />
             </button>
-            <div className="avatar" />
+            {/* Interactive Profile Avatar & Popover Dropdown */}
+            <div className="profile-wrapper">
+              <button
+                type="button"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className={`avatar-btn ${isProfileOpen ? "active" : ""}`}
+                style={{ background: profile.avatarGradient || "linear-gradient(135deg, #fb923c, #ec4899)" }}
+                title={`${profile.name || "User"} (${profile.targetCompany || "Meta"} Candidate)`}
+              >
+                {(profile.name || "User")
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()}
+                <span className="avatar-status-dot" />
+              </button>
+
+              {isProfileOpen && (
+                <>
+                  <div
+                    className="profile-popover-backdrop"
+                    onClick={() => setIsProfileOpen(false)}
+                  />
+
+                  <div className="profile-popover">
+                    <div className="profile-popover-header">
+                      <div
+                        className="profile-popover-avatar"
+                        style={{ background: profile.avatarGradient || "linear-gradient(135deg, #fb923c, #ec4899)" }}
+                      >
+                        {(profile.name || "User")
+                          .split(" ")
+                          .map((w) => w[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+
+                      <div className="profile-popover-user-info">
+                        <div className="profile-popover-name-row">
+                          <span className="profile-popover-name">{profile.name}</span>
+                          <span className="popover-header-badge" style={{ color: "var(--emerald-accent)" }}>
+                            Active
+                          </span>
+                        </div>
+                        <div className="profile-popover-role">{profile.headline}</div>
+                        <div className="profile-popover-target-badge">
+                          🎯 {profile.targetCompany} • {(profile.targetLevel || "L5").split(" - ")[0]}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Quick Stats Strip */}
+                    <div className="profile-popover-stats">
+                      <div
+                        className="profile-popover-stat-item"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsMilestoneModalOpen(true);
+                        }}
+                        title="View Streak Milestones"
+                      >
+                        <span className="profile-popover-stat-val" style={{ color: "var(--amber-accent)" }}>
+                          🔥 {profile.streakDays}d
+                        </span>
+                        <span className="profile-popover-stat-lbl">Streak</span>
+                      </div>
+
+                      <div
+                        className="profile-popover-stat-item"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          handleOpenDsa(null, "All");
+                        }}
+                        title="Go to DSA Practice"
+                      >
+                        <span className="profile-popover-stat-val" style={{ color: "var(--cyan-accent)" }}>
+                          🧩 {profile.solvedCount}
+                        </span>
+                        <span className="profile-popover-stat-lbl">Solved</span>
+                      </div>
+
+                      <div
+                        className="profile-popover-stat-item"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setActiveView("leaderboard");
+                        }}
+                        title="Go to Leaderboard"
+                      >
+                        <span className="profile-popover-stat-val" style={{ color: "var(--purple-accent)" }}>
+                          🏆 #{profile.rank}
+                        </span>
+                        <span className="profile-popover-stat-lbl">Rank</span>
+                      </div>
+                    </div>
+
+                    {/* Navigation Actions */}
+                    <div className="profile-popover-menu">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsProfileModalOpen(true);
+                        }}
+                        className="profile-menu-item"
+                      >
+                        <div className="profile-menu-item-left">
+                          <User className="h-4 w-4" />
+                          <span>Candidate Profile & Bio</span>
+                        </div>
+                        <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsSettingsOpen(true);
+                        }}
+                        className="profile-menu-item"
+                      >
+                        <div className="profile-menu-item-left">
+                          <Target className="h-4 w-4" style={{ color: "var(--amber-accent)" }} />
+                          <span>Target Goals & Company</span>
+                        </div>
+                        <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setActiveView("roadmap");
+                        }}
+                        className="profile-menu-item"
+                      >
+                        <div className="profile-menu-item-left">
+                          <Sparkles className="h-4 w-4" style={{ color: "var(--indigo-accent)" }} />
+                          <span>Career Roadmap</span>
+                        </div>
+                        <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsStreakModalOpen(true);
+                        }}
+                        className="profile-menu-item"
+                      >
+                        <div className="profile-menu-item-left">
+                          <Flame className="h-4 w-4" style={{ color: "var(--rose-accent)" }} />
+                          <span>Practice Heatmap</span>
+                        </div>
+                        <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
+                      </button>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="profile-popover-footer">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          setIsProfileModalOpen(true);
+                        }}
+                        className="popover-dismiss-btn"
+                      >
+                        Edit Full Profile
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsProfileOpen(false)}
+                        style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: "11px" }}
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
@@ -734,8 +954,10 @@ export default function InterviewPrepDashboard() {
         <div className="hero-section">
           <div className="hero-overlay" />
           <div className="hero-content">
-            <p className="hero-tag">Good evening</p>
-            <h1 className="hero-title">Ready to sharpen up, Deepanshu?</h1>
+            <p className="hero-tag">{getGreeting()}</p>
+            <h1 className="hero-title">
+              Ready to sharpen up, {profile.name ? profile.name.split(" ")[0] : "Deepanshu"}?
+            </h1>
             <p className="hero-subtitle">
               You're 3 sessions from your best week yet. Your next mock interview starts in{" "}
               <span className="hero-subtitle-highlight">2h 14m</span>.
@@ -754,15 +976,19 @@ export default function InterviewPrepDashboard() {
             type="button"
             onClick={() => setIsMilestoneModalOpen(true)}
             className="streak-widget"
-            disabled
+            title="Click to view Streak Milestones & Badges"
           >
-            <StreakRing value={12} goal={30} />
+            <StreakRing value={profile.streakDays || 12} goal={30} />
             <div className="streak-details">
               <div className="streak-title-row">
                 <p className="streak-title">Daily Interview Streak</p>
                 <ArrowUpRight className="h-3.5 w-3.5" style={{ color: "var(--text-muted)" }} />
               </div>
-              <p className="streak-desc">2 days to 14-Day Algorithm Master badge</p>
+              <p className="streak-desc">
+                {(profile.streakDays || 12) >= 14
+                  ? "14-Day Algorithm Master unlocked!"
+                  : `${14 - (profile.streakDays || 12)} days to 14-Day Algorithm Master badge`}
+              </p>
               <div className="streak-badges-btn">
                 <span className="streak-pulse-indicator" />
                 Click for Milestone Journey & Badges

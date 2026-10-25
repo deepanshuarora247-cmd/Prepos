@@ -111,16 +111,16 @@ export const BADGES_DATA = [
   }
 ];
 
-export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPractice }) {
+export default function DailyStreakMilestoneModal({ isOpen, onClose, onStartPractice, streak }) {
   const [activeTab, setActiveTab] = useState("milestones"); 
   const [hasShield, setHasShield] = useState(true);
 
   if (!isOpen) return null;
 
-  const currentStreak = 12;
-  const bestStreak = 24;
-  const nextMilestone = 14;
-  const progressPercent = Math.round((currentStreak / nextMilestone) * 100);
+  const currentStreak = streak !== undefined ? streak : 12;
+  const bestStreak = Math.max(24, currentStreak);
+  const nextMilestone = currentStreak >= 30 ? 60 : currentStreak >= 14 ? 30 : 14;
+  const progressPercent = Math.min(100, Math.round((currentStreak / nextMilestone) * 100));
 
   return (
     <div className="milestone-modal-backdrop" onClick={onClose}>
