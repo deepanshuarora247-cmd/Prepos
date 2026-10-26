@@ -182,12 +182,22 @@ export default function CoursePlayerView({ courseId, onBackToCourses }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    
-    const course = FALLBACK_COURSES.find((c) => c.id === courseId) || FALLBACK_COURSES[0];
-    setCourseData(course);
-
-    const firstLesson = course.modules[0]?.lessons[0]?.id || null;
-    setActiveLessonId(firstLesson);
+    // Basic REST API GET request for course details
+    fetch("/api/courses.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const found = data.find((c) => c.id === courseId) || FALLBACK_COURSES.find((c) => c.id === courseId) || data[0];
+        setCourseData(found);
+        const firstLesson = found.modules?.[0]?.lessons?.[0]?.id || null;
+        setActiveLessonId(firstLesson);
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch course from REST API, using fallback:", err);
+        const course = FALLBACK_COURSES.find((c) => c.id === courseId) || FALLBACK_COURSES[0];
+        setCourseData(course);
+        const firstLesson = course.modules[0]?.lessons[0]?.id || null;
+        setActiveLessonId(firstLesson);
+      });
 
     const enrolledMap = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS) || "{}");
     let completed = enrolledMap[courseId] || [];

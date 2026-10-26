@@ -314,3 +314,109 @@
 .course-card-enroll-btn.enrolled:hover {
   background-color: #4f46e5;
 }
+
+/* Category Filter Bar & REST API Status */
+.courses-category-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: -0.5rem;
+}
+
+.courses-category-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.courses-cat-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--panel-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.courses-cat-btn:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.courses-cat-btn.active {
+  color: var(--cyan-accent);
+  background-color: var(--cyan-bg);
+  border-color: var(--cyan-border);
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+}
+
+.courses-api-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.courses-api-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--cyan-accent);
+  background: var(--cyan-bg);
+  border: 1px solid var(--cyan-border);
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+}
+
+.courses-api-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--panel-border);
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.courses-api-refresh-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.courses-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  gap: 1rem;
+  color: var(--cyan-accent);
+}
+
+.courses-empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+  gap: 0.75rem;
+}
+
