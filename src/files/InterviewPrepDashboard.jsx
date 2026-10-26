@@ -44,10 +44,11 @@ import PracticeStreakModal, { DAILY_PRACTICE_DATA } from "./PracticeStreakModal.
 import DailyStreakMilestoneModal from "./DailyStreakMilestoneModal.jsx";
 import SettingsModal from "./SettingsModal.jsx";
 import ProfileModal, { DEFAULT_PROFILE } from "./ProfileModal.jsx";
+import { useBranch } from "./BranchContext.jsx";
 import "./InterviewPrepDashboard.css";
 
 function BranchDropdown() {
-  const [branch, setBranch] = useState("CSE");
+  const { branch, setBranch } = useBranch();
   const [isOpen, setIsOpen] = useState(false);
 
   const branches = ["CSE", "AI", "IT"];
@@ -645,6 +646,7 @@ function QuestionTerminal({ onSolveNow }) {
 
 
 export default function InterviewPrepDashboard() {
+  const { branch } = useBranch();
   const [activeView, setActiveView] = useState("dashboard"); 
   const [initialQuestionId, setInitialQuestionId] = useState(null);
   const [initialCategory, setInitialCategory] = useState("All");
@@ -1216,12 +1218,12 @@ export default function InterviewPrepDashboard() {
         <div className="hero-section">
           <div className="hero-overlay" />
           <div className="hero-content">
-            <p className="hero-tag">{getGreeting()}</p>
+            <p className="hero-tag">{getGreeting()} • {branch} Track</p>
             <h1 className="hero-title">
               Ready to sharpen up, {profile.name ? profile.name.split(" ")[0] : "Deepanshu"}?
             </h1>
             <p className="hero-subtitle">
-              You're 3 sessions from your best week yet. Your next mock interview starts in{" "}
+              You're 3 sessions from your best week yet on the <span className="hero-subtitle-highlight">{branch} Track</span>. Your next mock interview starts in{" "}
               <span className="hero-subtitle-highlight">2h 14m</span>.
             </p>
             <button
