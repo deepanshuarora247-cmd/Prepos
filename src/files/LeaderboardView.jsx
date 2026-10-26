@@ -180,6 +180,12 @@ export default function LeaderboardView({ onBackToDashboard }) {
     .slice(0, 3);
   const showPodium = category === "All" && !search;
 
+  // Pagination calculations (fixed 5 entries per page)
+  const totalItems = filteredUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <div className="leaderboard-container">
       <div className="glow-bg-1" style={{ backgroundColor: "rgba(245, 158, 11, 0.06)" }} />
@@ -209,6 +215,7 @@ export default function LeaderboardView({ onBackToDashboard }) {
         </div>
       </header>
 
+      {/* Main Container */}
       <main className="leaderboard-main">
         {/* Top 3 Podium (shown when viewing all rankers with no search filter) */}
         {showPodium && (
@@ -407,64 +414,23 @@ export default function LeaderboardView({ onBackToDashboard }) {
 
           {/* Table Body Rows */}
           <div className="table-body-rows">
-            {result.length === 0 ? (
-              <div className="leaderboard-empty-state">
-                <Search className="leaderboard-empty-icon" />
-                <div>
-                  <p style={{ fontWeight: 600, color: "#fff", marginBottom: "0.25rem" }}>No rankers found</p>
-                  <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                    No participants match "{search}" {category !== "All" ? `in ${category}` : ""}.
-                  </p>
-                </div>
-                <button onClick={handleReset} className="leaderboard-reset-btn" style={{ marginTop: "0.5rem" }}>
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Reset search & filters
-                </button>
-              </div>
-            ) : (
-              result.map((user) => (
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((user) => (
                 <div
-                  key={user.handle}
+                  key={user.rank}
                   className={`table-row-item ${user.isUser ? "leaderboard-user-row" : ""}`}
                   style={{ padding: "0.75rem 1.5rem" }}
                 >
-                  <div
-                    style={{ gridColumn: "span 2", fontFamily: "var(--font-mono)", fontWeight: "bold" }}
-                    className={user.isUser ? "leaderboard-user-rank-val" : ""}
-                  >
-                    {user.rank === 1
-                      ? "🥇 #1"
-                      : user.rank === 2
-                      ? "🥈 #2"
-                      : user.rank === 3
-                      ? "🥉 #3"
-                      : `#${user.rank}`}
+                  <div style={{ gridColumn: "span 2", fontFamily: "var(--font-mono)", fontWeight: "bold" }} className={user.isUser ? "leaderboard-user-rank-val" : ""}>
+                    {user.rank === 1 ? "🥇 #1" : user.rank === 2 ? "🥈 #2" : user.rank === 3 ? "🥉 #3" : `#${user.rank}`}
                   </div>
 
                   <div style={{ gridColumn: "span 4", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    <div
-                      className="sandbox-back-btn"
-                      style={{
-                        padding: "0.25rem 0.5rem",
-                        borderRadius: "50%",
-                        minWidth: "1.75rem",
-                        height: "1.75rem",
-                        fontSize: "10px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                    >
-                      {user.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
+                    <div className="sandbox-back-btn" style={{ padding: "0.25rem 0.5rem", borderRadius: "50%", minWidth: "1.75rem", height: "1.75rem", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {user.name.split(" ").map(n => n[0]).join("")}
                     </div>
                     <div>
-                      <span
-                        style={{ fontSize: "12px", color: "#fff" }}
-                        className={user.isUser ? "leaderboard-user-name-val" : ""}
-                      >
+                      <span style={{ fontSize: "12px", color: "#fff" }} className={user.isUser ? "leaderboard-user-name-val" : ""}>
                         {user.name}
                       </span>
                       <p style={{ fontSize: "10px", color: "var(--text-muted)", margin: 0 }}>{user.handle}</p>
@@ -492,22 +458,23 @@ export default function LeaderboardView({ onBackToDashboard }) {
                     <span>{user.streak}d</span>
                   </div>
 
-                  <div
-                    style={{
-                      gridColumn: "span 2",
-                      textAlign: "right",
-                      fontFamily: "var(--font-mono)",
-                      fontWeight: "bold",
-                      color: "var(--amber-accent)",
-                      fontSize: "12px"
-                    }}
-                  >
+                  <div style={{ gridColumn: "span 2", textAlign: "right", fontFamily: "var(--font-mono)", fontWeight: "bold", color: "var(--amber-accent)", fontSize: "12px" }}>
                     {user.points.toLocaleString()} pts
                   </div>
                 </div>
               ))
             )}
           </div>
+
+          {/* React Pagination Bar (Fixed 5 per page) */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            itemLabel="rankers"
+          />
         </div>
       </main>
 
