@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowLeft, Trophy, Medal, Award, Flame, Search, TrendingUp, Sparkles, UserCheck, Shield } from "lucide-react";
+import Pagination from "./Pagination.jsx";
 import "./LeaderboardView.css";
 
 const LEADERBOARD_USERS = [
@@ -74,6 +75,76 @@ const LEADERBOARD_USERS = [
     badge: "Candidate Master"
   },
   {
+    rank: 8,
+    name: "Elena Rostova",
+    handle: "@elena_sys",
+    company: "Microsoft",
+    points: 2210,
+    solved: 192,
+    streak: 25,
+    badge: "Candidate Master"
+  },
+  {
+    rank: 9,
+    name: "Marcus Vance",
+    handle: "@marcus_v",
+    company: "Databricks",
+    points: 2160,
+    solved: 185,
+    streak: 19,
+    badge: "Candidate Master"
+  },
+  {
+    rank: 10,
+    name: "Ananya Iyer",
+    handle: "@ananya_ai",
+    company: "OpenAI",
+    points: 2105,
+    solved: 178,
+    streak: 30,
+    badge: "Specialist"
+  },
+  {
+    rank: 11,
+    name: "Julian Thorne",
+    handle: "@thorne_code",
+    company: "Palantir",
+    points: 2070,
+    solved: 172,
+    streak: 16,
+    badge: "Specialist"
+  },
+  {
+    rank: 12,
+    name: "Hana Takahashi",
+    handle: "@hana_dev",
+    company: "Sony",
+    points: 2040,
+    solved: 168,
+    streak: 21,
+    badge: "Specialist"
+  },
+  {
+    rank: 13,
+    name: "Carlos Mendez",
+    handle: "@cmendez",
+    company: "Airbnb",
+    points: 2015,
+    solved: 162,
+    streak: 14,
+    badge: "Specialist"
+  },
+  {
+    rank: 14,
+    name: "Chloe Dubois",
+    handle: "@chloe_d",
+    company: "Spotify",
+    points: 1990,
+    solved: 157,
+    streak: 18,
+    badge: "Knight"
+  },
+  {
     rank: 42,
     name: "Deepanshu A. (You)",
     handle: "@deepanshu_prepos",
@@ -88,6 +159,13 @@ const LEADERBOARD_USERS = [
 
 export default function LeaderboardView({ onBackToDashboard }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Reset to page 1 whenever search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const filteredUsers = LEADERBOARD_USERS.filter(
     (u) =>
@@ -96,12 +174,18 @@ export default function LeaderboardView({ onBackToDashboard }) {
       u.company.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Pagination calculations (fixed 5 entries per page)
+  const totalItems = filteredUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <div className="leaderboard-container">
-      
+      {/* Background glow */}
       <div className="glow-bg-1" style={{ backgroundColor: "rgba(245, 158, 11, 0.06)" }} />
 
-      
+      {/* Top Header */}
       <header className="leaderboard-header">
         <div className="leaderboard-header-left">
           <button onClick={onBackToDashboard} className="leaderboard-back-btn">
@@ -118,8 +202,9 @@ export default function LeaderboardView({ onBackToDashboard }) {
         </div>
       </header>
 
+      {/* Main Container */}
       <main className="leaderboard-main">
-        
+        {/* Table Container */}
         <div className="ide-split-pane" style={{ border: "1px solid var(--panel-border)", borderRadius: "1rem", flexDirection: "column", height: "auto" }}>
           <div className="resume-banner-row no-print" style={{ padding: "0.75rem 1.25rem", border: "none", borderBottom: "1px solid var(--panel-border)", background: "rgba(255, 255, 255, 0.02)", flexDirection: "row", justifyContent: "space-between", borderRadius: "1rem 1rem 0 0" }}>
             <div className="search-input-wrapper">
@@ -132,7 +217,9 @@ export default function LeaderboardView({ onBackToDashboard }) {
                 className="search-input-field"
               />
             </div>
-            <span className="ide-example-label">Showing {filteredUsers.length} Rankers</span>
+            <span className="ide-example-label">
+              Total: {totalItems} Ranker{totalItems !== 1 ? "s" : ""}
+            </span>
           </div>
 
           <div className="table-header-cols" style={{ padding: "0.75rem 1.5rem" }}>
@@ -144,50 +231,66 @@ export default function LeaderboardView({ onBackToDashboard }) {
           </div>
 
           <div className="table-body-rows">
-            {filteredUsers.map((user) => (
-              <div
-                key={user.rank}
-                className={`table-row-item ${user.isUser ? "leaderboard-user-row" : ""}`}
-                style={{ padding: "0.75rem 1.5rem" }}
-              >
-                <div style={{ gridColumn: "span 2", fontFamily: "var(--font-mono)", fontWeight: "bold" }} className={user.isUser ? "leaderboard-user-rank-val" : ""}>
-                  {user.rank === 1 ? "🥇 #1" : user.rank === 2 ? "🥈 #2" : user.rank === 3 ? "🥉 #3" : `#${user.rank}`}
-                </div>
-
-                <div style={{ gridColumn: "span 4", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <div className="sandbox-back-btn" style={{ padding: "0.25rem 0.5rem", borderRadius: "50%", minWidth: "1.75rem", height: "1.75rem", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    {user.name.split(" ").map(n => n[0]).join("")}
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((user) => (
+                <div
+                  key={user.rank}
+                  className={`table-row-item ${user.isUser ? "leaderboard-user-row" : ""}`}
+                  style={{ padding: "0.75rem 1.5rem" }}
+                >
+                  <div style={{ gridColumn: "span 2", fontFamily: "var(--font-mono)", fontWeight: "bold" }} className={user.isUser ? "leaderboard-user-rank-val" : ""}>
+                    {user.rank === 1 ? "🥇 #1" : user.rank === 2 ? "🥈 #2" : user.rank === 3 ? "🥉 #3" : `#${user.rank}`}
                   </div>
-                  <div>
-                    <span style={{ fontSize: "12px", color: "#fff" }} className={user.isUser ? "leaderboard-user-name-val" : ""}>
-                      {user.name}
+
+                  <div style={{ gridColumn: "span 4", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                    <div className="sandbox-back-btn" style={{ padding: "0.25rem 0.5rem", borderRadius: "50%", minWidth: "1.75rem", height: "1.75rem", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {user.name.split(" ").map(n => n[0]).join("")}
+                    </div>
+                    <div>
+                      <span style={{ fontSize: "12px", color: "#fff" }} className={user.isUser ? "leaderboard-user-name-val" : ""}>
+                        {user.name}
+                      </span>
+                      <p style={{ fontSize: "10px", color: "var(--text-muted)", margin: 0 }}>{user.handle}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ gridColumn: "span 2" }}>
+                    <span className="q-api-badge" style={{ backgroundColor: "rgba(255,255,255,0.03)", color: "#fff" }}>
+                      {user.company}
                     </span>
-                    <p style={{ fontSize: "10px", color: "var(--text-muted)", margin: 0 }}>{user.handle}</p>
+                  </div>
+
+                  <div style={{ gridColumn: "span 2", display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "11px", color: "var(--text-muted)" }}>
+                    <span>{user.solved}</span>
+                    <Flame className="h-3.5 w-3.5 text-orange-500" />
+                    <span>{user.streak}d</span>
+                  </div>
+
+                  <div style={{ gridColumn: "span 2", textAlign: "right", fontFamily: "var(--font-mono)", fontWeight: "bold", color: "var(--amber-accent)", fontSize: "12px" }}>
+                    {user.points.toLocaleString()} pts
                   </div>
                 </div>
-
-                <div style={{ gridColumn: "span 2" }}>
-                  <span className="q-api-badge" style={{ backgroundColor: "rgba(255,255,255,0.03)", color: "#fff" }}>
-                    {user.company}
-                  </span>
-                </div>
-
-                <div style={{ gridColumn: "span 2", display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "11px", color: "var(--text-muted)" }}>
-                  <span>{user.solved}</span>
-                  <Flame className="h-3.5 w-3.5 text-orange-500" />
-                  <span>{user.streak}d</span>
-                </div>
-
-                <div style={{ gridColumn: "span 2", textAlign: "right", fontFamily: "var(--font-mono)", fontWeight: "bold", color: "var(--amber-accent)", fontSize: "12px" }}>
-                  {user.points.toLocaleString()} pts
-                </div>
+              ))
+            ) : (
+              <div style={{ padding: "3rem 1.5rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.875rem" }}>
+                No rankers found matching "<span style={{ color: "#fff" }}>{searchQuery}</span>"
               </div>
-            ))}
+            )}
           </div>
+
+          {/* React Pagination Bar (Fixed 5 per page) */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            itemLabel="rankers"
+          />
         </div>
       </main>
 
-      
+      {/* Floating Bottom Rank Status Bar */}
       <div className="fixed-bottom-user-bar" style={{ borderColor: "var(--cyan-border)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span className="popover-header-badge" style={{ color: "var(--cyan-accent)", backgroundColor: "var(--cyan-bg)", borderColor: "var(--cyan-border)", margin: 0 }}>YOUR RANK</span>
@@ -203,3 +306,4 @@ export default function LeaderboardView({ onBackToDashboard }) {
     </div>
   );
 }
+
